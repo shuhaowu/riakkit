@@ -21,8 +21,7 @@ class BaseProperty(object):
 
   Attributes:
     required: Enforce this property to be required. (Boolean)
-    unique: Enforce this property to be unique (THIS HAS NOT BEEN IMPLEMENTED!)
-            (Boolean)
+    unique: Enforce this property to be unique. (Boolean)
     validators: A list of callables or 1 callable that validates any value
                 given. The function should be callback(value), returning
                 a boolean.
@@ -32,13 +31,12 @@ class BaseProperty(object):
 
     Args:
       required: A boolean that determines if this is required or not.
-      unique: A boolean that determines if this is unique or not. This feature
-              has not yet been implemented
+      unique: A boolean that determines if this is unique or not.
       validators: A list of callables of 1 callable that validates any value.
                   The function should be callback(value), returning a boolean.
     """
     self.required = required
-    self.unique = unique  # TODO: unique validator
+    self.unique = unique
     self.validators = validators
 
   def convert(self, value):
@@ -68,6 +66,7 @@ class BaseProperty(object):
     Returns:
       True if validation pass, False otherwise.
     """
+
     if callable(self.validators):
       return self.validators(value)
     elif type(self.validators) in (tuple, list):
@@ -147,14 +146,15 @@ class FloatProperty(BaseProperty):
   def validate(self, value):
     try:
       float(value)
-    except: # POKEMON EXCEPTION!
+    except:  # POKEMON EXCEPTION! :D
       return False
     return BaseProperty.validate(self, value) and True
 
 class LinkedDocuments(BaseProperty):
   """Linked documents property.
 
-  This is always a list and they reference other documents.
+  This is always a list and they reference other documents. This property
+  disallow uniqueness. Setting .unique will have no effect.
   """
   def defaultValue(self):
     return []

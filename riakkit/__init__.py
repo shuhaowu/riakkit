@@ -31,6 +31,18 @@ __authors__ = [
 
 _document_classes = {}
 
+def getUniqueListBucketName(bucket_name, property_name):
+  """Gets the bucket name that enforces the uniqueness of a certain property.
+
+  Args:
+    bucket_name: The bucket name
+    property_name: The property name
+
+  Returns:
+    Returns the bucket name.
+  """
+  return "_%s_ul_%s" % (bucket_name, property_name)
+
 class DocumentMetaclass(type):
   """Meta class that the Document class is made from.
 
@@ -43,8 +55,11 @@ class DocumentMetaclass(type):
     if not "bucket_name" in attrs:
       raise AttributeError("Class %s must have a bucket_name!" % cls.__name__)
 
+    attrs["bucket"] = attrs["client"].bucket(attrs["bucket_name"])
+
     meta = {}
     links = {}
+    uniques = []
 
     for key in attrs.keys():
       if key == "_links":
@@ -53,10 +68,16 @@ class DocumentMetaclass(type):
         links[key] = attrs.pop(key)
       elif isinstance(attrs[key], BaseProperty):
         meta[key] = attrs.pop(key)
+        if meta[key].unique:
+          meta[key].unique_bucket = attrs["client"].bucket(
+              getUniqueListBucketName(attrs["bucket_name"], key)
+          )
+          uniques.append(key)
 
     meta["_links"] = links # Meta. lol
     attrs["_meta"] = meta
-    attrs["bucket"] = attrs["client"].bucket(attrs["bucket_name"])
+    attrs["_uniques"] = uniques
+
     new_class = type.__new__(cls, name, parents, attrs)
     if new_class.bucket_name in _document_classes:
       raise RiakkitError("Bucket name of %s already exists in the registry!"
@@ -237,16 +258,23 @@ class Document(object):
     return self._obj is not None and self._obj.exists() and self._saved
 
   def _verifyData(self):
+    """Verifies the data.
+
+    This method does not alter the database, but may alter the data.
+    """
     for name in self._meta:
       if name == "_links":
         continue
-      # TODO: Unique enforcement implementations..
 
       if name not in self._data: # TODO: REFACTOR THIS
         if self._meta[name].required:
           raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
         else:
           self._data[name] = None
+
+      if self._meta[name].unique:
+        if self._meta[name].unique_bucket.get(self._meta[name].convert(self._data[name])).exists():
+          raise ValueError("'%s' already exists for '%s'!" % (self._data[name], name))
 
       self._data[name] = self._meta[name].convert(self._data[name])
 
@@ -319,6 +347,10 @@ class Document(object):
 
     self._obj.store()
     self.key = self._obj.get_key()
+    for name in self._uniques:
+      obj = self._meta[name].unique_bucket.new(self._data[name], {"key" : self.key})
+      obj.store()
+
     self._saved = True
 
   def delete(self):

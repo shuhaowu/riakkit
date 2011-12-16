@@ -212,6 +212,9 @@ a `.reload()` call will overwrite your data with the values in the db.
 Other thingies
 ==============
 
+Other data types and validation
+-------------------------------
+
 Some different data types can also be used:
 
     >>> class Demo(Document):
@@ -243,6 +246,36 @@ Let's do it right this time.
 Notice how the key of 42 (integer) got converted to u'42' (unicode). This is due
 to JSON only allowing strings as keys.
 
+Uniqueness
+----------
+
+Uniqueness in Riakkit is enforced by creating an object in another bucket. The
+bucket's name is generated as _<class bucket name>_ul_<property name>.
+
+Let's construct a class:
+
+    >>> class CoolUser(Document):
+    ...     bucket_name = "coolusers"
+    ...     client = some_client
+    ...
+    ...     username = types.StringProperty(unique=True)
+
+This unique will create another bucket named "_coolusers_ul_username". Inside
+this bucket, each object's key will be the values of the username. The value for
+the object is {key : <the key of the document>}. Let's see how that works.
+
+    >>> cooluser = CoolUser(username="cool")
+    >>> cooluser.save()  # This is done successfully
+    >>> notsocooluser = CoolUser(username="cool")
+    >>> notsocooluser.save()
+    Traceback (most recent call last):
+      ...
+    ValueError: 'cool' already exists for 'username'!
+    >>> notsocooluser.saved()
+    False
+    >>> anothercooluser = CoolUser(username="anotheruser")
+    >>> anothercooluser.save()  # This is done successfully
+
 Accessing Underlying Riak API
 =============================
 
@@ -266,8 +299,8 @@ More Info on Riakkit
 API Docs
 --------
 
-cd into this directory and cd into the docs directory should do! Or visit 
-http://ultimatebuster.github.com/riakkit 
+cd into this directory and cd into the docs directory should do! Or visit
+http://ultimatebuster.github.com/riakkit
 
 That may be outta date though.. so I think you should build your own docs.
 
