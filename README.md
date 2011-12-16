@@ -18,9 +18,6 @@ please share your code back to me.
 Installation
 ============
 
-setup.py is not yet available... Maybe down the road.. but just drop riakkit/
-into your project and run with it..
-
 Requires the **LATEST** version of python-riak from
 https://github.com/basho/riak-python-client .. It seems that Basho is not very
 quick on releasing the newest and greatest feature in their tags...
@@ -33,6 +30,11 @@ Also, you need to change the setting of search to enable in your app.config
 
 This is if you want to use search.
 
+Then, proceed to do `pip install riakkit` or `easy_install riakkit`.
+
+This will not ensure that python-riak is installed. Please make sure you
+install using the latest version from the repository (not a tag, latest).
+The python-riak client is otherwise out of date.
 
 "Fast Track"
 ============

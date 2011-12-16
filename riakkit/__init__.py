@@ -29,6 +29,8 @@ __authors__ = [
     '"Shuhao Wu" <admin@thekks.net>'
 ]
 
+VERSION = "0.1a"
+
 _document_classes = {}
 
 def getUniqueListBucketName(bucket_name, property_name):
