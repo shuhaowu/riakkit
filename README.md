@@ -266,7 +266,12 @@ More Info on Riakkit
 API Docs
 --------
 
-cd into this directory. `pydoc riakkit` should do!
+cd into this directory and cd into the docs directory should do! Or visit 
+http://ultimatebuster.github.com/riakkit 
+
+That may be outta date though.. so I think you should build your own docs.
+
+cd into this directory and do `./makedocs`
 
 Until someone makes a prettier doc, that is (You should be glad I wrote docs,
 'cause I usually don't do it).
