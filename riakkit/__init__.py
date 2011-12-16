@@ -132,6 +132,17 @@ class Document(object):
     return self.key == other.key if type(self) == type(other) else False
 
   @classmethod
+  def _cleanupDataFromDatabase(cls, data):
+    if "key" in data:
+      del data["key"]
+
+    for k in data:
+      if k in cls._meta:
+        data[k] = cls._meta[k].convertBack(data[k])
+
+    return data
+
+  @classmethod
   def load(cls, riak_obj):  # TODO: Merge this with reload() somehow
     """Construct a Document based object given a RiakObject.
 
@@ -143,9 +154,7 @@ class Document(object):
     Returns:
       A Document object (whichever subclass this was called from).
     """
-    data = riak_obj.get_data()
-    if "key" in data:
-      del data["key"]
+    data = cls._cleanupDataFromDatabase(riak_obj.get_data())
     obj = cls(riak_obj.get_key(), **data)
     links = riak_obj.get_links()
     obj._links = obj.updateLinks(links)
@@ -307,11 +316,7 @@ class Document(object):
     """
     if self._obj:
       self._obj.reload()
-      data = self._obj.get_data()
-      if "key" in data:
-        del data["key"]
-
-      pdb.set_trace()
+      data = self._cleanupDataFromDatabase(self._obj.get_data())
       self._data = data # TODO: Is this safe?
       links = self._obj.get_links()
       self._links = self.updateLinks(links)

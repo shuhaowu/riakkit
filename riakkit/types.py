@@ -14,6 +14,9 @@
 #You should have received a copy of the GNU General Public License
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import datetime
+import time
+
 class BaseProperty(object):
   """Base property type
 
@@ -44,6 +47,14 @@ class BaseProperty(object):
 
     In theory, the value should always be valid (as it has to undergo validate
     before this is called).
+
+    Args:
+      value: The value to be converted
+    """
+    return value
+
+  def convertBack(self, value):
+    """Converts the value from the database back to the original mapped value.
 
     Args:
       value: The value to be converted
@@ -150,6 +161,45 @@ class FloatProperty(BaseProperty):
       return False
     return BaseProperty.validate(self, value) and True
 
+class DateTimeProperty(BaseProperty):
+  """The datetime property.
+
+  Stores the UTC time as a float in the database. Maps to the python object of
+  datetime.datetime or the utc timestamp.
+  """
+
+  def validate(self, value):
+    if isinstance(value, (long, int, float)): # timestamp
+      try:
+        value = datetime.datetime.utcfromtimestamp(value)
+      except ValueError:
+        return False
+      else:
+        return True
+    elif isinstance(value, datetime.datetime):
+      return True
+    return False
+
+  def convert(self, value):
+    if isinstance(value, (long, int, float)): # timestamp, validation has passed
+      return value
+    return time.mktime(value.utctimetuple())
+
+  def convertBack(self, value):
+    """Converts the value from the database back to a datetime object.
+
+    Args:
+      value: The value to be converted
+
+    Returns:
+      The corresponding datetime object that's based off utc.
+    """
+    return datetime.datetime.utcfromtimestamp(value)
+
+  def defaultValue(self):
+    return datetime.datetime.utcnow()
+
+
 class LinkedDocuments(BaseProperty):
   """Linked documents property.
 
@@ -158,5 +208,3 @@ class LinkedDocuments(BaseProperty):
   """
   def defaultValue(self):
     return []
-
-# TODO: DateTimeProperty ...

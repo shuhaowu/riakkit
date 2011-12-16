@@ -217,6 +217,7 @@ Other data types and validation
 
 Some different data types can also be used:
 
+    >>> from datetime import datetime
     >>> class Demo(Document):
     ...     bucket_name = "demos"
     ...     client = some_client
@@ -225,6 +226,7 @@ Some different data types can also be used:
     ...     # is an integer.
     ...     test_list = types.ListProperty(validators=lambda x: len(x) == len([i for i in x if isinstance(i, int)]))
     ...     test_dict = types.DictProperty()
+    ...     some_date = types.DateTimeProperty()
     >>>
     >>> demo_obj = Demo(test_list=[1, 2, "this causes failure"]) #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
@@ -236,15 +238,20 @@ Let's do it right this time.
     >>> demo_obj = Demo()
     >>> demo_obj.test_list = [0, 1, 2]
     >>> demo_obj.test_dict = {"hello" : "world", 42 : 3.14}
+    >>> demo_obj.some_date = datetime(2011, 12, 16)
     >>> demo_obj.save()
     >>> same_demo = Demo.get_with_key(demo_obj.key)
     >>> print same_demo.test_list
     [0, 1, 2]
     >>> print sorted(same_demo.test_dict.items()) # this is done so that the doctest won't hate me.
     [(u'42', 3.14), (u'hello', u'world')]
+    >>> print same_demo.some_date.year, same_demo.some_date.month, same_demo.some_date.day
+    2011 12 16
 
 Notice how the key of 42 (integer) got converted to u'42' (unicode). This is due
 to JSON only allowing strings as keys.
+
+For `DateTimeProperty`, all date times are UTC based for consistency sake.
 
 Uniqueness
 ----------
