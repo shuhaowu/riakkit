@@ -133,7 +133,7 @@ You can link to a foreign document very easily. Let me illustrate:
     ...     posts = types.LinkedDocuments()
     >>> user = User(name="mrrow")
     >>> some_post = BlogPost(title="Hello", content="World")
-    >>> user.posts = []
+    >>> user.posts = [] # Initially this is set to nothing. So it's a good idea to initialize it.
     >>> user.posts.append(some_post)
     >>> user.save()
     >>> print user.posts[0].title
@@ -143,6 +143,49 @@ You can link to a foreign document very easily. Let me illustrate:
     Hello
 
 LinkedDocuments is always a list.
+
+You can also "back reference" these linked documents. The API is similar to
+Google App Engine's `ReferenceProperty`, except everything is a list.
+
+    >>> class Comment(Document):
+    ...     bucket_name = "comments"
+    ...     client = some_client
+    ...
+    ...     title = types.StringProperty()
+    ...     owner = types.LinkedDocuments(reference_class=User,
+    ...                                   collection_name="comments")
+
+Note how we specified the `reference_class`. This will activate additional
+validation. Also, `collection_name` knows where to go.
+
+    >>> a_comment = Comment(title="Riakkit ftw!", owner=[])
+    >>> a_comment.owner.append(user) # Since there's only 1 owner, we will just leave 1 element.
+    >>> a_comment.save()
+
+This should save both the `a_comment`, and the `user` object. So no need to
+`user.reload()`. However, you could reload `same_user`.
+
+    >>> print user.comments[0].title
+    Riakkit ftw!
+    >>> same_user.reload()
+    >>> print same_user.comments[0].title
+    Riakkit ftw!
+
+Let's add another comment.
+
+    >>> another_comment = Comment(title="Moo", owner=[])
+    >>> another_comment.owner.append(same_user)
+    >>> another_comment.save()
+    >>> print same_user.comments[1].title
+    Moo
+
+Now, as of the moment, we lose order (potentially) when we store LinkedDocuments.
+This means there's no guarentee that the comments will be at index 0 or 1.
+
+    >>> user.reload()
+    >>> titles = sorted([comment.title for comment in user.comments])
+    >>> print titles
+    [u'Moo', u'Riakkit ftw!']
 
 Advanced Query
 --------------

@@ -23,6 +23,7 @@ if __name__ == "__main__":
   client = riak.RiakClient()
   deleteAllKeys(client, "blog")
   deleteAllKeys(client, "users")
+  deleteAllKeys(client, "comments")
   deleteAllKeys(client, "demos")
   deleteAllKeys(client, "coolusers")
   deleteAllKeys(client, "_coolusers_ul_username")

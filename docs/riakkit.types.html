@@ -534,7 +534,11 @@ Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BasePr
 <td colspan=2><tt>Linked&nbsp;documents&nbsp;property.<br>
 &nbsp;<br>
 This&nbsp;is&nbsp;always&nbsp;a&nbsp;list&nbsp;and&nbsp;they&nbsp;reference&nbsp;other&nbsp;documents.&nbsp;This&nbsp;property<br>
-disallow&nbsp;uniqueness.&nbsp;Setting&nbsp;.unique&nbsp;will&nbsp;have&nbsp;no&nbsp;effect.<br>&nbsp;</tt></td></tr>
+disallow&nbsp;uniqueness.&nbsp;Setting&nbsp;.unique&nbsp;will&nbsp;have&nbsp;no&nbsp;effect.<br>
+&nbsp;<br>
+Keep&nbsp;in&nbsp;mind&nbsp;that&nbsp;when&nbsp;you&nbsp;call&nbsp;.save&nbsp;on&nbsp;your&nbsp;<a href="__builtin__.html#object">object</a>,<br>
+it&nbsp;will&nbsp;change&nbsp;the&nbsp;objects&nbsp;that&nbsp;you're&nbsp;linking&nbsp;to&nbsp;as&nbsp;well,&nbsp;as&nbsp;the<br>
+implementation&nbsp;will&nbsp;call&nbsp;save&nbsp;there.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="riakkit.types.html#LinkedDocuments">LinkedDocuments</a></dd>
@@ -543,18 +547,27 @@ disallow&nbsp;uniqueness.&nbsp;Setting&nbsp;.unique&nbsp;will&nbsp;have&nbsp;no&
 </dl>
 <hr>
 Methods defined here:<br>
+<dl><dt><a name="LinkedDocuments-__init__"><strong>__init__</strong></a>(self, reference_class<font color="#909090">=None</font>, collection_name<font color="#909090">=None</font>, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;<a href="#LinkedDocuments">LinkedDocuments</a>&nbsp;property.<br>
+&nbsp;<br>
+You&nbsp;can&nbsp;set&nbsp;it&nbsp;up&nbsp;so&nbsp;that&nbsp;riakkit&nbsp;automatically&nbsp;link&nbsp;back&nbsp;from<br>
+the&nbsp;reference_class&nbsp;like&nbsp;GAE's&nbsp;ReferenceProperty.&nbsp;Except&nbsp;everything&nbsp;here<br>
+is&nbsp;a&nbsp;list.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;reference_class:&nbsp;The&nbsp;classes&nbsp;that&nbsp;should&nbsp;be&nbsp;added&nbsp;to&nbsp;this&nbsp;<a href="#LinkedDocuments">LinkedDocuments</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i.e.&nbsp;Documents&nbsp;have&nbsp;to&nbsp;be&nbsp;objects&nbsp;of&nbsp;that&nbsp;class&nbsp;to&nbsp;pass<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validation.&nbsp;None&nbsp;if&nbsp;you&nbsp;wish&nbsp;to&nbsp;allow&nbsp;any&nbsp;Document&nbsp;class.<br>
+&nbsp;&nbsp;collection_name:&nbsp;The&nbsp;collection&nbsp;name&nbsp;for&nbsp;the&nbsp;reference_class.&nbsp;Works&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;same&nbsp;way&nbsp;as&nbsp;GAE's&nbsp;collection_name&nbsp;for&nbsp;their<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ReferenceProperty.&nbsp;See&nbsp;the&nbsp;README&nbsp;file&nbsp;at&nbsp;the&nbsp;repository<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;detailed&nbsp;tutorial.</tt></dd></dl>
+
 <dl><dt><a name="LinkedDocuments-defaultValue"><strong>defaultValue</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="LinkedDocuments-validate"><strong>validate</strong></a>(self, value)</dt></dl>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="LinkedDocuments-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
-&nbsp;<br>
-Args:<br>
-&nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
-&nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
-&nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.</tt></dd></dl>
-
 <dl><dt><a name="LinkedDocuments-convert"><strong>convert</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;any&nbsp;form&nbsp;to&nbsp;an&nbsp;usable&nbsp;form.<br>
 &nbsp;<br>
 In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo&nbsp;validate<br>
@@ -567,21 +580,6 @@ Args:<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
-
-<dl><dt><a name="LinkedDocuments-validate"><strong>validate</strong></a>(self, value)</dt><dd><tt>The&nbsp;default&nbsp;validation&nbsp;function.<br>
-&nbsp;<br>
-This&nbsp;validation&nbsp;function&nbsp;goes&nbsp;through&nbsp;the&nbsp;validators&nbsp;and&nbsp;checks&nbsp;each&nbsp;one.<br>
-Any&nbsp;subclass&nbsp;should&nbsp;do:<br>
-&nbsp;<br>
-return&nbsp;<a href="#BaseProperty">BaseProperty</a>.<a href="#LinkedDocuments-validate">validate</a>(self,&nbsp;value)&nbsp;and&nbsp;your_result<br>
-&nbsp;<br>
-where&nbsp;your_result&nbsp;is&nbsp;your&nbsp;validation&nbsp;result.<br>
-&nbsp;<br>
-Args:<br>
-&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;validated<br>
-&nbsp;<br>
-Returns:<br>
-&nbsp;&nbsp;True&nbsp;if&nbsp;validation&nbsp;pass,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
 
 <hr>
 Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>

@@ -17,7 +17,7 @@ import json
 from uuid import uuid1
 
 import riak
-from riak.mapreduce import RiakLink
+from riak.mapreduce import RiakLink, RiakObject
 from riakkit.types import BaseProperty, LinkedDocuments
 from riakkit.exceptions import *
 
@@ -27,7 +27,7 @@ __authors__ = [
     '"Shuhao Wu" <admin@thekks.net>'
 ]
 
-VERSION = "0.1a"
+VERSION = "dev"
 
 _document_classes = {}
 
@@ -61,11 +61,16 @@ class DocumentMetaclass(type):
     links = {}
     uniques = []
 
+
     for key in attrs.keys():
       if key == "_links":
         raise RuntimeError("_links is not allowed.")
       if isinstance(attrs[key], LinkedDocuments):
         links[key] = attrs.pop(key)
+        if links[key].collection_name:
+          links[key].reference_class._meta["_links"][links[key].collection_name] = LinkedDocuments(reference_class=cls)
+          links[key].reference_class._collections[links[key].collection_name] = cls
+
       elif isinstance(attrs[key], BaseProperty):
         meta[key] = attrs.pop(key)
         if meta[key].unique:
@@ -77,6 +82,8 @@ class DocumentMetaclass(type):
     meta["_links"] = links # Meta. lol
     attrs["_meta"] = meta
     attrs["_uniques"] = uniques
+    attrs["_collections"] = {}
+    attrs["instances"] = {}
 
     new_class = type.__new__(cls, name, parents, attrs)
     if new_class.bucket_name in _document_classes:
@@ -124,6 +131,8 @@ class Document(object):
 
       self.__setattr__(name, kwargs[name])
 
+    self.__class__.instances[self.key] = self
+
   def __cmp__(self, other):
     """Compares a document with another. Uses key comparison.
 
@@ -143,23 +152,37 @@ class Document(object):
     return data
 
   @classmethod
-  def load(cls, riak_obj):  # TODO: Merge this with reload() somehow
+  def load(cls, riak_obj, cached=False):  # TODO: Merge this with reload() somehow
     """Construct a Document based object given a RiakObject.
-
-
 
     Args:
       riak_obj: The RiakObject that the document is suppose to build from.
+      cached: If we want to get from the pool of objects or not.
+              Note that if you have multiple instances of the same object,
+              the most recent one to be cached will be used. If this is true,
+              riak_obj could just be a string that's the key of the object
 
     Returns:
       A Document object (whichever subclass this was called from).
     """
+    if cached:
+      if isinstance(riak_obj, RiakObject):
+        key = riak_obj.get_key()
+      else:
+        key = riak_obj # Assume string
+
+      try:
+        return cls.instances[key]
+      except KeyError:
+        raise NotFoundError("%s not found!" % key)
+
     data = cls._cleanupDataFromDatabase(riak_obj.get_data())
     obj = cls(riak_obj.get_key(), **data)
     links = riak_obj.get_links()
     obj._links = obj.updateLinks(links)
     obj._saved = True
     obj._obj = riak_obj
+    cls.instances[obj.key] = obj
     return obj
 
   def updateLinks(self, links):
@@ -189,7 +212,7 @@ class Document(object):
         l[tag] = []
         last_tag = tag
 
-      l[tag].append(cls.load(link.get()))  # TODO: Memory leak? Maybe use a shared pool of objects.
+      l[tag].append(cls.load(link.get(), True))  # TODO: Is this a nasty hack?
     return l
 
   def _error(self, name):
@@ -292,15 +315,11 @@ class Document(object):
         if self._meta["_links"][name].required:
           raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
         else:
-          self._links[name] = self._meta[name].defaultValue()
+          self._links[name] = []
 
-      if type(self._links[name]) == list:
-        for item in self._links[name]:
-          if not isinstance(item, Document):
-            raise AttributeError("%s is not a Document instance!" % item)
-        continue
-      else:
-        self._links[name] = []
+      for item in self._links[name]:
+        if not isinstance(item, Document):
+          raise AttributeError("%s is not a Document instance!" % item)
 
   def reload(self):
     """Reloads the object from the database.
@@ -327,7 +346,8 @@ class Document(object):
   def save(self):
     """Saves the document into the database.
 
-    This will save the object to the database.
+    This will save the object to the database. All linked objects will be saved
+    as well.
     """
     bucket = self.bucket
     if self.SEARCHABLE:
@@ -345,10 +365,21 @@ class Document(object):
 
     for tag in self._links:
       docs = self._links[tag]
-      for i, doc in enumerate(docs):
-        if not doc.saved():
-          doc.save()
-        self._obj.add_link(doc._obj, tag) # TODO: Maybe some sort of ordering, with tag0, tag1.. etc
+      col_name = self._meta["_links"][tag].collection_name
+      if col_name:  # This type of non-refactored is done for efficiency's sake
+        for i, doc in enumerate(docs):
+          current_list = doc._links.get(col_name, [])  # TODO: Un-uglify this
+          current_list.append(self)
+          doc._links[col_name] = current_list
+          if tag not in self._collections: # _collections is signifying which attributes is generated via collection_name by other Document classes
+            doc.save()  # Stack too big here? Nah. Let's take the leap of faith.
+          self._obj.add_link(doc._obj, tag) # TODO: Maybe some sort of ordering, with tag0, tag1.. etc
+      else:
+        for i, doc in enumerate(docs):
+          if tag not in self._collections and not doc.saved():
+            doc.save()
+          self._obj.add_link(doc._obj, tag) # TODO: Maybe some sort of ordering, with tag0, tag1.. etc
+
 
     self._obj.store()
     self.key = self._obj.get_key()

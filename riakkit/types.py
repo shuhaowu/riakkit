@@ -254,6 +254,49 @@ class LinkedDocuments(BaseProperty):
 
   This is always a list and they reference other documents. This property
   disallow uniqueness. Setting .unique will have no effect.
+
+  Keep in mind that when you call .save on your object,
+  it will change the objects that you're linking to as well, as the
+  implementation will call save there.
   """
+  def __init__(self, reference_class=None, collection_name=None,
+                     required=False, unique=False, validators=False):
+    """Initializes a LinkedDocuments property.
+
+    You can set it up so that riakkit automatically link back from
+    the reference_class like GAE's ReferenceProperty. Except everything here
+    is a list.
+
+    Args:
+      reference_class: The classes that should be added to this LinkedDocuments.
+                       i.e. Documents have to be objects of that class to pass
+                       validation. None if you wish to allow any Document class.
+      collection_name: The collection name for the reference_class. Works the
+                       same way as GAE's collection_name for their
+                       ReferenceProperty. See the README file at the repository
+                       for detailed tutorial.
+    """
+    BaseProperty.__init__(self, required=required,
+        unique=unique, validators=validators)
+
+    self.reference_class = reference_class
+
+    if collection_name and reference_class:
+      self.collection_name = collection_name
+    else:
+      self.collection_name = None
+
+  def _checkForReferenceClass(self, l):
+    rc = self.reference_class or Document
+
+    for v in l:
+      if not isinstance(v, rc):
+        return False
+    return True
+
+  def validate(self, value):
+    check = self._checkForReferenceClass(value)
+    return BaseProperty.validate(self, value) and check
+
   def defaultValue(self):
     return []
