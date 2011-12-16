@@ -12,8 +12,7 @@ a project of mine and my style of coding and use cases.
 
 Just FYI: The project tries to follow the [Google Python style guide](http://google-styleguide.googlecode.com/svn/trunk/pyguide.html).
 
-Licensed under GPLv3, it is much more restrictive than riakalchemy.. :D So
-please share your code back to me.
+Licensed under LGPL
 
 Installation
 ============
