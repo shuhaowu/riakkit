@@ -136,7 +136,8 @@ Raises:<br>
 
 <dl><dt><a name="Document-save"><strong>save</strong></a>(self)</dt><dd><tt>Saves&nbsp;the&nbsp;document&nbsp;into&nbsp;the&nbsp;database.<br>
 &nbsp;<br>
-This&nbsp;will&nbsp;save&nbsp;the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;to&nbsp;the&nbsp;database.</tt></dd></dl>
+This&nbsp;will&nbsp;save&nbsp;the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;to&nbsp;the&nbsp;database.&nbsp;All&nbsp;linked&nbsp;objects&nbsp;will&nbsp;be&nbsp;saved<br>
+as&nbsp;well.</tt></dd></dl>
 
 <dl><dt><a name="Document-saved"><strong>saved</strong></a>(self)</dt><dd><tt>See&nbsp;if&nbsp;the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;has&nbsp;been&nbsp;saved&nbsp;or&nbsp;not.<br>
 &nbsp;<br>
@@ -170,12 +171,14 @@ Args:<br>
 &nbsp;&nbsp;key:&nbsp;The&nbsp;key&nbsp;value.<br>
 &nbsp;&nbsp;r:&nbsp;The&nbsp;r&nbsp;value,&nbsp;defaults&nbsp;to&nbsp;None.</tt></dd></dl>
 
-<dl><dt><a name="Document-load"><strong>load</strong></a>(cls, riak_obj)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Construct&nbsp;a&nbsp;<a href="#Document">Document</a>&nbsp;based&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;given&nbsp;a&nbsp;RiakObject.<br>
-&nbsp;<br>
-&nbsp;<br>
+<dl><dt><a name="Document-load"><strong>load</strong></a>(cls, riak_obj, cached<font color="#909090">=False</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Construct&nbsp;a&nbsp;<a href="#Document">Document</a>&nbsp;based&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;given&nbsp;a&nbsp;RiakObject.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;riak_obj:&nbsp;The&nbsp;RiakObject&nbsp;that&nbsp;the&nbsp;document&nbsp;is&nbsp;suppose&nbsp;to&nbsp;build&nbsp;from.<br>
+&nbsp;&nbsp;cached:&nbsp;If&nbsp;we&nbsp;want&nbsp;to&nbsp;get&nbsp;from&nbsp;the&nbsp;pool&nbsp;of&nbsp;objects&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Note&nbsp;that&nbsp;if&nbsp;you&nbsp;have&nbsp;multiple&nbsp;instances&nbsp;of&nbsp;the&nbsp;same&nbsp;<a href="__builtin__.html#object">object</a>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;most&nbsp;recent&nbsp;one&nbsp;to&nbsp;be&nbsp;cached&nbsp;will&nbsp;be&nbsp;used.&nbsp;If&nbsp;this&nbsp;is&nbsp;true,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;riak_obj&nbsp;could&nbsp;just&nbsp;be&nbsp;a&nbsp;string&nbsp;that's&nbsp;the&nbsp;key&nbsp;of&nbsp;the&nbsp;<a href="__builtin__.html#object">object</a><br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;A&nbsp;<a href="#Document">Document</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;(whichever&nbsp;subclass&nbsp;this&nbsp;was&nbsp;called&nbsp;from).</tt></dd></dl>
@@ -276,6 +279,6 @@ Returns:<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
     
 <tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>VERSION</strong> = '0.1a'<br>
+<td width="100%"><strong>VERSION</strong> = 'dev'<br>
 <strong>__authors__</strong> = ['"Shuhao Wu" &lt;admin@thekks.net&gt;']</td></tr></table>
 </body></html>
