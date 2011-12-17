@@ -228,6 +228,7 @@ Some different data types can also be used:
     ...     test_list = types.ListProperty(validators=lambda x: len(x) == len([i for i in x if isinstance(i, int)]))
     ...     test_dict = types.DictProperty()
     ...     some_date = types.DateTimeProperty()
+    ...     levels = types.EnumProperty(possible_values=["user", "admin"])
     >>>
     >>> demo_obj = Demo(test_list=[1, 2, "this causes failure"]) #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
@@ -237,10 +238,42 @@ Some different data types can also be used:
 Let's do it right this time.
 
     >>> demo_obj = Demo()
+
+Here is a list and a dictionary.
+
     >>> demo_obj.test_list = [0, 1, 2]
     >>> demo_obj.test_dict = {"hello" : "world", 42 : 3.14}
-    >>> demo_obj.some_date = datetime(2011, 12, 16)
+
+Note that list and dictionaries are potentially dangerous as there's no type
+checking in them. Refer to python's `json` to see objects are mapped.
+
+Here's the `DateTimeProperty`
+
+    >>> demo_obj.some_date = datetime(2011, 12, 16) # Just use a date time object
+
+You can use the datetime object or an unix timestamp. Note that all datetime
+handling is in utc. So riakkit you entered the utc time.
+
+The `EnumProperty` basically is a list of possible values. If you feed it a
+not allowed value, it will fail validation. The implementation of the
+EnumProperty stores an integer corresponding to the location on the list you
+specified. In this example, internally, "user" will have a value of 0 and
+"admin" will have a value of 1. Note that these 2 strings will _not_ be
+converted to unicode. EnumProperty accepts anything, but if it is passed
+something like an object, you'll get the identical object back.
+
+    >>> demo_obj.levels = "notpossible" #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+      ...
+    ValueError: Validation did not pass for ...
+    >>> demo_obj.levels = "user"
+
+Now let's save the object.
+
     >>> demo_obj.save()
+
+We can now retrieve it again and see if this worked.
+
     >>> same_demo = Demo.get_with_key(demo_obj.key)
     >>> print same_demo.test_list
     [0, 1, 2]
@@ -248,11 +281,14 @@ Let's do it right this time.
     [(u'42', 3.14), (u'hello', u'world')]
     >>> print same_demo.some_date.year, same_demo.some_date.month, same_demo.some_date.day
     2011 12 16
+    >>> print same_demo.levels
+    user
+
 
 Notice how the key of 42 (integer) got converted to u'42' (unicode). This is due
 to JSON only allowing strings as keys.
 
-For `DateTimeProperty`, all date times are UTC based for consistency sake.
+For all the types, see the (API docs)[http://ultimatebuster.github.com/riakkit].
 
 Uniqueness
 ----------

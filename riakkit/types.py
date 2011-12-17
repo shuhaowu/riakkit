@@ -160,6 +160,45 @@ class FloatProperty(BaseProperty):
       return False
     return BaseProperty.validate(self, value) and True
 
+class BooleanProperty(BaseProperty):
+  """Boolean property. Pretty self explanatory."""
+  def convert(self, value):
+    return bool(value)
+
+class EnumProperty(BaseProperty):
+  """Not sure if enum is the best name, but this only allows some properties.
+
+  This also only stores integers into database, making it efficient.
+  The values you supply it initially will be the ones you get back (references
+  will be kept if they are objects, so try to use basic types).
+  """
+
+  def __init__(self, possible_values, required=False,
+                     unique=False, validators=False):
+    """Initialize the Enum Property.
+
+    Args:
+      possible_values: Possible values to be taken.
+
+    Everything else is inheritted from BaseProperty.
+    Note: Probably a bad idea using unique on this, but no one is preventing you
+    """
+    BaseProperty.__init__(self, required, unique, validators)
+    self._map_forward = {}
+    self._map_backward = {}
+    for i, v in enumerate(possible_values):
+      self._map_forward[v] = i
+      self._map_backward[i] = v
+
+  def validate(self, value):
+    return BaseProperty.validate(self, value) and (value in self._map_forward)
+
+  def convert(self, value):
+    return self._map_forward.get(value)
+
+  def convertBack(self, value):
+    return self._map_backward.get(value)
+
 class DateTimeProperty(BaseProperty):
   """The datetime property.
 
@@ -168,16 +207,17 @@ class DateTimeProperty(BaseProperty):
   """
 
   def validate(self, value):
+    check = False
     if isinstance(value, (long, int, float)): # timestamp
       try:
         value = datetime.datetime.utcfromtimestamp(value)
       except ValueError:
-        return False
+        check = False
       else:
-        return True
+        check = True
     elif isinstance(value, datetime.datetime):
-      return True
-    return False
+      check = True
+    return BaseProperty.validate(self, value) and check
 
   def convert(self, value):
     if isinstance(value, (long, int, float)): # timestamp, validation has passed
@@ -198,6 +238,16 @@ class DateTimeProperty(BaseProperty):
   def defaultValue(self):
     return datetime.datetime.utcnow()
 
+
+class DynamicProperty(BaseProperty):
+  """Allows any type of property... Probably a bad idea, but sometimes useful.
+
+  The implementation of this is exactly identical as BaseProperty. It doesn't
+  do anything at all.. (except using your own validators).
+
+  Warning: You may experience problems if your types doesn't play nice with
+  Python json module...
+  """
 
 class LinkedDocuments(BaseProperty):
   """Linked documents property.
