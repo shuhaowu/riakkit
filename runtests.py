@@ -21,9 +21,9 @@ if __name__ == "__main__":
   import riak
   print "Clean up time!"
   client = riak.RiakClient()
-  deleteAllKeys(client, "blog")
-  deleteAllKeys(client, "users")
-  deleteAllKeys(client, "comments")
+  deleteAllKeys(client, "test_blog")
+  deleteAllKeys(client, "test_blog")
+  deleteAllKeys(client, "test_comments")
   deleteAllKeys(client, "demos")
   deleteAllKeys(client, "coolusers")
   deleteAllKeys(client, "_coolusers_ul_username")

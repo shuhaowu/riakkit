@@ -27,7 +27,7 @@ __authors__ = [
     '"Shuhao Wu" <admin@thekks.net>'
 ]
 
-VERSION = "dev"
+VERSION = "0.1b"
 
 _document_classes = {}
 
@@ -50,12 +50,20 @@ class DocumentMetaclass(type):
   """
 
   def __new__(cls, name, parents, attrs):
-    if name == "Document":
+    if name == "Document" or "bucket_name" not in attrs:
       return type.__new__(cls, name, parents, attrs)
-    if not "bucket_name" in attrs:
-      raise AttributeError("Class %s must have a bucket_name!" % cls.__name__)
 
-    attrs["bucket"] = attrs["client"].bucket(attrs["bucket_name"])
+    client = attrs.get("client", None)
+    i = 0
+    length = len(parents)
+    while client is None:
+      if i == length:
+        raise RiakkitError("No suitable client found for %s." % name)
+      client = parents[i].client
+      i += 1
+
+    attrs["client"] = client
+    attrs["bucket"] = client.bucket(attrs["bucket_name"])
 
     meta = {}
     links = {}

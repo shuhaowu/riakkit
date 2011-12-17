@@ -44,9 +44,10 @@ Using riakkit should be simple. Here's how to get started.
     >>> import riak
     >>> some_client = riak.RiakClient()
     >>> class BlogPost(Document):
-    ...     # bucket name is required for each subclass of Document.
+    ...     # bucket name is required for each subclass of Document, unless you
+    ...     # are extending Document.
     ...     # Each class gets their unique bucket_name.
-    ...     bucket_name = "blog"
+    ...     bucket_name = "test_blog"
     ...
     ...     # Client is required for each subclass of Document
     ...     client = some_client
@@ -124,7 +125,7 @@ Linked Documents
 You can link to a foreign document very easily. Let me illustrate:
 
     >>> class User(Document):
-    ...     bucket_name = "users"
+    ...     bucket_name = "test_users"
     ...     client = some_client
     ...
     ...     SEARCHABLE = True  # Marking this to be searchable.
@@ -148,7 +149,7 @@ You can also "back reference" these linked documents. The API is similar to
 Google App Engine's `ReferenceProperty`, except everything is a list.
 
     >>> class Comment(Document):
-    ...     bucket_name = "comments"
+    ...     bucket_name = "test_comments"
     ...     client = some_client
     ...
     ...     title = types.StringProperty()
@@ -362,6 +363,28 @@ the object is {key : <the key of the document>}. Let's see how that works.
     False
     >>> anothercooluser = CoolUser(username="anotheruser")
     >>> anothercooluser.save()  # This is done successfully
+
+
+Advanced stuff
+--------------
+
+If you got tired of writing `client = <yourclient>` everywhere. You can extend
+the Document class. In order to do so, omit the `bucket_name` property.
+You can also add other methods and variables, like any type of subclassing.
+
+So:
+
+    >>> class CustomDocument(Document):
+    ...     client = some_client
+    ...     another_property = True
+    >>>
+    >>> class SomeOtherDocument(CustomDocument):
+    ...     bucket_name = "some_bucket"
+
+    >>> print SomeOtherDocument.client == some_client
+    True
+    >>> print SomeOtherDocument.another_property
+    True
 
 Accessing Underlying Riak API
 =============================
