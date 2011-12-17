@@ -20,7 +20,6 @@ import riak
 from riak.mapreduce import RiakLink
 from riakkit.types import BaseProperty, LinkedDocuments
 from riakkit.exceptions import *
-import pdb
 
 
 # Last name alphabetical. Email required.
@@ -447,7 +446,6 @@ class RiakkitQuery(object):
     Returns:
       A list containing all the Documents
     """
-    pdb.set_trace()
     return map(lambda link: self.cls.load(link.get()), self.riak_links)
 
 
