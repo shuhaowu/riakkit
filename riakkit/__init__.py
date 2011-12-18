@@ -27,7 +27,7 @@ __authors__ = [
     '"Shuhao Wu" <admin@thekks.net>'
 ]
 
-VERSION = "0.1b"
+VERSION = "0.1.1a"
 
 _document_classes = {}
 
@@ -450,7 +450,6 @@ class Document(object):
   __getitem__ = __getattr__
   __setitem__ = __setattr__
   __delitem__ = __delattr__
-
 
 
 class RiakkitQuery(object):
