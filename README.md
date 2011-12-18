@@ -152,6 +152,8 @@ Google App Engine's `ReferenceProperty`, except everything is a list.
     ...     bucket_name = "test_comments"
     ...     client = some_client
     ...
+    ...     SEARCHABLE = True
+    ...
     ...     title = types.StringProperty()
     ...     owner = types.LinkedDocuments(reference_class=User,
     ...                                   collection_name="comments")
@@ -224,6 +226,16 @@ If you didn't mark the class as `SEARCHABLE`, you'll get a NotImplementedError.
     Traceback (most recent call last):
       ...
     NotImplementedError: Searchable is disabled, this is therefore not implemented.
+
+### Solr Search ###
+
+Solr search allows you to do limit and sorting.
+
+    >>> query = Comment.solrSearch("title:[A TO z]", sort="title")
+    >>> print query.length()
+    2
+    >>> print [comment.title for comment in query.all()]
+    [u'Moo', u'Riakkit ftw!']
 
 ### Map Reduce ###
 

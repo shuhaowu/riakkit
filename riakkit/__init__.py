@@ -428,7 +428,7 @@ class Document(object):
       querytext: The query text as outlined in the python-riak documentations.
 
     Returns:
-      A RiakkitQuery object. Similar to the RiakMapReduce object.
+      A MapReduceQuery object. Similar to the RiakMapReduce object.
 
     Raises:
       NotImplementedError: if the class is not marked SEARCHABLE.
@@ -436,7 +436,11 @@ class Document(object):
     if not cls.SEARCHABLE:
       raise NotImplementedError("Searchable is disabled, this is therefore not implemented.")
     query_obj = cls.client.search(cls.bucket_name, querytext)
-    return RiakkitQuery(cls, query_obj)
+    return MapReduceQuery(cls, query_obj)
+
+  @classmethod
+  def solrSearch(cls, querytext, **kwargs):
+    return SolrQuery(cls, cls.client.solr().search(cls.bucket_name, querytext, **kwargs))
 
   @classmethod
   def mapreduce(cls):
@@ -452,11 +456,41 @@ class Document(object):
   __delitem__ = __delattr__
 
 
-class RiakkitQuery(object):
+class SolrQuery(object):
+  """A wrapper around RiakSearch to play nice with Document and Solr
+
+  Attributes:
+    cls: The class for this SolrQuery
+    result: The result dictionary.
+  """
+  def __init__(self, cls, result):
+    self.cls = cls
+    self.result = result
+    self.loadDoc = lambda doc : self.cls.load(self.cls.bucket.get(doc[u"id"]))
+
+  def length(self):
+    """Gets the length of the documents that's searched through."""
+    return self.result[u"response"][u"numFound"]
+
+  def run(self):
+    """Returns a generator that goes through each document that's searched."""
+    for doc in self.result[u"response"][u"docs"]:
+      yield self.loadDoc(doc)
+
+  def all(self):
+    """Returns all the items that's found and return it.
+
+    Return:
+      A list of all the Documents.
+    """
+    return map(self.loadDoc, self.result[u"response"][u"docs"])
+
+
+class MapReduceQuery(object):
   """A wrapper around RiakMapReduce to play nice with Document
 
   Attributes:
-    cls: The class for this RiakkitQuery.
+    cls: The class for this MapReduceQuery.
     mr_obj: The original RiakMapReduce object.
     riak_links: All the links returned from the run operation of RiakMapReduce.
   """
@@ -485,5 +519,4 @@ class RiakkitQuery(object):
       A list containing all the Documents
     """
     return map(lambda link: self.cls.load(link.get()), self.riak_links)
-
 
