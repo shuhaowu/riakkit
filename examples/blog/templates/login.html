@@ -1,0 +1,19 @@
+{% extends "template.html" %}
+
+{% block main %}
+<div class="four columns centered">
+  <h3>Login</h3>
+  {% if error %}
+  <div class="alert-box error">
+    {{ error }}
+  </div>
+  {% endif %}
+  <form action="/login" method="post" class="nice">
+    <label>Username</label>
+    <input name="username" type="text" placeholder="Username" class="input-text" />
+    <label>Password</label>
+    <input name="password" type="password" placeholder="Password" class="input-text" />
+    <button type="submit" class="nice small radius blue button">Login</button>
+  </form>
+</div>
+{% endblock %}

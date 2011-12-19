@@ -1,0 +1,32 @@
+{% extends "postbase.html" %}
+
+{% block contentclass %}
+twelve columns
+{% endblock %}
+
+{% block afterpost %}
+{% if loggedin %}
+<div class="ctrl textright">
+  <a href="/admin/edit/{{ post.key }}">Edit Post</a> - <a href="/admin/delete/{{ post.key }}" id="deletepost">Delete Post</a>
+</div>
+{% endif %}
+<hr />
+<!--
+<h4>Comments</h4>
+<div class="comment">
+    {% for comment in post.comments %}
+    <p><a href="{{ comment['website'] }}" target="_blank">{{ comment["dispname"] }}</a></p>
+    <p>{{ comment["content"] }}</p>
+    {% if loggedin %}
+    <p><a href="/admin/comments/delete/{{ comment.key }}">Delete</a></p>
+    {% endif %}
+    <hr />
+    {% endfor %}
+</div>
+Not ready yet :D
+-->
+
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}

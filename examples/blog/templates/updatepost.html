@@ -1,0 +1,23 @@
+{% extends "template.html" %}
+
+{% block main %}
+
+<div class="twelve columns">
+  <h3>Edit post</h3>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert-box {{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+  {% endwith %}
+  <form action="/admin/edit/{{ post.key }}" method="post" class="nice">
+    <label>Title</label>
+    <input type="text" class="full input-text" name="title" value="{{ post.title }}" />
+    <label>Content (Markdown)</label>
+    <textarea name="content" rows="20" class="full">{{ post.mdsrc }}</textarea>
+    <button type="submit" class="nice medium radius blue button right">Edit</button>
+  </form>
+</div>
+
+{% endblock %}

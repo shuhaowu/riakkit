@@ -27,7 +27,7 @@ __authors__ = [
     '"Shuhao Wu" <admin@thekks.net>'
 ]
 
-VERSION = "0.1.1a"
+VERSION = "0.1.2a"
 
 _document_classes = {}
 
@@ -168,7 +168,8 @@ class Document(object):
       cached: If we want to get from the pool of objects or not.
               Note that if you have multiple instances of the same object,
               the most recent one to be cached will be used. If this is true,
-              riak_obj could just be a string that's the key of the object
+              riak_obj could just be a string that's the key of the object.
+              If not found in cache, it will be fetched from the db.
 
     Returns:
       A Document object (whichever subclass this was called from).
@@ -180,15 +181,21 @@ class Document(object):
         key = riak_obj # Assume string
 
       try:
-        return cls.instances[key]
+        obj = cls.instances[key]
       except KeyError:
-        raise NotFoundError("%s not found!" % key)
+        pass # This should allow it to go to the bottom ones and get the obj.
+      else:
+        return obj
 
+    if isinstance(riak_obj, str):
+      riak_obj = cls.bucket.get(riak_obj)
+
+    if not riak_obj.exists():
+      raise NotFoundError("%s not found!" % riak_obj.get_key())
     data = cls._cleanupDataFromDatabase(riak_obj.get_data())
-    obj = cls(riak_obj.get_key(), **data)
+    obj = cls(riak_obj.get_key(), saved=True, **data)
     links = riak_obj.get_links()
     obj._links = obj.updateLinks(links)
-    obj._saved = True
     obj._obj = riak_obj
     cls.instances[obj.key] = obj
     return obj
@@ -214,13 +221,14 @@ class Document(object):
     links = sorted(links, key=lambda x: x.get_tag())
     last_tag = None
     for link in links:
+      obj = link.get()
       cls = _document_classes[link.get_bucket()]
       tag = link.get_tag()
       if tag != last_tag:
         l[tag] = []
         last_tag = tag
 
-      l[tag].append(cls.load(link.get(), True))  # TODO: Is this a nasty hack?
+      l[tag].append(cls.load(obj, True))  # TODO: Is this a nasty hack?
     return l
 
   def _error(self, name):
@@ -246,7 +254,7 @@ class Document(object):
     if name in self._meta or name in self._data: # TODO: in operator does a linear search. Binary search?
       return self._data.get(name, None)
     elif name in self._meta["_links"]:
-      return self._links.get(name, None)
+      return self._links.get(name, [])
     else:
       self._error(name)
 
@@ -368,6 +376,8 @@ class Document(object):
     else:
       self._obj.set_data(self._data)
 
+    self._obj.store() # Stores it once, soe any object adding link would work.
+
     for link in self._obj.get_links():
       self._obj.remove_link(link)
 
@@ -398,8 +408,26 @@ class Document(object):
     self._saved = True
 
   def delete(self):
-    """This will delete the object from the database."""
+    """This will delete the object from the database.
+    This will save remove the links and save the reference_classes from
+    LinkedDocuments
+    """
     if self._obj is not None:
+      for tag in self._links:
+        col_name = self._meta["_links"][tag].collection_name
+        docs = self._links[tag]
+        if col_name:
+          for i, doc in enumerate(docs):
+            current_list = doc._links.get(col_name, [])
+            for i, linkback in enumerate(current_list):
+              if linkback.key == self.key:
+                current_list.pop(i)
+
+            doc._links[col_name] = current_list
+            doc.save()
+
+      if self.key in self.__class__.instances:
+        del self.__class__.instances[self.key]
       self._obj.delete()
       self._obj = None
       self._saved = False
@@ -470,7 +498,8 @@ class SolrQuery(object):
 
   def length(self):
     """Gets the length of the documents that's searched through."""
-    return self.result[u"response"][u"numFound"]
+    #return self.result[u"response"][u"numFound"]
+    return len(self.result[u"response"][u"docs"])
 
   def run(self):
     """Returns a generator that goes through each document that's searched."""

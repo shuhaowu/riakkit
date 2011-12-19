@@ -1,0 +1,32 @@
+{% extends "template.html" %}
+
+{% block main %}
+
+<div class="eight columns">
+  <h3>New post</h3>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert-box {{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+  {% endwith %}
+  <form action="/admin/post" method="post" class="nice">
+    <label>Title</label>
+    <input type="text" class="full input-text" name="title" />
+    <label>Content (Markdown)</label>
+    <textarea name="content" rows="20" class="full"></textarea>
+    <button type="submit" class="nice medium radius blue button right">Post</button>
+  </form>
+</div>
+
+<div class="four columns">
+  <h3>Comments</h3>
+  <ul>
+    {% for comment in comments %}
+    <li><a href="/view/{{ comment['post'][0] }}#{{ comment.key }}">{{ comment["title"] }} - {{ comment["ip"] }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% endblock %}
