@@ -55,7 +55,7 @@ def viewpost(key):
   except NotFoundError:
     return flask.abort(404)
 
-  return flask.render_template("post.html", posts=[constructDict(post)], post=post)
+  return flask.render_template("post.html", posts=[constructDict(post)], post=post, title=post.title)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -78,7 +78,7 @@ def login():
       else:
         error = "Incorrect username and password!"
 
-  return flask.render_template("login.html", error=error)
+  return flask.render_template("login.html", error=error, title="Login")
 
 @app.route("/logout")
 @loginRequired
@@ -128,7 +128,7 @@ def editpost(key):
       return flask.render_template("updatepost.html", post=post)
     else:
       flask.flash("Invalid post title or content!", "error")
-      return flask.render_template("updatepost.html", post=post)
+      return flask.render_template("updatepost.html", post=post, title="Edit")
 
 
 @app.route("/admin/delete/<key>")
