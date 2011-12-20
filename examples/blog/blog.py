@@ -38,6 +38,7 @@ def constructDict(post_obj):
 @app.route("/")
 @app.route("/offset/<amt>")
 def index(amt=0):
+  amt = int(amt)
   post_objs = Post.solrSearch("title:[A TO z]", sort="date", start=amt)
   posts = []
   for post_obj in post_objs.run():
