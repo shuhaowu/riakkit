@@ -30,7 +30,7 @@ def constructDict(post_obj):
       "author" : post_obj.owner[0].dispname or post_obj.owner[0].username,
       "title" : post_obj.title,
       "content" : post_obj.content,
-      "date" : post_obj.date.ctime(),
+      "date" : post_obj.date.strftime("%b %d %Y %H:%M:%S"),
       "comment_count" : len(post_obj.comments),
       "key" : post_obj.key
   }
