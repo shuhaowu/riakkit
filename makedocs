@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # This seem like a bad idea..
-pydoc -w riakkit riakkit.types riakkit.exceptions
+pydoc -w riakkit riakkit.types riakkit.exceptions riakkit.validators riakkit.processors
 mv riakkit.types.html docs/riakkit.types.html
 mv riakkit.exceptions.html docs/riakkit.exceptions.html
 mv riakkit.html docs/riakkit.html
+mv riakkit.processors.html docs/riakkit.processors.html
+mv riakkit.validators.html docs/riakkit.validators.html

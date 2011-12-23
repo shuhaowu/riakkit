@@ -80,13 +80,18 @@ Attributes:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;boolean.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="BaseProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="BaseProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#BaseProperty-convert">convert</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#BaseProperty-convertBack">convertBack</a>()</tt></dd></dl>
 
 <dl><dt><a name="BaseProperty-convert"><strong>convert</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;any&nbsp;form&nbsp;to&nbsp;an&nbsp;usable&nbsp;form.<br>
 &nbsp;<br>
@@ -149,13 +154,18 @@ Methods defined here:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="BooleanProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="BooleanProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#BooleanProperty-convert">convert</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#BooleanProperty-convertBack">convertBack</a>()</tt></dd></dl>
 
 <dl><dt><a name="BooleanProperty-convertBack"><strong>convertBack</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;the&nbsp;original&nbsp;mapped&nbsp;value.<br>
 &nbsp;<br>
@@ -225,13 +235,18 @@ Returns:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="DateTimeProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="DateTimeProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#DateTimeProperty-convert">convert</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#DateTimeProperty-convertBack">convertBack</a>()</tt></dd></dl>
 
 <hr>
 Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
@@ -264,13 +279,18 @@ Returns:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="DictProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="DictProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#DictProperty-convert">convert</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#DictProperty-convertBack">convertBack</a>()</tt></dd></dl>
 
 <dl><dt><a name="DictProperty-convert"><strong>convert</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;any&nbsp;form&nbsp;to&nbsp;an&nbsp;usable&nbsp;form.<br>
 &nbsp;<br>
@@ -330,13 +350,18 @@ Python&nbsp;json&nbsp;module...<br>&nbsp;</tt></td></tr>
 </dl>
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="DynamicProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="DynamicProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#DynamicProperty-convert">convert</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#DynamicProperty-convertBack">convertBack</a>()</tt></dd></dl>
 
 <dl><dt><a name="DynamicProperty-convert"><strong>convert</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;any&nbsp;form&nbsp;to&nbsp;an&nbsp;usable&nbsp;form.<br>
 &nbsp;<br>
@@ -455,13 +480,18 @@ Returns:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="FloatProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="FloatProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#FloatProperty-convert">convert</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#FloatProperty-convertBack">convertBack</a>()</tt></dd></dl>
 
 <dl><dt><a name="FloatProperty-convertBack"><strong>convertBack</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;the&nbsp;original&nbsp;mapped&nbsp;value.<br>
 &nbsp;<br>
@@ -503,13 +533,18 @@ Returns:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="IntegerProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="IntegerProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#IntegerProperty-convert">convert</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#IntegerProperty-convertBack">convertBack</a>()</tt></dd></dl>
 
 <dl><dt><a name="IntegerProperty-convertBack"><strong>convertBack</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;the&nbsp;original&nbsp;mapped&nbsp;value.<br>
 &nbsp;<br>
@@ -538,7 +573,9 @@ disallow&nbsp;uniqueness.&nbsp;Setting&nbsp;.unique&nbsp;will&nbsp;have&nbsp;no&
 &nbsp;<br>
 Keep&nbsp;in&nbsp;mind&nbsp;that&nbsp;when&nbsp;you&nbsp;call&nbsp;.save&nbsp;on&nbsp;your&nbsp;<a href="__builtin__.html#object">object</a>,<br>
 it&nbsp;will&nbsp;change&nbsp;the&nbsp;objects&nbsp;that&nbsp;you're&nbsp;linking&nbsp;to&nbsp;as&nbsp;well,&nbsp;as&nbsp;the<br>
-implementation&nbsp;will&nbsp;call&nbsp;save&nbsp;there.<br>&nbsp;</tt></td></tr>
+implementation&nbsp;will&nbsp;call&nbsp;save&nbsp;there.<br>
+&nbsp;<br>
+Processors&nbsp;does&nbsp;not&nbsp;exist&nbsp;for&nbsp;this&nbsp;property.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="riakkit.types.html#LinkedDocuments">LinkedDocuments</a></dd>
@@ -612,13 +649,18 @@ Returns:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="ListProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="ListProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#ListProperty-convert">convert</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ListProperty-convertBack">convertBack</a>()</tt></dd></dl>
 
 <dl><dt><a name="ListProperty-convert"><strong>convert</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;any&nbsp;form&nbsp;to&nbsp;an&nbsp;usable&nbsp;form.<br>
 &nbsp;<br>
@@ -676,13 +718,18 @@ Methods defined here:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="StringProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="StringProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#StringProperty-convert">convert</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#StringProperty-convertBack">convertBack</a>()</tt></dd></dl>
 
 <dl><dt><a name="StringProperty-convertBack"><strong>convertBack</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;the&nbsp;original&nbsp;mapped&nbsp;value.<br>
 &nbsp;<br>

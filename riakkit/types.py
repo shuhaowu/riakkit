@@ -28,7 +28,8 @@ class BaseProperty(object):
                 given. The function should be callback(value), returning
                 a boolean.
   """
-  def __init__(self, required=False, unique=False, validators=False):
+  def __init__(self, required=False, unique=False,
+               validators=[], forwardprocessors=[], backwardprocessors=[]):
     """Initializes the property field
 
     Args:
@@ -36,10 +37,18 @@ class BaseProperty(object):
       unique: A boolean that determines if this is unique or not.
       validators: A list of callables of 1 callable that validates any value.
                   The function should be callback(value), returning a boolean.
+      forwardprocessors: A list of callables or 1 callable that processes and
+                         returns the data before convert().
+      backwardprocessors: A list of callables or 1 callables that processes the
+                          data after getting it from the database and before
+                          convertBack()
+
     """
     self.required = required
     self.unique = unique
     self.validators = validators
+    self.forwardprocessors = forwardprocessors
+    self.backwardprocessors = backwardprocessors
 
   def convert(self, value):
     """Converts the value from any form to an usable form.
@@ -50,6 +59,12 @@ class BaseProperty(object):
     Args:
       value: The value to be converted
     """
+    if callable(self.forwardprocessors):
+      value = self.forwardprocessors(value)
+    elif type(self.forwardprocessors) in (tuple, list):
+      for processor in self.forwardprocessors:
+        value = processor(value)
+
     return value
 
   def convertBack(self, value):
@@ -58,6 +73,12 @@ class BaseProperty(object):
     Args:
       value: The value to be converted
     """
+    if callable(self.backwardprocessors):
+      value = self.backwardprocessors(value)
+    elif type(self.backwardprocessors) in (tuple, list):
+      for processor in self.backwardprocessors:
+        value = processor(value)
+
     return value
 
   def validate(self, value):
@@ -123,6 +144,7 @@ class StringProperty(BaseProperty):
 class IntegerProperty(BaseProperty):
   """Integer property."""
   def convert(self, value):
+    value = BaseProperty.convert(self, value)
     return int(value)
 
   def defaultValue(self):
@@ -143,6 +165,7 @@ class IntegerProperty(BaseProperty):
 class FloatProperty(BaseProperty):
   """Floating point property"""
   def convert(self, value):
+    value = BaseProperty.convert(self, value)
     return float(value)
 
   def defaultValue(self):
@@ -163,6 +186,7 @@ class FloatProperty(BaseProperty):
 class BooleanProperty(BaseProperty):
   """Boolean property. Pretty self explanatory."""
   def convert(self, value):
+    value = BaseProperty.convert(self, value)
     return bool(value)
 
 class EnumProperty(BaseProperty):
@@ -194,9 +218,11 @@ class EnumProperty(BaseProperty):
     return BaseProperty.validate(self, value) and (value in self._map_forward)
 
   def convert(self, value):
+    value = BaseProperty.convert(self, value)
     return self._map_forward.get(value)
 
   def convertBack(self, value):
+    value = BaseProperty.convertBack(self, value)
     return self._map_backward.get(value)
 
 class DateTimeProperty(BaseProperty):
@@ -220,6 +246,7 @@ class DateTimeProperty(BaseProperty):
     return BaseProperty.validate(self, value) and check
 
   def convert(self, value):
+    value = BaseProperty.convert(self, value)
     if isinstance(value, (long, int, float)): # timestamp, validation has passed
       return value
     return time.mktime(value.utctimetuple())
@@ -233,6 +260,7 @@ class DateTimeProperty(BaseProperty):
     Returns:
       The corresponding datetime object that's based off utc.
     """
+    value = BaseProperty.convertBack(self, value)
     return datetime.datetime.utcfromtimestamp(value)
 
   def defaultValue(self):
@@ -258,6 +286,8 @@ class LinkedDocuments(BaseProperty):
   Keep in mind that when you call .save on your object,
   it will change the objects that you're linking to as well, as the
   implementation will call save there.
+
+  Processors does not exist for this property.
   """
   def __init__(self, reference_class=None, collection_name=None,
                      required=False, unique=False, validators=False):

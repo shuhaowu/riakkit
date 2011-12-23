@@ -177,9 +177,18 @@ This should save both the `a_comment`, and the `user` object. So no need to
 Let's add another comment.
 
     >>> another_comment = Comment(title="Moo", owner=[])
+
+This time let's try having 2 owners. Even though this doesn't make any sense,
+let's try it anyway.
+
+    >>> another_owner = User(name="anotheruser")
+    >>> another_owner.save()
     >>> another_comment.owner.append(same_user)
+    >>> another_comment.owner.append(another_owner)
     >>> another_comment.save()
     >>> print same_user.comments[1].title
+    Moo
+    >>> print User.get_with_key(another_owner.key).comments[0].title
     Moo
 
 Now, as of the moment, we lose order (potentially) when we store LinkedDocuments.
@@ -380,6 +389,8 @@ the object is {key : <the key of the document>}. Let's see how that works.
 Advanced stuff
 --------------
 
+### Extending Document ###
+
 If you got tired of writing `client = <yourclient>` everywhere. You can extend
 the Document class. In order to do so, omit the `bucket_name` property.
 You can also add other methods and variables, like any type of subclassing.
@@ -397,6 +408,47 @@ So:
     True
     >>> print SomeOtherDocument.another_property
     True
+
+### Validators and processors ###
+
+You can use certain built-in validators, such as the email validators (or we
+could write our own). This validates the data.
+
+We could also use processors, this transforms the data. There are 2 types of
+processors. The `forwardprocessors`, which are processors that transforms the
+data before saving into the database, and before the `convert()` call. The
+`backwardprocessors`, which are processors that transforms the data directly
+fed from the database.
+
+There are a certain number of built-in processors, such as automatically hashing
+passwords. However, this still require you to write an inline function as
+processor functions only take in 1 argument (a value) and returns the
+transformed value. The hashing password function takes in a salt along with
+a password, so a lambda function would help you. For more info, go see the
+documentations.
+
+In the mean while, demo time:
+
+    >>> from riakkit.validators import emailValidator
+    >>> class TestDocument(Document):
+    ...     client = some_client
+    ...     bucket_name = "testdoc"
+    ...
+    ...     email = types.StringProperty(validators=emailValidator)
+    ...     some_property = types.IntegerProperty(forwardprocessors=lambda x: x+1) # Adds 1 to all values.
+    >>> test = TestDocument()
+    >>> test.email = "notvalid" #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+      ...
+    ValueError: Validation did not pass for ...
+    >>> test.email = "hello@world.com" # This works
+    >>> test.some_property = 1
+    >>> test.save()
+    >>> print test.email
+    hello@world.com
+    >>> print test.some_property
+    2
+
 
 Accessing Underlying Riak API
 =============================
