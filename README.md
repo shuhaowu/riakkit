@@ -174,6 +174,7 @@ This should save both the `a_comment`, and the `user` object. So no need to
     >>> print same_user.comments[0].title
     Riakkit ftw!
 
+
 Let's add another comment.
 
     >>> another_comment = Comment(title="Moo", owner=[])

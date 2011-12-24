@@ -28,7 +28,7 @@ class BaseProperty(object):
                 given. The function should be callback(value), returning
                 a boolean.
   """
-  def __init__(self, required=False, unique=False,
+  def __init__(self, required=False, unique=False, default=None,
                validators=[], forwardprocessors=[], backwardprocessors=[]):
     """Initializes the property field
 
@@ -37,6 +37,7 @@ class BaseProperty(object):
       unique: A boolean that determines if this is unique or not.
       validators: A list of callables of 1 callable that validates any value.
                   The function should be callback(value), returning a boolean.
+      default: A custom default value.
       forwardprocessors: A list of callables or 1 callable that processes and
                          returns the data before convert().
       backwardprocessors: A list of callables or 1 callables that processes the
@@ -47,6 +48,7 @@ class BaseProperty(object):
     self.required = required
     self.unique = unique
     self.validators = validators
+    self.default = default
     self.forwardprocessors = forwardprocessors
     self.backwardprocessors = backwardprocessors
 
@@ -113,7 +115,7 @@ class BaseProperty(object):
     Returns:
       The default value for this type.
     """
-    return None
+    return self.default or None
 
 class DictProperty(BaseProperty):
   """Dictionary property, {}"""
@@ -124,7 +126,7 @@ class DictProperty(BaseProperty):
     Returns:
       {}
     """
-    return {}
+    return self.default or {}
 
 class ListProperty(BaseProperty):
   """List property, []"""
@@ -134,7 +136,7 @@ class ListProperty(BaseProperty):
     Returns:
       []
     """
-    return []
+    return self.default or []
 
 class StringProperty(BaseProperty):
   """String property. By default this converts strings to unicode."""
@@ -153,7 +155,7 @@ class IntegerProperty(BaseProperty):
     Returns:
       0
     """
-    return 0
+    return self.default or 0
 
   def validate(self, value):
     try:
@@ -174,7 +176,7 @@ class FloatProperty(BaseProperty):
     Returns:
       0.0
     """
-    return 0.0
+    return self.default or 0.0
 
   def validate(self, value):
     try:
@@ -197,8 +199,8 @@ class EnumProperty(BaseProperty):
   will be kept if they are objects, so try to use basic types).
   """
 
-  def __init__(self, possible_values, required=False,
-                     unique=False, validators=False):
+  def __init__(self, possible_values, required=False, unique=False, default=None,
+               validators=[], forwardprocessors=[], backwardprocessors=[]):
     """Initialize the Enum Property.
 
     Args:
@@ -207,7 +209,10 @@ class EnumProperty(BaseProperty):
     Everything else is inheritted from BaseProperty.
     Note: Probably a bad idea using unique on this, but no one is preventing you
     """
-    BaseProperty.__init__(self, required, unique, validators)
+    BaseProperty.__init__(self, required=required, unique=unique,
+                                default=default, validators=validators,
+                                forwardprocessors=forwardprocessors,
+                                backwardprocessors=backwardprocessors)
     self._map_forward = {}
     self._map_backward = {}
     for i, v in enumerate(possible_values):
@@ -264,7 +269,7 @@ class DateTimeProperty(BaseProperty):
     return datetime.datetime.utcfromtimestamp(value)
 
   def defaultValue(self):
-    return datetime.datetime.utcnow()
+    return self.default or datetime.datetime.utcnow()
 
 
 class DynamicProperty(BaseProperty):
@@ -288,9 +293,11 @@ class LinkedDocuments(BaseProperty):
   implementation will call save there.
 
   Processors does not exist for this property.
+
+  Default does not exist for this property.
   """
   def __init__(self, reference_class=None, collection_name=None,
-                     required=False, unique=False, validators=False):
+                     required=False):
     """Initializes a LinkedDocuments property.
 
     You can set it up so that riakkit automatically link back from
@@ -306,8 +313,7 @@ class LinkedDocuments(BaseProperty):
                        ReferenceProperty. See the README file at the repository
                        for detailed tutorial.
     """
-    BaseProperty.__init__(self, required=required,
-        unique=unique, validators=validators)
+    BaseProperty.__init__(self, required=required)
 
     self.reference_class = reference_class
 

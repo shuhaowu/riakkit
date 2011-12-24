@@ -67,8 +67,8 @@ class DocumentMetaclass(type):
 
     meta = {}
     links = {}
+    hasdefaults = []
     uniques = []
-
 
     for key in attrs.keys():
       if key == "_links":
@@ -87,11 +87,15 @@ class DocumentMetaclass(type):
           )
           uniques.append(key)
 
+        if meta[key].default is not None:
+          hasdefaults.append(key)
+
     meta["_links"] = links # Meta. lol
     attrs["_meta"] = meta
     attrs["_uniques"] = uniques
     attrs["_collections"] = {}
     attrs["instances"] = {}
+    attrs["_hasdefaults"] = hasdefaults
 
     new_class = type.__new__(cls, name, parents, attrs)
     if new_class.bucket_name in _document_classes:
@@ -133,6 +137,9 @@ class Document(object):
     self.__dict__["key"] = key or uuid1().hex
     self._obj = self.bucket.get(self.key) if saved else None
     self._data = {}
+    for name in self._hasdefaults:
+      self.__setattr__(name, self._meta[name].default)
+
     for name in kwargs:
 
       # Safely merge. self._data.update unreliable
