@@ -200,6 +200,17 @@ This means there's no guarentee that the comments will be at index 0 or 1.
     >>> print titles
     [u'Moo', u'Riakkit ftw!']
 
+Saving the comment multiple times shouldn't create multiple links in the user:
+
+    >>> another_comment.title = "Abc"
+    >>> another_comment.save()
+    >>> user.reload()
+    >>> titles = sorted([comment.title for comment in user.comments])
+    >>> print len(titles)
+    2
+    >>> print titles
+    [u'Abc', u'Riakkit ftw!']
+
 Advanced Query
 --------------
 
@@ -244,8 +255,8 @@ Solr search allows you to do limit and sorting.
     >>> query = Comment.solrSearch("title:[A TO z]", sort="title")
     >>> print query.length()
     2
-    >>> print [comment.title for comment in query.all()]
-    [u'Moo', u'Riakkit ftw!']
+    >>> print sorted([comment.title for comment in query.all()])
+    [u'Abc', u'Riakkit ftw!']
 
 ### Map Reduce ###
 
