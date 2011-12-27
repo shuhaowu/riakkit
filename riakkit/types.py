@@ -29,7 +29,8 @@ class BaseProperty(object):
                 a boolean.
   """
   def __init__(self, required=False, unique=False, default=None,
-               validators=[], forwardprocessors=[], backwardprocessors=[]):
+               validators=[], forwardprocessors=[], backwardprocessors=[],
+               standardprocessors=[]):
     """Initializes the property field
 
     Args:
@@ -39,10 +40,14 @@ class BaseProperty(object):
                   The function should be callback(value), returning a boolean.
       default: A custom default value.
       forwardprocessors: A list of callables or 1 callable that processes and
-                         returns the data before convert().
+                         returns the data before convertToDb().
       backwardprocessors: A list of callables or 1 callables that processes the
                           data after getting it from the database and before
-                          convertBack()
+                          convertFromDb()
+
+      standardprocessors: A list of callables or 1 callable that processes the
+                          data when the data is being fed into the Document
+                          object.
 
     """
     self.required = required
@@ -51,9 +56,18 @@ class BaseProperty(object):
     self.default = default
     self.forwardprocessors = forwardprocessors
     self.backwardprocessors = backwardprocessors
+    self.standardprocessors = standardprocessors
 
-  def convert(self, value):
-    """Converts the value from any form to an usable form.
+  def _processValue(self, value, processors):
+    if callable(processors):
+      return processors(value)
+    else:
+      for processor in processors:
+        value = processor(value)
+    return value
+
+  def convertToDb(self, value):
+    """Converts the value from the access form a DB valid form
 
     In theory, the value should always be valid (as it has to undergo validate
     before this is called).
@@ -61,27 +75,31 @@ class BaseProperty(object):
     Args:
       value: The value to be converted
     """
-    if callable(self.forwardprocessors):
-      value = self.forwardprocessors(value)
-    elif type(self.forwardprocessors) in (tuple, list):
-      for processor in self.forwardprocessors:
-        value = processor(value)
+    return self._processValue(value, self.forwardprocessors)
 
-    return value
-
-  def convertBack(self, value):
-    """Converts the value from the database back to the original mapped value.
+  def convertFromDb(self, value):
+    """Converts the value from the database back to an app friendly value.
 
     Args:
       value: The value to be converted
     """
-    if callable(self.backwardprocessors):
-      value = self.backwardprocessors(value)
-    elif type(self.backwardprocessors) in (tuple, list):
-      for processor in self.backwardprocessors:
-        value = processor(value)
+    return self._processValue(value, self.backwardprocessors)
 
-    return value
+  def standardize(self, value):
+    """Converts the value from any form (input form, db form) into a form that's
+    friendly for the user to access via dot notation or dict-like notation in a
+    Document object. (i.e. standard form) (example: string to unicode etc.)
+
+    This method will be called on __setattr__.
+
+    Args:
+      value: The value to be converted.
+
+    Throws:
+      TypeError: if type is not what's expected.
+
+    """
+    return self._processValue(value, self.standardprocessors)
 
   def validate(self, value):
     """The default validation function.
@@ -117,6 +135,8 @@ class BaseProperty(object):
     """
     return self.default or None
 
+
+
 class DictProperty(BaseProperty):
   """Dictionary property, {}"""
 
@@ -140,13 +160,14 @@ class ListProperty(BaseProperty):
 
 class StringProperty(BaseProperty):
   """String property. By default this converts strings to unicode."""
-  def convert(self, value):
+  def standardize(self, value):
+    value = BaseProperty.standardize(self, value)
     return unicode(value)
 
 class IntegerProperty(BaseProperty):
   """Integer property."""
-  def convert(self, value):
-    value = BaseProperty.convert(self, value)
+  def standardize(self, value):
+    value = BaseProperty.standardize(self, value)
     return int(value)
 
   def defaultValue(self):
@@ -166,8 +187,8 @@ class IntegerProperty(BaseProperty):
 
 class FloatProperty(BaseProperty):
   """Floating point property"""
-  def convert(self, value):
-    value = BaseProperty.convert(self, value)
+  def standardize(self, value):
+    value = BaseProperty.standardize(self, value)
     return float(value)
 
   def defaultValue(self):
@@ -187,8 +208,8 @@ class FloatProperty(BaseProperty):
 
 class BooleanProperty(BaseProperty):
   """Boolean property. Pretty self explanatory."""
-  def convert(self, value):
-    value = BaseProperty.convert(self, value)
+  def standardize(self, value):
+    value = BaseProperty.standardize(self, value)
     return bool(value)
 
 class EnumProperty(BaseProperty):
@@ -222,13 +243,22 @@ class EnumProperty(BaseProperty):
   def validate(self, value):
     return BaseProperty.validate(self, value) and (value in self._map_forward)
 
-  def convert(self, value):
-    value = BaseProperty.convert(self, value)
-    return self._map_forward.get(value)
+  def convertToDb(self, value):
+    value = BaseProperty.convertToDb(self, value)
+    return self._map_forward[value]
 
-  def convertBack(self, value):
-    value = BaseProperty.convertBack(self, value)
-    return self._map_backward.get(value)
+  def convertFromDb(self, value):
+    value = BaseProperty.convertFromDb(self, value)
+    return self._map_backward[value]
+
+  def standardize(self, value):
+    value = BaseProperty.standardize(self, value)
+    if isinstance(value, int):
+      return self._map_backward[value]
+    elif isinstance(value, str):
+      return value
+
+    raise TypeError("EnumProperty only accepts string and integer, not %s." % str(value))
 
 class DateTimeProperty(BaseProperty):
   """The datetime property.
@@ -250,25 +280,27 @@ class DateTimeProperty(BaseProperty):
       check = True
     return BaseProperty.validate(self, value) and check
 
-  def convert(self, value):
-    value = BaseProperty.convert(self, value)
+  def convertToDb(self, value):
+    value = BaseProperty.convertToDb(self, value)
     if isinstance(value, (long, int, float)): # timestamp, validation has passed
       return value
     return time.mktime(value.utctimetuple())
 
-  def convertBack(self, value):
-    """Converts the value from the database back to a datetime object.
-
-    Args:
-      value: The value to be converted
-
-    Returns:
-      The corresponding datetime object that's based off utc.
-    """
-    value = BaseProperty.convertBack(self, value)
+  def convertFromDb(self, value):
+    value = BaseProperty.convertFromDb(self, value)
     return datetime.datetime.utcfromtimestamp(value)
 
+  def standardize(self, value):
+    value = BaseProperty.standardize(self, value)
+    if isinstance(value, (int, float, long)):
+      return datetime.datetime.utcfromtimestamp(value)
+    elif isinstance(value, datetime.datetime):
+      return value
+
+    raise TypeError("DateTimeProperty only accepts integer, long, float, or datetime.datetime, not %s" % str(value))
+
   def defaultValue(self):
+    """Returns the default specified or now"""
     return self.default or datetime.datetime.utcnow()
 
 
@@ -282,23 +314,10 @@ class DynamicProperty(BaseProperty):
   Python json module...
   """
 
-class LinkedDocuments(BaseProperty):
-  """Linked documents property.
 
-  This is always a list and they reference other documents. This property
-  disallow uniqueness. Setting .unique will have no effect.
-
-  Keep in mind that when you call .save on your object,
-  it will change the objects that you're linking to as well, as the
-  implementation will call save there.
-
-  Processors does not exist for this property.
-
-  Default does not exist for this property.
-  """
-  def __init__(self, reference_class=None, collection_name=None,
-                     required=False):
-    """Initializes a LinkedDocuments property.
+class ReferenceBaseProperty(BaseProperty):
+  def __init__(self, reference_class=None, collection_name=None, required=False):
+    """Initializes a Reference Property
 
     You can set it up so that riakkit automatically link back from
     the reference_class like GAE's ReferenceProperty. Except everything here
@@ -314,25 +333,74 @@ class LinkedDocuments(BaseProperty):
                        for detailed tutorial.
     """
     BaseProperty.__init__(self, required=required)
-
     self.reference_class = reference_class
-
-    if collection_name and reference_class:
-      self.collection_name = collection_name
-    else:
-      self.collection_name = None
+    self.collection_name = collection_name
 
   def _checkForReferenceClass(self, l):
-    rc = self.reference_class or Document
+    rc = self.reference_class
 
-    for v in l:
-      if not isinstance(v, rc):
-        return False
-    return True
+    if isinstance(l, list):
+      for v in l:
+        if not isinstance(v, rc):
+          return False
+      return True
+    else:
+      return isinstance(l, rc)
 
   def validate(self, value):
     check = self._checkForReferenceClass(value)
     return BaseProperty.validate(self, value) and check
+
+class ReferenceProperty(ReferenceBaseProperty):
+  def convertToDb(self, value):
+    value = BaseProperty.convertToDb(self, value)
+    return value.key
+
+  def convertFromDb(self, value):
+    value = BaseProperty.convertFromDb(self, value)
+    return self.reference_class.load(value, True)
+
+  def standardize(self, value):
+    value = BaseProperty.standardize(self, value)
+    if isinstance(value, (str, unicode)):
+      return self.reference_class.load(value, True)
+    else:
+      return value
+
+class MultiReferenceProperty(ReferenceBaseProperty):
+  def convertToDb(self, value):
+    value = BaseProperty.convertToDb(self, value)
+    return [v.key for v in value]
+
+  def convertFromDb(self, value):
+    value = BaseProperty.convertFromDb(self, value)
+    return [self.reference_class.load(v, True) for v in value]
+
+  def standardize(self, value):
+    value = BaseProperty.standardize(self, value)
+    return [self.reference_class.load(v, True) if isinstance(v, (str, unicode)) else v for v in value]
+
+  def defaultValue(self):
+    return []
+
+class LinkedDocuments(ReferenceBaseProperty):
+  """Linked documents property.
+
+  This is always a list and they reference other documents. This property
+  disallow uniqueness. Setting .unique will have no effect.
+
+  Keep in mind that when you call .save on your object,
+  it will change the objects that you're linking to as well, as the
+  implementation will call save there.
+
+  Processors does not exist for this property.
+
+  Default does not exist for this property.
+
+  This doesn't actually store the data. It stores it into the metadata of the
+  object. For storing the actual key into the json data, use ReferenceProperty
+  or MultiReferenceProperty
+  """
 
   def defaultValue(self):
     return []

@@ -18,16 +18,16 @@ from uuid import uuid1
 
 import riak
 from riak.mapreduce import RiakLink, RiakObject
-from riakkit.types import BaseProperty, LinkedDocuments
-from riakkit.exceptions import *
+from riakkit.types import BaseProperty, LinkedDocuments, ReferenceBaseProperty, ReferenceProperty, MultiReferenceProperty
 
+from riakkit.exceptions import *
 
 # Last name alphabetical. Email required.
 __authors__ = [
     '"Shuhao Wu" <admin@thekks.net>'
 ]
 
-VERSION = "0.1.2a"
+VERSION = "0.2.0a"
 
 _document_classes = {}
 
@@ -49,55 +49,72 @@ class DocumentMetaclass(type):
   Checks for bucket_name in each class, as those are necessary.
   """
 
-  def __new__(cls, name, parents, attrs):
-    if name == "Document" or "bucket_name" not in attrs:
-      return type.__new__(cls, name, parents, attrs)
-
-    client = attrs.get("client", None)
+  @staticmethod
+  def _getProperty(name, attrs, parents):
+    value = attrs.get(name, None)
     i = 0
     length = len(parents)
-    while client is None:
+    while value is None:
       if i == length:
         raise RiakkitError("No suitable client found for %s." % name)
-      client = parents[i].client
+      value = getattr(parents[i], name, None)
       i += 1
+
+    return value
+
+  def __new__(cls, clsname, parents, attrs):
+    # Makes sure these classes are not registered.
+
+    if clsname == "Document" or "bucket_name" not in attrs:
+      return type.__new__(cls, clsname, parents, attrs)
+
+    client = DocumentMetaclass._getProperty("client", attrs, parents)
 
     attrs["client"] = client
     attrs["bucket"] = client.bucket(attrs["bucket_name"])
+    if DocumentMetaclass._getProperty("SEARCHABLE", attrs, parents):
+      attrs["bucket"].enable_search()
 
     meta = {}
     links = {}
-    hasdefaults = []
+    references = {}
+    hasdefaults = {}
     uniques = []
 
-    for key in attrs.keys():
-      if key == "_links":
+    for name in attrs.keys():
+      if name in ("_links", "_references"):
         raise RuntimeError("_links is not allowed.")
-      if isinstance(attrs[key], LinkedDocuments):
-        links[key] = attrs.pop(key)
-        if links[key].collection_name:
-          links[key].reference_class._meta["_links"][links[key].collection_name] = LinkedDocuments(reference_class=cls)
-          links[key].reference_class._collections[links[key].collection_name] = cls
-
-      elif isinstance(attrs[key], BaseProperty):
-        meta[key] = attrs.pop(key)
-        if meta[key].unique:
-          meta[key].unique_bucket = attrs["client"].bucket(
-              getUniqueListBucketName(attrs["bucket_name"], key)
+      if isinstance(attrs[name], LinkedDocuments):
+        links[name] = prop = attrs.pop(name)
+        if prop.collection_name:
+          if prop.collection_name in prop.reference_class._meta["_links"] or prop.collection_name in prop.reference_class._meta["_references"]:
+            raise RiakkitError("%s already in %s!" % (prop.collection_name, prop.reference_class))
+          prop.reference_class._meta["_links"][prop.collection_name] = LinkedDocuments(reference_class=cls)
+      elif isinstance(attrs[name], ReferenceBaseProperty):
+        references[name] = prop = attrs.pop(name)
+        if prop.collection_name:
+          if prop.collection_name in prop.reference_class._meta["_links"] or prop.collection_name in prop.reference_class._meta["_references"]:
+            raise RiakkitError("%s already in %s!" % (prop.collection_name, prop.reference_class))
+          prop.reference_class._meta["_references"][prop.collection_name] = MultiReferenceProperty(reference_class=cls)
+      elif isinstance(attrs[name], BaseProperty):
+        meta[name] = prop = attrs.pop(name)
+        if prop.unique:
+          prop.unique_bucket = attrs["client"].bucket(
+              getUniqueListBucketName(attrs["bucket_name"], name)
           )
-          uniques.append(key)
+          uniques.append(name)
 
-        if meta[key].default is not None:
-          hasdefaults.append(key)
+        if prop.default is not None:
+          hasdefaults[name] = prop.defaultValue()
 
-    meta["_links"] = links # Meta. lol
+    meta["_links"] = links
+    meta["_references"] = references
     attrs["_meta"] = meta
     attrs["_uniques"] = uniques
-    attrs["_collections"] = {}
-    attrs["instances"] = {}
     attrs["_hasdefaults"] = hasdefaults
+    attrs["instances"] = {}
+    new_class = type.__new__(cls, clsname, parents, attrs)
 
-    new_class = type.__new__(cls, name, parents, attrs)
     if new_class.bucket_name in _document_classes:
       raise RiakkitError("Bucket name of %s already exists in the registry!"
                             % new_class.bucket_name)
@@ -105,6 +122,7 @@ class DocumentMetaclass(type):
       _document_classes[new_class.bucket_name] = new_class
 
     return new_class
+
 
 class Document(object):
   """The base Document class for other classes to extend from.
@@ -118,41 +136,54 @@ class Document(object):
   document.
   """
 
-
   __metaclass__ = DocumentMetaclass
   SEARCHABLE = False
   client = None
 
-  def __init__(self, key=None, saved=False, **kwargs):
+  def __init__(self, key=lambda kwargs: uuid1().hex, saved=False, **kwargs):
     """Creates a new document from a bunch of keyword arguments.
 
     Args:
-      key: Set a key.
-      saved: Is this object already saved? Key must have something.
-      kwargs: Keyword arguments that will fill up the schema.
+      key: A string/unicode key or a function that returns a string/unicode key.
+           The function takes in 1 argument, and that argument is the kwargs
+           that's passed in. Defaults to a lambda function that returns
+           uuid1().hex
+
+      saved: Is this object already saved? True or False
+      kwargs: Keyword arguments that will fill up the object with data.
     """
 
-    self._links = {}
-    self._saved = saved and key
-    self.__dict__["key"] = key or uuid1().hex
+    if callable(key):
+      self.__dict__["key"] = key(kwargs)
+    elif isinstance(key, (str, unicode)):
+      self.__dict__["key"] = key
+    else:
+      raise RiakkitError("%s is not a proper key!" % key)
+
+    self._saved = saved
     self._obj = self.bucket.get(self.key) if saved else None
+    self._links = {}
     self._data = {}
-    for name in self._hasdefaults:
-      self.__setattr__(name, self._meta[name].default)
 
-    for name in kwargs:
-
-      # Safely merge. self._data.update unreliable
-
-      self.__setattr__(name, kwargs[name])
+    self.mergeData(kwargs)
 
     self.__class__.instances[self.key] = self
 
-  def __cmp__(self, other):
-    """Compares a document with another. Uses key comparison.
 
-    Returns:
-      True if the key is the same, otherwise no."""
+  def mergeData(self, data):
+    """Merges data
+
+    Args:
+      data: A dictionary of the data to be merged into the object.
+    """
+    for name in self._hasdefaults:
+      if self.__getattr__(name) is None:
+        self.__setattr__(name, self._hasdefaults[name])
+
+    for name in data:
+      self.__setattr__(name, data[name])
+
+  def equals(self, other):
     return self.key == other.key if type(self) == type(other) else False
 
   @classmethod
@@ -162,12 +193,12 @@ class Document(object):
 
     for k in data:
       if k in cls._meta:
-        data[k] = cls._meta[k].convertBack(data[k])
+        data[k] = cls._meta[k].convertFromDb(data[k])
 
     return data
 
   @classmethod
-  def load(cls, riak_obj, cached=False):  # TODO: Merge this with reload() somehow
+  def load(cls, riak_obj, cached=False):
     """Construct a Document based object given a RiakObject.
 
     Args:
@@ -181,6 +212,7 @@ class Document(object):
     Returns:
       A Document object (whichever subclass this was called from).
     """
+
     if cached:
       if isinstance(riak_obj, RiakObject):
         key = riak_obj.get_key()
@@ -199,6 +231,7 @@ class Document(object):
 
     if not riak_obj.exists():
       raise NotFoundError("%s not found!" % riak_obj.get_key())
+
     data = cls._cleanupDataFromDatabase(riak_obj.get_data())
     obj = cls(riak_obj.get_key(), saved=True, **data)
     links = riak_obj.get_links()
@@ -212,6 +245,8 @@ class Document(object):
 
     You probably won't need this function as it's used internally and marked
     public in case something is required.
+
+    However, this function does not convert those reference properties.
 
     Args:
       links: A list of RiakLink objects
@@ -258,11 +293,23 @@ class Document(object):
     Raises:
       AttributeError: When the name is not registered in the schema nor set.
     """
-    if name in self._meta or name in self._data: # TODO: in operator does a linear search. Binary search?
-      return self._data.get(name, None)
-    elif name in self._meta["_links"]:
+
+    if name in self._meta["_links"]:
       return self._links.get(name, [])
-    else:
+
+    inMeta = name in self._meta
+    inData = name in self._data
+
+    if not inMeta and inData:
+      return self._data[name]
+
+    if inMeta and not inData:
+      return None
+
+    if inMeta and inData:
+      return self._data[name]
+
+    if not inMeta and not inData:
       self._error(name)
 
   def __setattr__(self, name, value):
@@ -277,6 +324,7 @@ class Document(object):
     Raises:
       ValueError: if validation is not passed.
     """
+
     if name.startswith("_"):
       self.__dict__[name] = value
     else:
@@ -286,7 +334,7 @@ class Document(object):
         if name in self._meta:
           if not self._meta[name].validate(value):
             raise ValueError("Validation did not pass for %s for the field %s.%s" % (value, self.__class__.__name__, name))
-
+          value = self._meta[name].standardize(value)
         self._data[name] = value
       self._saved = False
 
@@ -312,26 +360,69 @@ class Document(object):
     """
     return self._obj is not None and self._obj.exists() and self._saved
 
-  def _verifyData(self):
-    """Verifies the data.
+  def save(self, w=None, dw=None):
+    """Saves the document into the database.
 
-    This method does not alter the database, but may alter the data.
+    This will save the object to the database. All linked objects will be saved
+    as well.
+
+    Args:
+      w: W value
+      dw: DW value
     """
+    data_to_be_saved = {}
+
+    # Process regular data
     for name in self._meta:
-      if name == "_links":
+      if name in ("_links", "_references"):
         continue
 
-      if name not in self._data: # TODO: REFACTOR THIS
+      if name not in self._data:
         if self._meta[name].required:
           raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
+        data_to_be_saved[name] = None
+      else:
+        if self._meta[name].unique:
+          if self._meta[name].unique_bucket.get(self._meta[name].convertToDb(self._data[name])).exists():
+            raise ValueError("'%s' already exists for '%s'!" % (self._data[name], name))
+
+        data_to_be_saved[name] = self._meta[name].convertToDb(self._data[name])
+
+    # Processes the data that's not in the meta
+    for name in self._data:
+      if name not in data_to_be_saved:
+        data_to_be_saved[name] = self._data[name]
+
+    other_docs_to_be_saved = []
+
+    # Process References
+    for name in self._meta["_references"]:
+      if name not in self._data:
+        if self._meta["_references"][name].required:
+          raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
+        data_to_be_saved[name] = None
+      else:
+        data_to_be_saved[name] = self._meta["_references"][name].convertToDb(self._data[name])
+        col_name = self._meta["_references"][name].collection_name
+        if isinstance(self._meta["_references"][name], ReferenceProperty):
+          docs = [self._data[name]]
         else:
-          self._data[name] = None
+          docs = self._data[name]
 
-      if self._meta[name].unique:
-        if self._meta[name].unique_bucket.get(self._meta[name].convert(self._data[name])).exists():
-          raise ValueError("'%s' already exists for '%s'!" % (self._data[name], name))
+        if col_name:
+          for doc in docs:
+            current_list = doc._data.get(col_name, [])
+            current_list.append(self)
+            doc._data[col_name] = current_list
+            other_docs_to_be_saved.append(doc)
 
-      self._data[name] = self._meta[name].convert(self._data[name])
+    # Process object
+    if self._obj:
+      for link in self._obj.get_links():
+        self._obj.remove_link(link)
+      self._obj.set_data(data_to_be_saved)
+    else:
+      self._obj = self.bucket.new(self.key, data_to_be_saved)
 
     for name in self._meta["_links"]:
       if name not in self._links: # TODO: REFACTOR THIS
@@ -340,11 +431,32 @@ class Document(object):
         else:
           self._links[name] = []
 
-      for item in self._links[name]:
-        if not isinstance(item, Document):
+      col_name = self._meta["_links"][name].collection_name
+      for doc in self._links[name]:
+        if not isinstance(doc, Document):
           raise AttributeError("%s is not a Document instance!" % item)
+        else:
+          if col_name:
+            current_list = doc._links.get(col_name, [])
+            current_list.append(self)
+            doc._links[col_name] = current_list
+            other_docs_to_be_saved.append(doc)
 
-  def reload(self):
+          if doc._obj is None:
+            raise RiakkitError("Add link failure as %s does not exist in the database." % str(doc))
+          self._obj.add_link(doc._obj, name) # TODO: doc._obj=None
+
+    self._obj.store(w=w, dw=dw)
+    for name in self._uniques:
+      obj = self._meta[name].unique_bucket.new(self._data[name], {"key" : self.key})
+      obj.store()
+
+    self._saved = True
+
+    for doc in other_docs_to_be_saved:
+      doc.save(w, dw)
+
+  def reload(self, r=None, vtag=None):
     """Reloads the object from the database.
 
     This grabs the most recent version of the object from the database and
@@ -357,90 +469,49 @@ class Document(object):
       NotFoundError: if the object hasn't been saved before.
     """
     if self._obj:
-      self._obj.reload()
+      self._obj.reload(r=r, vtag=vtag)
       data = self._cleanupDataFromDatabase(self._obj.get_data())
-      self._data = data # TODO: Is this safe?
+      self.mergeData(data)
       links = self._obj.get_links()
       self._links = self.updateLinks(links)
       self._saved = True
     else:
       raise NotFoundError("Object not saved!")
 
-  def save(self):
-    """Saves the document into the database.
-
-    This will save the object to the database. All linked objects will be saved
-    as well.
-    """
-    bucket = self.bucket
-    if self.SEARCHABLE:
-      bucket.enable_search()
-
-    self._verifyData()
-
-    if self._obj is None:
-      self._obj = bucket.new(self.key, self._data)
-    else:
-      self._obj.set_data(self._data)
-
-    self._obj.store() # Stores it once, soe any object adding link would work.
-
-    for link in self._obj.get_links():
-      self._obj.remove_link(link)
-
-    for tag in self._links:
-      docs = self._links[tag]
-      col_name = self._meta["_links"][tag].collection_name
-      if col_name:  # This type of non-refactored is done for efficiency's sake
-        for i, doc in enumerate(docs):
-          current_list = doc._links.get(col_name, [])  # TODO: Un-uglify this
-          current_list.append(self)
-          doc._links[col_name] = current_list
-          if tag not in self._collections: # _collections is signifying which attributes is generated via collection_name by other Document classes
-            doc.save()  # Stack too big here? Nah. Let's take the leap of faith.
-          self._obj.add_link(doc._obj, tag) # TODO: Maybe some sort of ordering, with tag0, tag1.. etc
-      else:
-        for i, doc in enumerate(docs):
-          if tag not in self._collections and not doc.saved():
-            doc.save()
-          self._obj.add_link(doc._obj, tag) # TODO: Maybe some sort of ordering, with tag0, tag1.. etc
-
-
-    self._obj.store()
-    self.key = self._obj.get_key()
-    for name in self._uniques:
-      obj = self._meta[name].unique_bucket.new(self._data[name], {"key" : self.key})
-      obj.store()
-
-    self._saved = True
-
-  def delete(self):
-    """This will delete the object from the database.
-    This will save remove the links and save the reference_classes from
-    LinkedDocuments
-    """
-    if self._obj is not None:
-      for tag in self._links:
-        col_name = self._meta["_links"][tag].collection_name
-        docs = self._links[tag]
-        if col_name:
-          for i, doc in enumerate(docs):
+  def delete(self, rw=None):
+    def deleteBackRef(col_name, docs, link):
+      if col_name:
+        for doc in docs:
+          if link:
             current_list = doc._links.get(col_name, [])
-            for i, linkback in enumerate(current_list):
-              if linkback.key == self.key:
-                current_list.pop(i)
+          else:
+            current_list = doc._data.get(col_name, [])
 
-            doc._links[col_name] = current_list
+          modified = False
+          for i, linkback in enumerate(current_list):
+            if linkback.key == self.key:
+              modified = True
+              current_list.pop(i) # This is a reference, which should modify the original list.
+
+          if modified:
             doc.save()
+
+    if self._obj is not None:
+      for name in self._meta["_links"]:
+        deleteBackRef(self._meta["_links"][name].collection_name, self._links[name], True)
+      for name in self._meta["_references"]:
+        deleteBackRef(self._meta["_references"][name].collection_name, self._data[name], False)
 
       if self.key in self.__class__.instances:
         del self.__class__.instances[self.key]
-      self._obj.delete()
+      self._obj.delete(rw=rw)
       self._obj = None
       self._saved = False
 
+
+
   @classmethod
-  def get_with_key(cls, key, r=None):
+  def getWithKey(cls, key, r=None):
     """Get an object with a given key.
 
     Args:
@@ -451,6 +522,8 @@ class Document(object):
     if not riak_obj.exists():
       raise NotFoundError("Key '%s' not found!" % key)
     return cls.load(riak_obj)
+
+  get_with_key = getWithKey
 
   @classmethod
   def search(cls, querytext):
@@ -475,6 +548,8 @@ class Document(object):
 
   @classmethod
   def solrSearch(cls, querytext, **kwargs):
+    if not cls.SEARCHABLE:
+      raise NotImplementedError("Searchable is disabled, this is therefore not implemented.")
     return SolrQuery(cls, cls.client.solr().search(cls.bucket_name, querytext, **kwargs))
 
   @classmethod

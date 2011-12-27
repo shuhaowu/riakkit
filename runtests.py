@@ -28,3 +28,5 @@ if __name__ == "__main__":
   deleteAllKeys(client, "coolusers")
   deleteAllKeys(client, "_coolusers_ul_username")
   deleteAllKeys(client, "testdoc")
+  deleteAllKeys(client, "test_person")
+  deleteAllKeys(client, "test_cake")

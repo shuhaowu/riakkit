@@ -136,6 +136,7 @@ You can link to a foreign document very easily. Let me illustrate:
     >>> some_post = BlogPost(title="Hello", content="World")
     >>> user.posts = [] # Initially this is set to nothing. So it's a good idea to initialize it.
     >>> user.posts.append(some_post)
+    >>> some_post.save() # We must save this first, because we can't link to an object that doesn't exist yet.
     >>> user.save()
     >>> print user.posts[0].title
     Hello
@@ -210,6 +211,43 @@ Saving the comment multiple times shouldn't create multiple links in the user:
     2
     >>> print titles
     [u'Abc', u'Riakkit ftw!']
+
+`LinkedDocuments` store their properties in the object's meta information. This
+may not be the best way to store things. Sometimes you want to use
+`ReferenceProperty` and `MultiReferenceProperty`. These properties stores the
+key of the object as a field in the JSON document. They have the same
+capabilities as `LinkedDocuments` (`MultiReferenceProperty` is actually
+identical to LinkedDocuments instead of the technical differences). They have
+the same limitations as well.
+
+Note that `ReferenceProperty` is NOT a list of documents, rather, it is only 1
+document.
+
+Note that `ReferenceProperty` and `MultiReferenceProperty` requires a
+`reference_class`.
+
+Let's take a look some examples:
+
+
+    >>> class Person(Document):
+    ...     bucket_name = "test_person"
+    ...     client = some_client
+    ...
+    ...     name = types.StringProperty()
+    >>> class Cake(Document):
+    ...     bucket_name = "test_cake"
+    ...     client = some_client
+    ...
+    ...     type = types.EnumProperty(["chocolate", "icecream"])
+    ...     owner = types.ReferenceProperty(reference_class=Person, collection_name="cakes")
+    >>> person = Person(name="John")
+    >>> cake = Cake(type="chocolate")
+    >>> cake.owner = person
+    >>> cake.save()
+    >>> print cake.owner.name
+    John
+    >>> print person.cakes[0].type
+    chocolate
 
 Advanced Query
 --------------
@@ -447,7 +485,7 @@ In the mean while, demo time:
     ...     bucket_name = "testdoc"
     ...
     ...     email = types.StringProperty(validators=emailValidator)
-    ...     some_property = types.IntegerProperty(forwardprocessors=lambda x: x+1) # Adds 1 to all values.
+    ...     some_property = types.IntegerProperty(standardprocessors=lambda x: x + 1)
     >>> test = TestDocument()
     >>> test.email = "notvalid" #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
@@ -460,6 +498,35 @@ In the mean while, demo time:
     hello@world.com
     >>> print test.some_property
     2
+
+Use this feature responsibly.
+
+Here's the work flow:
+
+  1. `standardprocessors` are processors that fires when the value is stored via
+     `__setattr__` or `__setitem__` or right after `backwardprocessors` is
+     called. Make sure it works for both scenerios. The idea is so that the
+     value that comes out of `standardprocessors` is `forwardprocessors`
+     friendly.
+  2. `forwardprocessors` are processors that takes the value that's already
+     "standardized" and converts it into database friendly format. (or friendly
+     to `backwardprocessors`)
+  3. `backwardprocessors` are processors that takes the value that's obtained
+     from the database and converts it back to a format from the database back
+     to an usuable format. The value it returns should be friendly to
+     `standardprocessors`.
+
+So given this our example would be bad practise. We should also implement a
+`backwardprocessors` of `lambda x: x - 1` so that the x value don't keep
+incrementing. Unless that's what you want to do. Make sure you're responsible
+when doing this as it could cause some weird bugs like the following:
+
+    >>> test.reload()
+    >>> print test.some_property
+    3
+
+**Warning: This is an experimental feature. This may change in the future as
+there are concerns that this is too complicated.**
 
 
 Accessing Underlying Riak API
