@@ -15,6 +15,7 @@ class CustomDocument(Document):
 
 class User(CustomDocument):
   bucket_name = "users"
+  SEARCHABLE = True
 
   # The validator checks for space.
   username = StringProperty(required=True, validators=lambda x: " " not in x)

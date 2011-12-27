@@ -498,9 +498,12 @@ class Document(object):
 
     if self._obj is not None:
       for name in self._meta["_links"]:
-        deleteBackRef(self._meta["_links"][name].collection_name, self._links[name], True)
+        deleteBackRef(self._meta["_links"][name].collection_name, self._links.get(name, []), True)
       for name in self._meta["_references"]:
-        deleteBackRef(self._meta["_references"][name].collection_name, self._data[name], False)
+        docs = self._data.get(name, [])
+        if isinstance(docs, Document):
+          docs = [docs]
+        deleteBackRef(self._meta["_references"][name].collection_name, docs, False)
 
       if self.key in self.__class__.instances:
         del self.__class__.instances[self.key]

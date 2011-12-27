@@ -52,7 +52,7 @@ def index(amt=0):
 @app.route("/view/<key>")
 def viewpost(key):
   try:
-    post = Post.get_with_key(key)
+    post = Post.getWithKey(key)
   except NotFoundError:
     return flask.abort(404)
 
@@ -113,12 +113,12 @@ def postpost():
 @loginRequired
 def editpost(key):
   if flask.request.method == "GET":
-    post = Post.get_with_key(key)
+    post = Post.getWithKey(key)
     return flask.render_template("updatepost.html", post=post)
   else:
     title = flask.request.form["title"].strip()
     content = flask.request.form["content"]
-    post = Post.get_with_key(key)
+    post = Post.getWithKey(key)
     if title and content:
       htmlcontent = markdown.markdown(content)
       post.title = title
@@ -135,7 +135,7 @@ def editpost(key):
 @app.route("/admin/delete/<key>")
 @loginRequired
 def deletepost(key):
-  Post.get_with_key(key).delete()
+  Post.getWithKey(key).delete()
   flask.flash("Post successfully deleted.", "success")
   return flask.redirect(flask.url_for("admin"))
 
