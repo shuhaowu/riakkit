@@ -171,7 +171,7 @@ class Document(object):
 
 
   def mergeData(self, data):
-    """Merges data
+    """Merges data. This will trigger the standard processors.
 
     Args:
       data: A dictionary of the data to be merged into the object.
@@ -471,7 +471,7 @@ class Document(object):
     if self._obj:
       self._obj.reload(r=r, vtag=vtag)
       data = self._cleanupDataFromDatabase(self._obj.get_data())
-      self.mergeData(data)
+      self._data = data
       links = self._obj.get_links()
       self._links = self.updateLinks(links)
       self._saved = True

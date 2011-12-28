@@ -503,11 +503,9 @@ Use this feature responsibly.
 
 Here's the work flow:
 
-  1. `standardprocessors` are processors that fires when the value is stored via
-     `__setattr__` or `__setitem__` or right after `backwardprocessors` is
-     called. Make sure it works for both scenerios. The idea is so that the
-     value that comes out of `standardprocessors` is `forwardprocessors`
-     friendly.
+  1. `standardprocessors` are processors that takes values that's set by the
+     users (They are fired by the `__setattr__`). These should not be fired when
+     the objects are loaded/reloaded from the database.
   2. `forwardprocessors` are processors that takes the value that's already
      "standardized" and converts it into database friendly format. (or friendly
      to `backwardprocessors`)
@@ -523,7 +521,7 @@ when doing this as it could cause some weird bugs like the following:
 
     >>> test.reload()
     >>> print test.some_property
-    3
+    2
 
 **Warning: This is an experimental feature. This may change in the future as
 there are concerns that this is too complicated.**
