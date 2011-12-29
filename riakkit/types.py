@@ -248,8 +248,8 @@ class EnumProperty(BaseProperty):
     return self._map_forward[value]
 
   def convertFromDb(self, value):
-    value = BaseProperty.convertFromDb(self, value)
-    return self._map_backward[value]
+    value = self._map_backward[value]
+    return BaseProperty.convertFromDb(self, value)
 
   def standardize(self, value):
     value = BaseProperty.standardize(self, value)
@@ -287,8 +287,8 @@ class DateTimeProperty(BaseProperty):
     return time.mktime(value.utctimetuple())
 
   def convertFromDb(self, value):
-    value = BaseProperty.convertFromDb(self, value)
-    return datetime.datetime.utcfromtimestamp(value)
+    value = datetime.datetime.utcfromtimestamp(value)
+    return BaseProperty.convertFromDb(self, value)
 
   def standardize(self, value):
     value = BaseProperty.standardize(self, value)
@@ -357,8 +357,8 @@ class ReferenceProperty(ReferenceBaseProperty):
     return value.key
 
   def convertFromDb(self, value):
-    value = BaseProperty.convertFromDb(self, value)
-    return self.reference_class.load(value, True)
+    value = self.reference_class.load(value, True)
+    return BaseProperty.convertFromDb(self, value)
 
   def standardize(self, value):
     value = BaseProperty.standardize(self, value)
@@ -373,8 +373,8 @@ class MultiReferenceProperty(ReferenceBaseProperty):
     return [v.key for v in value]
 
   def convertFromDb(self, value):
-    value = BaseProperty.convertFromDb(self, value)
-    return [self.reference_class.load(v, True) for v in value]
+    value = [self.reference_class.load(v, True) for v in value]
+    return BaseProperty.convertFromDb(self, value)
 
   def standardize(self, value):
     value = BaseProperty.standardize(self, value)
