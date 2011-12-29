@@ -362,6 +362,18 @@ Here is a list and a dictionary.
 Note that list and dictionaries are potentially dangerous as there's no type
 checking in them. Refer to python's `json` to see objects are mapped.
 
+`DictProperty` actually converts your dictionary to the class
+`DictProperty.DotDict`. This class is a child class of python's `dict` and all
+it does extra is allow you to access the attributes of the dictionary via the
+dot notation. For example the "world" can be accessed via both
+`demo_obj.test_dict["hello"]` and `demo_obj.test_dict.hello`. However,
+non-string property may pose an issue.
+
+    >>> print demo_obj.test_dict["hello"]
+    world
+    >>> print demo_obj.test_dict.hello
+    world
+
 Here's the `DateTimeProperty`
 
     >>> demo_obj.some_date = datetime(2011, 12, 16) # Just use a date time object
@@ -392,6 +404,8 @@ We can now retrieve it again and see if this worked.
     >>> same_demo = Demo.get_with_key(demo_obj.key)
     >>> print same_demo.test_list
     [0, 1, 2]
+    >>> print same_demo.test_dict.hello
+    world
     >>> print sorted(same_demo.test_dict.items()) # this is done so that the doctest won't hate me.
     [(u'42', 3.14), (u'hello', u'world')]
     >>> print same_demo.some_date.year, same_demo.some_date.month, same_demo.some_date.day

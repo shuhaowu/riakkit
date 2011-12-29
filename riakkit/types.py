@@ -138,7 +138,35 @@ class BaseProperty(object):
 
 
 class DictProperty(BaseProperty):
-  """Dictionary property, {}"""
+  """Dictionary property, {}
+
+  This property is somewhat special. After passing a dictionary to the field,
+  you can use dot notation as well as dictionary notation.
+  """
+
+  class DotDict(dict):
+    """A dictionary but allows dot notation to access the attributes
+    (strings at least)
+
+    """
+    __getattr__ = dict.__getitem__
+    __setattr__ = dict.__setattr__
+    __delattr__ = dict.__delattr__
+
+  def standardize(self, value):
+    value = BaseProperty.standardize(self, value)
+    return DictProperty.DotDict(value)
+
+  def convertToDb(self, value):
+    value = BaseProperty.convertToDb(self, value)
+    return dict(value)
+
+  def convertFromDb(self, value):
+    value = DictProperty.DotDict(value)
+    return BaseProperty.convertFromDb(self, value)
+
+  def validate(self, value):
+    return BaseProperty.validate(self, value) and isinstance(value, dict)
 
   def defaultValue(self):
     """Default value for dictionary
