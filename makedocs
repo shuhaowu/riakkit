@@ -1,9 +1,36 @@
-#!/bin/bash
+#!/usr/bin/python
+# This file is part of RiakKit.
+#
+# RiakKit is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# RiakKit is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with RiakKit.  If not, see <http://www.gnu.org/licenses/>.
 
-# This seem like a bad idea..
-pydoc -w riakkit riakkit.types riakkit.exceptions riakkit.validators riakkit.processors
-mv riakkit.types.html docs/riakkit.types.html
-mv riakkit.exceptions.html docs/riakkit.exceptions.html
-mv riakkit.html docs/riakkit.html
-mv riakkit.processors.html docs/riakkit.processors.html
-mv riakkit.validators.html docs/riakkit.validators.html
+# A VERY LAZY SOLUTION
+# A VERY UNIX SOLUTION, TOO!
+# But then Riak is unix only...
+
+import os
+if __name__ == "__main__":
+  modules = ["riakkit"]
+  for root, dirs, files in os.walk(os.getcwd() + "/riakkit/"):
+    module = root.split("/riakkit/", 1)[1]
+    module = module.replace("/", ".")
+    if "__init__.py" not in files:
+      continue
+    for f in files:
+      if not f.startswith("_") and f.endswith(".py"):
+        modules.append(module + f[:-3])
+
+  os.system("pydoc -w %s" % " ".join(modules))
+  for module in modules:
+    module += ".html"
+    os.system("mv %s docs/%s" % (module, module))

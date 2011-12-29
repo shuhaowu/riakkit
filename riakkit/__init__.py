@@ -21,4 +21,4 @@ __authors__ = [
 
 VERSION = "0.2.1a"
 
-from riakkit.documents import Document
+from riakkit.document import Document

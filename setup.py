@@ -21,10 +21,10 @@ setup(
   version = riakkit.VERSION,
   author = "Shuhao Wu",
   author_email = "shuhao@shuhaowu.com",
-  description = ("An object mapper for Riak similar to mongokit, couchdbkit and"
-                 " riakalchemy for Riak"),
+  description = ("An object mapper for Riak similar to mongokit and couchdbkit"
+                 " for Riak"),
   license = "LGPL",
-  keywords = "riak object mapper riakkit database",
+  keywords = "riak object mapper riakkit database orm",
   url = "https://github.com/ultimatebuster/riakkit",
   packages = ["riakkit"],
   classifiers = [
