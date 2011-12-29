@@ -301,7 +301,10 @@ Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BasePr
 <font color="#000000" face="helvetica, arial"><a name="DictProperty">class <strong>DictProperty</strong></a>(<a href="riakkit.types.html#BaseProperty">BaseProperty</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>Dictionary&nbsp;property,&nbsp;{}<br>&nbsp;</tt></td></tr>
+<td colspan=2><tt>Dictionary&nbsp;property,&nbsp;{}<br>
+&nbsp;<br>
+This&nbsp;property&nbsp;is&nbsp;somewhat&nbsp;special.&nbsp;After&nbsp;passing&nbsp;a&nbsp;dictionary&nbsp;to&nbsp;the&nbsp;field,<br>
+you&nbsp;can&nbsp;use&nbsp;dot&nbsp;notation&nbsp;as&nbsp;well&nbsp;as&nbsp;dictionary&nbsp;notation.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="riakkit.types.html#DictProperty">DictProperty</a></dd>
@@ -310,10 +313,23 @@ Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BasePr
 </dl>
 <hr>
 Methods defined here:<br>
+<dl><dt><a name="DictProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="DictProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt></dl>
+
 <dl><dt><a name="DictProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>Default&nbsp;value&nbsp;for&nbsp;dictionary<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;{}</tt></dd></dl>
+
+<dl><dt><a name="DictProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="DictProperty-validate"><strong>validate</strong></a>(self, value)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>DotDict</strong> = &lt;class 'riakkit.types.DotDict'&gt;<dd><tt>A&nbsp;dictionary&nbsp;but&nbsp;allows&nbsp;dot&nbsp;notation&nbsp;to&nbsp;access&nbsp;the&nbsp;attributes<br>
+(strings&nbsp;at&nbsp;least)</tt></dl>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
@@ -334,46 +350,6 @@ Args:<br>
 &nbsp;&nbsp;standardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;the<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
-
-<dl><dt><a name="DictProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value.<br>
-&nbsp;<br>
-Args:<br>
-&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
-
-<dl><dt><a name="DictProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
-&nbsp;<br>
-In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo&nbsp;validate<br>
-before&nbsp;this&nbsp;is&nbsp;called).<br>
-&nbsp;<br>
-Args:<br>
-&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
-
-<dl><dt><a name="DictProperty-standardize"><strong>standardize</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;any&nbsp;form&nbsp;(input&nbsp;form,&nbsp;db&nbsp;form)&nbsp;into&nbsp;a&nbsp;form&nbsp;that's<br>
-friendly&nbsp;for&nbsp;the&nbsp;user&nbsp;to&nbsp;access&nbsp;via&nbsp;dot&nbsp;notation&nbsp;or&nbsp;dict-like&nbsp;notation&nbsp;in&nbsp;a<br>
-Document&nbsp;<a href="__builtin__.html#object">object</a>.&nbsp;(i.e.&nbsp;standard&nbsp;form)&nbsp;(example:&nbsp;string&nbsp;to&nbsp;unicode&nbsp;etc.)<br>
-&nbsp;<br>
-This&nbsp;method&nbsp;will&nbsp;be&nbsp;called&nbsp;on&nbsp;__setattr__.<br>
-&nbsp;<br>
-Args:<br>
-&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted.<br>
-&nbsp;<br>
-Throws:<br>
-&nbsp;&nbsp;TypeError:&nbsp;if&nbsp;type&nbsp;is&nbsp;not&nbsp;what's&nbsp;expected.</tt></dd></dl>
-
-<dl><dt><a name="DictProperty-validate"><strong>validate</strong></a>(self, value)</dt><dd><tt>The&nbsp;default&nbsp;validation&nbsp;function.<br>
-&nbsp;<br>
-This&nbsp;validation&nbsp;function&nbsp;goes&nbsp;through&nbsp;the&nbsp;validators&nbsp;and&nbsp;checks&nbsp;each&nbsp;one.<br>
-Any&nbsp;subclass&nbsp;should&nbsp;do:<br>
-&nbsp;<br>
-return&nbsp;<a href="#BaseProperty">BaseProperty</a>.<a href="#DictProperty-validate">validate</a>(self,&nbsp;value)&nbsp;and&nbsp;your_result<br>
-&nbsp;<br>
-where&nbsp;your_result&nbsp;is&nbsp;your&nbsp;validation&nbsp;result.<br>
-&nbsp;<br>
-Args:<br>
-&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;validated<br>
-&nbsp;<br>
-Returns:<br>
-&nbsp;&nbsp;True&nbsp;if&nbsp;validation&nbsp;pass,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
 
 <hr>
 Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
