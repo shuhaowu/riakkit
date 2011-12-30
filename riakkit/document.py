@@ -59,7 +59,7 @@ class DocumentMetaclass(type):
   def __new__(cls, clsname, parents, attrs):
     # Makes sure these classes are not registered.
 
-    if clsname == "Document" or "bucket_name" not in attrs:
+    if "bucket_name" not in attrs:
       return type.__new__(cls, clsname, parents, attrs)
 
     client = DocumentMetaclass._getProperty("client", attrs, parents)
@@ -77,7 +77,7 @@ class DocumentMetaclass(type):
 
     for name in attrs.keys():
       if name in ("_links", "_references"):
-        raise RuntimeError("_links is not allowed.")
+        raise RuntimeError("%s is not allowed." % name)
       if isinstance(attrs[name], LinkedDocuments):
         links[name] = prop = attrs.pop(name)
         if prop.collection_name:
@@ -227,7 +227,8 @@ class Document(object):
       raise NotFoundError("%s not found!" % riak_obj.get_key())
 
     data = cls._cleanupDataFromDatabase(riak_obj.get_data())
-    obj = cls(riak_obj.get_key(), saved=True, **data)
+    obj = cls(riak_obj.get_key(), saved=True)
+    obj._data = data
     links = riak_obj.get_links()
     obj._links = obj.updateLinks(links)
     obj._obj = riak_obj

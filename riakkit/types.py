@@ -16,6 +16,8 @@
 import datetime
 import time
 
+NONE_TYPE = type(None)
+
 class BaseProperty(object):
   """Base property type
 
@@ -166,7 +168,7 @@ class DictProperty(BaseProperty):
     return BaseProperty.convertFromDb(self, value)
 
   def validate(self, value):
-    return BaseProperty.validate(self, value) and isinstance(value, dict)
+    return BaseProperty.validate(self, value) and isinstance(value, (dict, NONE_TYPE))
 
   def defaultValue(self):
     """Default value for dictionary
@@ -207,11 +209,7 @@ class IntegerProperty(BaseProperty):
     return self.default or 0
 
   def validate(self, value):
-    try:
-      int(value)
-    except ValueError:
-      return False
-    return BaseProperty.validate(self, value) and True
+    return BaseProperty.validate(self, value) and isinstance(value, (int, long, NONE_TYPE))
 
 class FloatProperty(BaseProperty):
   """Floating point property"""
@@ -228,11 +226,7 @@ class FloatProperty(BaseProperty):
     return self.default or 0.0
 
   def validate(self, value):
-    try:
-      float(value)
-    except:  # POKEMON EXCEPTION! :D
-      return False
-    return BaseProperty.validate(self, value) and True
+    return BaseProperty.validate(self, value) and isinstance(value, (float, int, long, NONE_TYPE))
 
 class BooleanProperty(BaseProperty):
   """Boolean property. Pretty self explanatory."""
@@ -269,14 +263,18 @@ class EnumProperty(BaseProperty):
       self._map_backward[i] = v
 
   def validate(self, value):
-    return BaseProperty.validate(self, value) and (value in self._map_forward)
+    return BaseProperty.validate(self, value) and (value is None or (value in self._map_forward))
 
   def convertToDb(self, value):
     value = BaseProperty.convertToDb(self, value)
+    if value is None:
+      return None
+
     return self._map_forward[value]
 
   def convertFromDb(self, value):
-    value = self._map_backward[value]
+    if value is not None:
+      value = self._map_backward[value]
     return BaseProperty.convertFromDb(self, value)
 
   def standardize(self, value):
@@ -304,18 +302,19 @@ class DateTimeProperty(BaseProperty):
         check = False
       else:
         check = True
-    elif isinstance(value, datetime.datetime):
+    elif isinstance(value, (datetime.datetime, NONE_TYPE)):
       check = True
     return BaseProperty.validate(self, value) and check
 
   def convertToDb(self, value):
     value = BaseProperty.convertToDb(self, value)
-    if isinstance(value, (long, int, float)): # timestamp, validation has passed
+    if isinstance(value, (long, int, float, NONE_TYPE)):
       return value
     return time.mktime(value.utctimetuple())
 
   def convertFromDb(self, value):
-    value = datetime.datetime.utcfromtimestamp(value)
+    if value is not None:
+      value = datetime.datetime.utcfromtimestamp(value)
     return BaseProperty.convertFromDb(self, value)
 
   def standardize(self, value):
@@ -373,7 +372,7 @@ class ReferenceBaseProperty(BaseProperty):
           return False
       return True
     else:
-      return isinstance(l, rc)
+      return isinstance(l, (rc, NONE_TYPE))
 
   def validate(self, value):
     check = self._checkForReferenceClass(value)
@@ -382,10 +381,11 @@ class ReferenceBaseProperty(BaseProperty):
 class ReferenceProperty(ReferenceBaseProperty):
   def convertToDb(self, value):
     value = BaseProperty.convertToDb(self, value)
-    return value.key
+    return None if value is None else value.key
 
   def convertFromDb(self, value):
-    value = self.reference_class.load(value, True)
+    if value is not None:
+      value = self.reference_class.load(value, True)
     return BaseProperty.convertFromDb(self, value)
 
   def standardize(self, value):
@@ -398,10 +398,11 @@ class ReferenceProperty(ReferenceBaseProperty):
 class MultiReferenceProperty(ReferenceBaseProperty):
   def convertToDb(self, value):
     value = BaseProperty.convertToDb(self, value)
-    return [v.key for v in value]
+    return [] if value is None else [v.key for v in value]
 
   def convertFromDb(self, value):
-    value = [self.reference_class.load(v, True) for v in value]
+    if value is not None:
+      value = [self.reference_class.load(v, True) for v in value]
     return BaseProperty.convertFromDb(self, value)
 
   def standardize(self, value):

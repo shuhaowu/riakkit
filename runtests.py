@@ -30,3 +30,4 @@ if __name__ == "__main__":
   deleteAllKeys(client, "testdoc")
   deleteAllKeys(client, "test_person")
   deleteAllKeys(client, "test_cake")
+  deleteAllKeys(client, "some_extended_bucket")

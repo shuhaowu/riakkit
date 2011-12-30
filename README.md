@@ -54,6 +54,7 @@ Using riakkit should be simple. Here's how to get started.
     ...
     ...     title = types.StringProperty(required=True) # StringProperty auto converts all strings to unicode
     ...     content = types.StringProperty() # let's say content is not required.
+    ...     some_cool_attribute = types.FloatProperty() # Just a random attribute for demo purpose
     ...     def __str__(self): # Totally optional..
     ...         return "%s:%s" % (self.title, self.content)
 
@@ -111,6 +112,20 @@ Need another attribute not in your schema? No problem.
     >>> print post_again.random_attr
     42
 
+While setting an attribute in your schema is allowed, getting one while it's not
+in the scheme **AND** not already set will raise an AttributeError.
+
+    >>> same_post.none_existent
+    Traceback (most recent call last):
+      ...
+    AttributeError: Attribute none_existent not found with BlogPost.
+
+Accessing an attribute that's **IN** your schema but **NOT** set will return
+`None`
+
+    >> print same_post.some_cool_attribute  # Remember? We never set this
+    None
+
 Deleting objects is equally as easy.
 
     >>> same_post.delete()
@@ -118,6 +133,8 @@ Deleting objects is equally as easy.
     Traceback (most recent call last):
         ...
     NotFoundError: Key '<yourkey>' not found!
+
+
 
 Linked Documents
 ----------------
@@ -467,11 +484,25 @@ So:
     >>>
     >>> class SomeOtherDocument(CustomDocument):
     ...     bucket_name = "some_bucket"
+    ...     test_property = types.StringProperty()
 
     >>> print SomeOtherDocument.client == some_client
     True
     >>> print SomeOtherDocument.another_property
     True
+
+You can also extend documents with bucket_name defined.
+
+    >>> class ExtendedDocument(SomeOtherDocument):
+    ...     bucket_name = "some_extended_bucket"
+    ...
+    ...     extended_property = types.IntegerProperty()
+    >>> ed = ExtendedDocument()
+    >>> print ed.test_property
+    None
+
+If we print `ed.test_property` and it's not registered and not in our data set,
+it will raise an error instead of
 
 ### Validators and processors ###
 
