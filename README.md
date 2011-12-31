@@ -549,6 +549,17 @@ You can add extra attributes to `EmDocument` just like you would with regular
     >>> print the_website.pages[2].random_attr
     1
 
+You can also use methods such as `extend`, `insert`, and just `[index]` like
+`append`.
+
+    >>> same_website.pages[2] = {"name" : "Products", "content" : "All our products."}
+    >>> same_website.save()
+    >>> print isinstance(same_website.pages[2], Page)
+    True
+    >>> the_website.reload()
+    >>> print the_website.pages[2].name
+    Products
+
 Advanced stuff
 --------------
 

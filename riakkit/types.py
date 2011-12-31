@@ -469,10 +469,14 @@ class EmDocumentsListProperty(BaseProperty):
         emdocument_class: The class for the custom EmDocument
       """
       self.emdocument_class = emdocument_class
-      new_list = []
-      for item in iterable:
-        new_list.append(self._standardize(item))
+      new_list = self._standardizeList(iterable)
       list.__init__(self, new_list)
+
+    def _standardizeList(self, l):
+      new_l = []
+      for item in l:
+        new_l.append(self._standardize(item))
+      return new_l
 
     def _standardize(self, x):
       if isinstance(x, self.emdocument_class):
@@ -485,6 +489,16 @@ class EmDocumentsListProperty(BaseProperty):
 
     def append(self, x):
       list.append(self, self._standardize(x))
+
+    def insert(self, i, x):
+      list.insert(self, i, self._standardize(x))
+
+    def extend(self, x):
+      list.extend(self, self._standardizeList(x))
+
+    def __setitem__(self, name, value):
+      value = self._standardize(value)
+      list.__setitem__(self, name, value)
 
   def __init__(self, emdocument_class, required=False, validators=[],
                      forwardprocessors=[], backwardprocessors=[]):
