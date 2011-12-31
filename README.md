@@ -500,6 +500,11 @@ You can also extend documents with bucket_name defined.
     >>> ed = ExtendedDocument()
     >>> print ed.test_property
     None
+    >>> ed.test_property = "mrrow"
+    >>> ed.save()
+    >>> ed1 = ExtendedDocument.getWithKey(ed.key)
+    >>> print ed1.test_property
+    mrrow
 
 If we print `ed.test_property` and it's not registered and not in our data set,
 it will raise an error instead of
@@ -544,7 +549,9 @@ In the mean while, demo time:
     >>> print test.some_property
     2
 
-Use this feature responsibly.
+Use this feature responsibly. For example, having multiple base classes could
+pose a problem. The order of inheritance is via a BFS down the parents chain and
+reversing it to update the properties.
 
 Here's the work flow:
 

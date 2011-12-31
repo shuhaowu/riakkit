@@ -22,20 +22,22 @@ from riak.mapreduce import RiakLink, RiakObject
 from riakkit.types import BaseProperty, LinkedDocuments, ReferenceBaseProperty, ReferenceProperty, MultiReferenceProperty
 
 from riakkit.exceptions import *
+from riakkit.utils import *
+from copy import copy
 
 _document_classes = {}
 
-def getUniqueListBucketName(bucket_name, property_name):
+def getUniqueListBucketName(class_name, property_name):
   """Gets the bucket name that enforces the uniqueness of a certain property.
 
   Args:
-    bucket_name: The bucket name
+    class_name: The name of the class
     property_name: The property name
 
   Returns:
     Returns the bucket name.
   """
-  return "_%s_ul_%s" % (bucket_name, property_name)
+  return "_%s_ul_%s" % (class_name, property_name)
 
 class DocumentMetaclass(type):
   """Meta class that the Document class is made from.
@@ -45,12 +47,13 @@ class DocumentMetaclass(type):
 
   @staticmethod
   def _getProperty(name, attrs, parents):
+    parents = walkParents(parents)
     value = attrs.get(name, None)
     i = 0
     length = len(parents)
     while value is None:
       if i == length:
-        raise RiakkitError("No suitable client found for %s." % name)
+        return None
       value = getattr(parents[i], name, None)
       i += 1
 
@@ -59,15 +62,11 @@ class DocumentMetaclass(type):
   def __new__(cls, clsname, parents, attrs):
     # Makes sure these classes are not registered.
 
-    if "bucket_name" not in attrs:
+    client = DocumentMetaclass._getProperty("client", attrs, parents)
+    if client is None:
       return type.__new__(cls, clsname, parents, attrs)
 
-    client = DocumentMetaclass._getProperty("client", attrs, parents)
-
     attrs["client"] = client
-    attrs["bucket"] = client.bucket(attrs["bucket_name"])
-    if DocumentMetaclass._getProperty("SEARCHABLE", attrs, parents):
-      attrs["bucket"].enable_search()
 
     meta = {}
     links = {}
@@ -94,26 +93,45 @@ class DocumentMetaclass(type):
         meta[name] = prop = attrs.pop(name)
         if prop.unique:
           prop.unique_bucket = attrs["client"].bucket(
-              getUniqueListBucketName(attrs["bucket_name"], name)
+              getUniqueListBucketName(clsname, name)
           )
           uniques.append(name)
 
         if prop.default is not None:
           hasdefaults[name] = prop.defaultValue()
 
+    # reversed because we start at the bottom.
+
+    all_parents = reversed(walkParents(parents))
+    for p_cls in all_parents:
+      p_meta = copy(p_cls._meta) # Shallow copy should be ok.
+      p_links = p_meta.pop("_links")
+      p_references = p_meta.pop("_references")
+      meta.update(p_meta)
+      links.update(p_links)
+      references.update(p_references)
+      hasdefaults.update(p_cls._hasdefaults)
+      uniques.extend(p_cls._uniques)
+
     meta["_links"] = links
     meta["_references"] = references
     attrs["_meta"] = meta
     attrs["_uniques"] = uniques
     attrs["_hasdefaults"] = hasdefaults
+    attrs["SEARCHABLE"] = DocumentMetaclass._getProperty("SEARCHABLE", attrs, parents)
     attrs["instances"] = {}
     new_class = type.__new__(cls, clsname, parents, attrs)
 
-    if new_class.bucket_name in _document_classes:
-      raise RiakkitError("Bucket name of %s already exists in the registry!"
-                            % new_class.bucket_name)
-    else:
-      _document_classes[new_class.bucket_name] = new_class
+    if "bucket_name" in attrs:
+      if new_class.bucket_name in _document_classes:
+        raise RiakkitError("Bucket name of %s already exists in the registry!"
+                              % new_class.bucket_name)
+      else:
+        _document_classes[new_class.bucket_name] = new_class
+
+      new_class.bucket = client.bucket(new_class.bucket_name)
+      if new_class.SEARCHABLE:
+        new_class.bucket.enable_search()
 
     return new_class
 
