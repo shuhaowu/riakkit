@@ -1,0 +1,47 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module riakkit.utils</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="riakkit.html"><font color="#ffffff">riakkit</font></a>.utils</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/shuhao/Dropbox/RandomProjects/riakkit/riakkit/utils.py">/home/shuhao/Dropbox/RandomProjects/riakkit/riakkit/utils.py</a></font></td></tr></table>
+    <p><tt>This&nbsp;module&nbsp;provides&nbsp;some&nbsp;utility&nbsp;function&nbsp;for&nbsp;both&nbsp;internal&nbsp;and&nbsp;external<br>
+uses.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-getProperty"><strong>getProperty</strong></a>(name, attrs, parents)</dt><dd><tt>Used&nbsp;in&nbsp;__new__&nbsp;while&nbsp;getting&nbsp;attributes&nbsp;of&nbsp;class&nbsp;objects&nbsp;that's&nbsp;about&nbsp;to<br>
+be&nbsp;created.<br>
+&nbsp;<br>
+This&nbsp;also&nbsp;looks&nbsp;up&nbsp;the&nbsp;ladder&nbsp;of&nbsp;the&nbsp;parents&nbsp;of&nbsp;this&nbsp;class&nbsp;object.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;name:&nbsp;Name&nbsp;of&nbsp;the&nbsp;attribute<br>
+&nbsp;&nbsp;attrs:&nbsp;The&nbsp;attributes&nbsp;from&nbsp;the&nbsp;__new__&nbsp;methods.<br>
+&nbsp;&nbsp;parents:&nbsp;The&nbsp;class&nbsp;objects&nbsp;that's&nbsp;the&nbsp;parent&nbsp;of&nbsp;this&nbsp;class&nbsp;from&nbsp;the&nbsp;__new__.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;None&nbsp;if&nbsp;the&nbsp;attributes&nbsp;is&nbsp;not&nbsp;found&nbsp;from&nbsp;the&nbsp;attrs&nbsp;nor&nbsp;the&nbsp;parents.<br>
+&nbsp;&nbsp;Otherwise&nbsp;the&nbsp;first&nbsp;one&nbsp;that's&nbsp;found,&nbsp;from&nbsp;attrs&nbsp;to&nbsp;BFS'ed&nbsp;parents.</tt></dd></dl>
+ <dl><dt><a name="-walkParents"><strong>walkParents</strong></a>(parents, bases<font color="#909090">=('Document', 'type', 'object')</font>)</dt><dd><tt>Walks&nbsp;through&nbsp;the&nbsp;parents&nbsp;and&nbsp;return&nbsp;each&nbsp;parent&nbsp;class&nbsp;object&nbsp;uptil&nbsp;the<br>
+name&nbsp;of&nbsp;the&nbsp;classes&nbsp;specified&nbsp;in&nbsp;bases.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;p:&nbsp;The&nbsp;list&nbsp;of&nbsp;direct&nbsp;parents&nbsp;of&nbsp;a&nbsp;class&nbsp;object<br>
+&nbsp;&nbsp;bases:&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;classes&nbsp;that's&nbsp;considered&nbsp;to&nbsp;to&nbsp;be&nbsp;the&nbsp;ones&nbsp;that<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;should&nbsp;not&nbsp;be&nbsp;included&nbsp;and&nbsp;the&nbsp;end&nbsp;nodes.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default:&nbsp;("Document",&nbsp;"type",&nbsp;"object")<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;list&nbsp;of&nbsp;all&nbsp;the&nbsp;parents,&nbsp;every&nbsp;level.&nbsp;Ordered&nbsp;via&nbsp;breath&nbsp;first&nbsp;search,<br>
+&nbsp;&nbsp;although&nbsp;each&nbsp;levels&nbsp;are&nbsp;not&nbsp;separated</tt></dd></dl>
+</td></tr></table>
+</body></html>
