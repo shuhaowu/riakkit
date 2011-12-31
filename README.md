@@ -480,7 +480,10 @@ don't need to specify `client` and `bucket_name` class variables.
 
     >>> from riakkit import EmDocument
     >>> class Admin(EmDocument):
-    ...     email = types.StringProperty(required=True)
+    ...     email = types.StringProperty()
+    >>> class Page(EmDocument):
+    ...     name = types.StringProperty()
+    ...     content = types.StringProperty()
 
 Then we need to use `EmDocumentProperty` and specify the `emdocument_class`.
 
@@ -490,6 +493,7 @@ Then we need to use `EmDocumentProperty` and specify the `emdocument_class`.
     ...
     ...     name = types.StringProperty()
     ...     admin = types.EmDocumentProperty(emdocument_class=Admin)
+    ...     pages = types.EmDocumentsListProperty(emdocument_class=Page) # demo'ed later
 
 We can then use this:
 
@@ -519,7 +523,31 @@ variables via attributes or keys.
 Also, uniques are not allowed, reference properties cannot have collection_name
 LinkedDocuments are not allowed at all.
 
-Coming soon: List of EmDocuments
+We could also use a list of EmDocuments as you probably have figured out by now:
+
+    >>> same_website.pages = []
+    >>> home = Page(name="Home", content="Hello World!")
+    >>> same_website.pages.append(home)
+
+You can also just append a dictionary. Via some magic it auto turns into a Page
+instance.
+
+    >>> same_website.pages.append({"name" : "About", "content" : "Riakkit!"})
+    >>> same_website.save()
+    >>> the_website.reload()
+    >>> print the_website.pages[0].name, the_website.pages[0].content
+    Home Hello World!
+    >>> print the_website.pages[1].name, the_website.pages[1].content
+    About Riakkit!
+
+You can add extra attributes to `EmDocument` just like you would with regular
+`Document`.
+
+    >>> same_website.pages.append({"name" : "Contact", "content" : "Contact us here!", "random_attr" : 1})
+    >>> same_website.save()
+    >>> the_website.reload()
+    >>> print the_website.pages[2].random_attr
+    1
 
 Advanced stuff
 --------------

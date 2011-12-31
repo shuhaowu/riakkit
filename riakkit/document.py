@@ -385,7 +385,7 @@ class Document(object):
       if name not in self._data:
         if self._meta[name].required:
           raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
-        data_to_be_saved[name] = None
+        data_to_be_saved[name] = self._meta[name].defaultValue()
       else:
         if self._meta[name].unique:
           if self._meta[name].unique_bucket.get(self._meta[name].convertToDb(self._data[name])).exists():
@@ -405,7 +405,7 @@ class Document(object):
       if name not in self._data:
         if self._meta["_references"][name].required:
           raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
-        data_to_be_saved[name] = None
+        data_to_be_saved[name] = self._meta[name].defaultValue()
       else:
         data_to_be_saved[name] = self._meta["_references"][name].convertToDb(self._data[name])
         col_name = self._meta["_references"][name].collection_name

@@ -135,8 +135,7 @@ class BaseProperty(object):
     Returns:
       The default value for this type.
     """
-    return self.default or None
-
+    return self.default
 
 
 class DictProperty(BaseProperty):
@@ -200,14 +199,6 @@ class IntegerProperty(BaseProperty):
     value = BaseProperty.standardize(self, value)
     return int(value)
 
-  def defaultValue(self):
-    """Default value for integer
-
-    Returns:
-      0
-    """
-    return self.default or 0
-
   def validate(self, value):
     return BaseProperty.validate(self, value) and isinstance(value, (int, long, NONE_TYPE))
 
@@ -216,14 +207,6 @@ class FloatProperty(BaseProperty):
   def standardize(self, value):
     value = BaseProperty.standardize(self, value)
     return float(value)
-
-  def defaultValue(self):
-    """Default value for integer
-
-    Returns:
-      0.0
-    """
-    return self.default or 0.0
 
   def validate(self, value):
     return BaseProperty.validate(self, value) and isinstance(value, (float, int, long, NONE_TYPE))
@@ -448,14 +431,19 @@ class EmDocumentProperty(BaseProperty):
                                 backwardprocessors=backwardprocessors)
     self.emdocument_class = emdocument_class
 
+  def validate(self, value):
+    return BaseProperty.validate(self, value) and isinstance(value, (self.emdocument_class, NONE_TYPE, dict))
+
   def standardize(self, value):
     value = BaseProperty.standardize(self, value)
-    if isinstance(value, dict):
+    if isinstance(value, self.emdocument_class):
+      return value
+    elif isinstance(value, dict):
       return self.emdocument_class(value)
     elif value is None:
       return None
     else:
-      raise TypeError("The type of the EmDocument must be either None or dict.")
+      raise TypeError("The type of the EmDocument must be dict or None.")
 
   def convertToDb(self, value):
     value = BaseProperty.convertToDb(self, value)
@@ -465,3 +453,63 @@ class EmDocumentProperty(BaseProperty):
     if value is not None:
       value = self.emdocument_class(value)
     return BaseProperty.convertFromDb(self, value)
+
+class EmDocumentsListProperty(BaseProperty):
+  """Property for a list of EmDocuments"""
+  class EmDocumentsList(list):
+    """A special list that's a child of the built in list. Upon append it
+    converts values like EmDocumentProperty. All interfaces except init stays
+    the same. __init__ takes in a mandatory emdocument_class
+    """
+    def __init__(self, emdocument_class, iterable=[]):
+      """Initializes the list.
+      The iterable will be turned into EmDocuments as well.
+
+      Args:
+        emdocument_class: The class for the custom EmDocument
+      """
+      self.emdocument_class = emdocument_class
+      new_list = []
+      for item in iterable:
+        new_list.append(self._standardize(item))
+      list.__init__(self, new_list)
+
+    def _standardize(self, x):
+      if isinstance(x, self.emdocument_class):
+        value = x
+      elif isinstance(x, dict):
+        value = self.emdocument_class(x)
+      else:
+        raise TypeError("The type of the EmDocument must be either dict or the class itself.")
+      return value
+
+    def append(self, x):
+      list.append(self, self._standardize(x))
+
+  def __init__(self, emdocument_class, required=False, validators=[],
+                     forwardprocessors=[], backwardprocessors=[]):
+    """Initializes a EmDocumentsListProperty class
+
+    Args:
+      emdocument_class: The EmDocument class to be used.
+    """
+    BaseProperty.__init__(self, required=required, validators=validators,
+                                forwardprocessors=forwardprocessors,
+                                backwardprocessors=backwardprocessors)
+    self.emdocument_class = emdocument_class
+
+  def standardize(self, value):
+    value = BaseProperty.standardize(self, value)
+    return EmDocumentsListProperty.EmDocumentsList(self.emdocument_class, value)
+
+  def convertToDb(self, value):
+    value = BaseProperty.convertToDb(self, value)
+    return None if value is None else list(value)
+
+  def convertFromDb(self, value):
+    if value is not None:
+      value = EmDocumentsListProperty.EmDocumentsList(self.emdocument_class, value)
+    return BaseProperty.convertFromDb(self, value)
+
+  def defaultValue(self):
+    return EmDocumentsListProperty.EmDocumentsList(self.emdocument_class)

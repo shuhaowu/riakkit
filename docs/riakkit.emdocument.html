@@ -25,21 +25,18 @@
 #&nbsp;along&nbsp;with&nbsp;RiakKit.&nbsp;&nbsp;If&nbsp;not,&nbsp;see&nbsp;&lt;<a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#aa55cc">
-<td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
-    
-<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="datetime.html">datetime</a><br>
-</td><td width="25%" valign=top><a href="time.html">time</a><br>
-</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ee77aa">
 <td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
     
 <tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="__builtin__.html#dict">__builtin__.dict</a>(<a href="__builtin__.html#object">__builtin__.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="riakkit.emdocument.html#EmDocument">EmDocument</a>
+</font></dt></dl>
+</dd>
 <dt><font face="helvetica, arial"><a href="__builtin__.html#type">__builtin__.type</a>(<a href="__builtin__.html#object">__builtin__.object</a>)
 </font></dt><dd>
 <dl>
@@ -47,5 +44,135 @@
 </font></dt></dl>
 </dd>
 </dl>
- <strong>EmDocumentMetaclass</strong> = &lt;class 'riakkit.emdocument.EmDocumentMetaclass'&gt;</td></tr></table>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="EmDocument">class <strong>EmDocument</strong></a>(<a href="__builtin__.html#dict">__builtin__.dict</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;base&nbsp;Embedded&nbsp;Document&nbsp;class&nbsp;for&nbsp;embedded&nbsp;documents&nbsp;to&nbsp;extend&nbsp;from.<br>
+&nbsp;<br>
+<a href="#EmDocument">EmDocument</a>&nbsp;(Embedded&nbsp;document)&nbsp;is&nbsp;a&nbsp;Document&nbsp;like&nbsp;class&nbsp;that&nbsp;could&nbsp;be&nbsp;embedded<br>
+into&nbsp;documents.&nbsp;This&nbsp;extends&nbsp;both&nbsp;from&nbsp;the&nbsp;<a href="__builtin__.html#dict">dict</a>&nbsp;<a href="__builtin__.html#type">type</a>.<br>
+&nbsp;<br>
+<a href="#EmDocument">EmDocument</a>&nbsp;should&nbsp;be&nbsp;able&nbsp;to&nbsp;embed&nbsp;<a href="#EmDocument">EmDocument</a>&nbsp;as&nbsp;well.&nbsp;When&nbsp;saved&nbsp;to&nbsp;the<br>
+database,&nbsp;<a href="#EmDocument">EmDocument</a>&nbsp;becomes&nbsp;a&nbsp;dictionary.<br>
+&nbsp;<br>
+<a href="#EmDocument">EmDocument</a>&nbsp;is&nbsp;not&nbsp;similar&nbsp;to&nbsp;Document&nbsp;and&nbsp;it&nbsp;has&nbsp;a&nbsp;lot&nbsp;of&nbsp;limitations.&nbsp;First<br>
+off,&nbsp;there&nbsp;is&nbsp;no&nbsp;unique&nbsp;checking,&nbsp;there&nbsp;is&nbsp;not&nbsp;LinkedDocuments&nbsp;and&nbsp;for<br>
+ReferenceBaseProperty,&nbsp;there's&nbsp;no&nbsp;collection_name&nbsp;AND&nbsp;there's&nbsp;no&nbsp;linking&nbsp;to<br>
+other&nbsp;<a href="#EmDocument">EmDocument</a>.&nbsp;<a href="#EmDocument">EmDocument</a>&nbsp;doesn't&nbsp;have&nbsp;all&nbsp;the&nbsp;APIs&nbsp;of&nbsp;Document.&nbsp;It's&nbsp;more<br>
+like&nbsp;a&nbsp;fancy&nbsp;DictProperty&nbsp;with&nbsp;<a href="__builtin__.html#type">type</a>&nbsp;conversion&nbsp;and&nbsp;checking.&nbsp;No&nbsp;keys,&nbsp;either.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.emdocument.html#EmDocument">EmDocument</a></dd>
+<dd><a href="__builtin__.html#dict">__builtin__.dict</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="EmDocument-__getattr__"><strong>__getattr__</strong></a> = <a href="#EmDocument-__getitem__">__getitem__</a>(self, name)</dt></dl>
+
+<dl><dt><a name="EmDocument-__getitem__"><strong>__getitem__</strong></a>(self, name)</dt></dl>
+
+<dl><dt><a name="EmDocument-__setattr__"><strong>__setattr__</strong></a> = <a href="#EmDocument-__setitem__">__setitem__</a>(self, name, value)</dt></dl>
+
+<dl><dt><a name="EmDocument-__setitem__"><strong>__setitem__</strong></a>(self, name, value)</dt></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__metaclass__</strong> = &lt;class 'riakkit.emdocument.EmDocumentMetaclass'&gt;<dd><tt>Meta&nbsp;class&nbsp;that&nbsp;the&nbsp;EmDocuments&nbsp;class&nbsp;is&nbsp;made&nbsp;from.</tt></dl>
+
+<hr>
+Methods inherited from <a href="__builtin__.html#dict">__builtin__.dict</a>:<br>
+<dl><dt><a name="EmDocument-__cmp__"><strong>__cmp__</strong></a>(...)</dt><dd><tt>x.<a href="#EmDocument-__cmp__">__cmp__</a>(y)&nbsp;&lt;==&gt;&nbsp;cmp(x,y)</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-__contains__"><strong>__contains__</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-__contains__">__contains__</a>(k)&nbsp;-&gt;&nbsp;True&nbsp;if&nbsp;D&nbsp;has&nbsp;a&nbsp;key&nbsp;k,&nbsp;else&nbsp;False</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-__delattr__"><strong>__delattr__</strong></a> = __delitem__(...)</dt><dd><tt>x.<a href="#EmDocument-__delitem__">__delitem__</a>(y)&nbsp;&lt;==&gt;&nbsp;del&nbsp;x[y]</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-__delitem__"><strong>__delitem__</strong></a>(...)</dt><dd><tt>x.<a href="#EmDocument-__delitem__">__delitem__</a>(y)&nbsp;&lt;==&gt;&nbsp;del&nbsp;x[y]</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-__eq__"><strong>__eq__</strong></a>(...)</dt><dd><tt>x.<a href="#EmDocument-__eq__">__eq__</a>(y)&nbsp;&lt;==&gt;&nbsp;x==y</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-__ge__"><strong>__ge__</strong></a>(...)</dt><dd><tt>x.<a href="#EmDocument-__ge__">__ge__</a>(y)&nbsp;&lt;==&gt;&nbsp;x&gt;=y</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#EmDocument-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-__gt__"><strong>__gt__</strong></a>(...)</dt><dd><tt>x.<a href="#EmDocument-__gt__">__gt__</a>(y)&nbsp;&lt;==&gt;&nbsp;x&gt;y</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#EmDocument-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(<a href="__builtin__.html#type">type</a>(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-__iter__"><strong>__iter__</strong></a>(...)</dt><dd><tt>x.<a href="#EmDocument-__iter__">__iter__</a>()&nbsp;&lt;==&gt;&nbsp;iter(x)</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-__le__"><strong>__le__</strong></a>(...)</dt><dd><tt>x.<a href="#EmDocument-__le__">__le__</a>(y)&nbsp;&lt;==&gt;&nbsp;x&lt;=y</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-__len__"><strong>__len__</strong></a>(...)</dt><dd><tt>x.<a href="#EmDocument-__len__">__len__</a>()&nbsp;&lt;==&gt;&nbsp;len(x)</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-__lt__"><strong>__lt__</strong></a>(...)</dt><dd><tt>x.<a href="#EmDocument-__lt__">__lt__</a>(y)&nbsp;&lt;==&gt;&nbsp;x&lt;y</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-__ne__"><strong>__ne__</strong></a>(...)</dt><dd><tt>x.<a href="#EmDocument-__ne__">__ne__</a>(y)&nbsp;&lt;==&gt;&nbsp;x!=y</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-__repr__"><strong>__repr__</strong></a>(...)</dt><dd><tt>x.<a href="#EmDocument-__repr__">__repr__</a>()&nbsp;&lt;==&gt;&nbsp;repr(x)</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-__sizeof__"><strong>__sizeof__</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-__sizeof__">__sizeof__</a>()&nbsp;-&gt;&nbsp;size&nbsp;of&nbsp;D&nbsp;in&nbsp;memory,&nbsp;in&nbsp;bytes</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-clear"><strong>clear</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-clear">clear</a>()&nbsp;-&gt;&nbsp;None.&nbsp;&nbsp;Remove&nbsp;all&nbsp;items&nbsp;from&nbsp;D.</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-copy"><strong>copy</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-copy">copy</a>()&nbsp;-&gt;&nbsp;a&nbsp;shallow&nbsp;copy&nbsp;of&nbsp;D</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-get"><strong>get</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-get">get</a>(k[,d])&nbsp;-&gt;&nbsp;D[k]&nbsp;if&nbsp;k&nbsp;in&nbsp;D,&nbsp;else&nbsp;d.&nbsp;&nbsp;d&nbsp;defaults&nbsp;to&nbsp;None.</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-has_key"><strong>has_key</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-has_key">has_key</a>(k)&nbsp;-&gt;&nbsp;True&nbsp;if&nbsp;D&nbsp;has&nbsp;a&nbsp;key&nbsp;k,&nbsp;else&nbsp;False</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-items"><strong>items</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-items">items</a>()&nbsp;-&gt;&nbsp;list&nbsp;of&nbsp;D's&nbsp;(key,&nbsp;value)&nbsp;pairs,&nbsp;as&nbsp;2-tuples</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-iteritems"><strong>iteritems</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-iteritems">iteritems</a>()&nbsp;-&gt;&nbsp;an&nbsp;iterator&nbsp;over&nbsp;the&nbsp;(key,&nbsp;value)&nbsp;items&nbsp;of&nbsp;D</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-iterkeys"><strong>iterkeys</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-iterkeys">iterkeys</a>()&nbsp;-&gt;&nbsp;an&nbsp;iterator&nbsp;over&nbsp;the&nbsp;keys&nbsp;of&nbsp;D</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-itervalues"><strong>itervalues</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-itervalues">itervalues</a>()&nbsp;-&gt;&nbsp;an&nbsp;iterator&nbsp;over&nbsp;the&nbsp;values&nbsp;of&nbsp;D</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-keys"><strong>keys</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-keys">keys</a>()&nbsp;-&gt;&nbsp;list&nbsp;of&nbsp;D's&nbsp;keys</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-pop"><strong>pop</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-pop">pop</a>(k[,d])&nbsp;-&gt;&nbsp;v,&nbsp;remove&nbsp;specified&nbsp;key&nbsp;and&nbsp;return&nbsp;the&nbsp;corresponding&nbsp;value.<br>
+If&nbsp;key&nbsp;is&nbsp;not&nbsp;found,&nbsp;d&nbsp;is&nbsp;returned&nbsp;if&nbsp;given,&nbsp;otherwise&nbsp;KeyError&nbsp;is&nbsp;raised</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-popitem"><strong>popitem</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-popitem">popitem</a>()&nbsp;-&gt;&nbsp;(k,&nbsp;v),&nbsp;remove&nbsp;and&nbsp;return&nbsp;some&nbsp;(key,&nbsp;value)&nbsp;pair&nbsp;as&nbsp;a<br>
+2-tuple;&nbsp;but&nbsp;raise&nbsp;KeyError&nbsp;if&nbsp;D&nbsp;is&nbsp;empty.</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-setdefault"><strong>setdefault</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-setdefault">setdefault</a>(k[,d])&nbsp;-&gt;&nbsp;D.<a href="#EmDocument-get">get</a>(k,d),&nbsp;also&nbsp;set&nbsp;D[k]=d&nbsp;if&nbsp;k&nbsp;not&nbsp;in&nbsp;D</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-update"><strong>update</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-update">update</a>(E,&nbsp;**F)&nbsp;-&gt;&nbsp;None.&nbsp;&nbsp;Update&nbsp;D&nbsp;from&nbsp;<a href="__builtin__.html#dict">dict</a>/iterable&nbsp;E&nbsp;and&nbsp;F.<br>
+If&nbsp;E&nbsp;has&nbsp;a&nbsp;.<a href="#EmDocument-keys">keys</a>()&nbsp;method,&nbsp;does:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;k&nbsp;in&nbsp;E:&nbsp;D[k]&nbsp;=&nbsp;E[k]<br>
+If&nbsp;E&nbsp;lacks&nbsp;.<a href="#EmDocument-keys">keys</a>()&nbsp;method,&nbsp;does:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(k,&nbsp;v)&nbsp;in&nbsp;E:&nbsp;D[k]&nbsp;=&nbsp;v<br>
+In&nbsp;either&nbsp;case,&nbsp;this&nbsp;is&nbsp;followed&nbsp;by:&nbsp;for&nbsp;k&nbsp;in&nbsp;F:&nbsp;D[k]&nbsp;=&nbsp;F[k]</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-values"><strong>values</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-values">values</a>()&nbsp;-&gt;&nbsp;list&nbsp;of&nbsp;D's&nbsp;values</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-viewitems"><strong>viewitems</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-viewitems">viewitems</a>()&nbsp;-&gt;&nbsp;a&nbsp;set-like&nbsp;object&nbsp;providing&nbsp;a&nbsp;view&nbsp;on&nbsp;D's&nbsp;items</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-viewkeys"><strong>viewkeys</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-viewkeys">viewkeys</a>()&nbsp;-&gt;&nbsp;a&nbsp;set-like&nbsp;object&nbsp;providing&nbsp;a&nbsp;view&nbsp;on&nbsp;D's&nbsp;keys</tt></dd></dl>
+
+<dl><dt><a name="EmDocument-viewvalues"><strong>viewvalues</strong></a>(...)</dt><dd><tt>D.<a href="#EmDocument-viewvalues">viewvalues</a>()&nbsp;-&gt;&nbsp;an&nbsp;object&nbsp;providing&nbsp;a&nbsp;view&nbsp;on&nbsp;D's&nbsp;values</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="__builtin__.html#dict">__builtin__.dict</a>:<br>
+<dl><dt><strong>__hash__</strong> = None</dl>
+
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#EmDocument-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;<a href="__builtin__.html#type">type</a>&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<dl><dt><strong>fromkeys</strong> = &lt;built-in method fromkeys of EmDocumentMetaclass object&gt;<dd><tt><a href="__builtin__.html#dict">dict</a>.<a href="#EmDocument-fromkeys">fromkeys</a>(S[,v])&nbsp;-&gt;&nbsp;New&nbsp;<a href="__builtin__.html#dict">dict</a>&nbsp;with&nbsp;keys&nbsp;from&nbsp;S&nbsp;and&nbsp;values&nbsp;equal&nbsp;to&nbsp;v.<br>
+v&nbsp;defaults&nbsp;to&nbsp;None.</tt></dl>
+
+</td></tr></table> <strong>EmDocumentMetaclass</strong> = &lt;class 'riakkit.emdocument.EmDocumentMetaclass'&gt;</td></tr></table>
 </body></html>
