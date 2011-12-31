@@ -433,3 +433,35 @@ class LinkedDocuments(ReferenceBaseProperty):
 
   def defaultValue(self):
     return []
+
+class EmDocumentProperty(BaseProperty):
+  """The EmDocument property"""
+  def __init__(self, emdocument_class, required=False, validators=[],
+                     forwardprocessors=[], backwardprocessors=[]):
+    """Initializes a EmDocumentProperty class
+
+    Args:
+      emdocument_class: The EmDocument class to be used.
+    """
+    BaseProperty.__init__(self, required=required, validators=validators,
+                                forwardprocessors=forwardprocessors,
+                                backwardprocessors=backwardprocessors)
+    self.emdocument_class = emdocument_class
+
+  def standardize(self, value):
+    value = BaseProperty.standardize(self, value)
+    if isinstance(value, dict):
+      return self.emdocument_class(value)
+    elif value is None:
+      return None
+    else:
+      raise TypeError("The type of the EmDocument must be either None or dict.")
+
+  def convertToDb(self, value):
+    value = BaseProperty.convertToDb(self, value)
+    return None if value is None else dict(value)
+
+  def convertFromDb(self, value):
+    if value is not None:
+      value = self.emdocument_class(value)
+    return BaseProperty.convertFromDb(self, value)

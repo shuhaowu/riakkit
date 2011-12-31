@@ -17,7 +17,6 @@ from riakkit.queries import *
 import json
 from uuid import uuid1
 
-import riak
 from riak.mapreduce import RiakLink, RiakObject
 from riakkit.types import BaseProperty, LinkedDocuments, ReferenceBaseProperty, ReferenceProperty, MultiReferenceProperty
 
@@ -45,24 +44,10 @@ class DocumentMetaclass(type):
   Checks for bucket_name in each class, as those are necessary.
   """
 
-  @staticmethod
-  def _getProperty(name, attrs, parents):
-    parents = walkParents(parents)
-    value = attrs.get(name, None)
-    i = 0
-    length = len(parents)
-    while value is None:
-      if i == length:
-        return None
-      value = getattr(parents[i], name, None)
-      i += 1
-
-    return value
-
   def __new__(cls, clsname, parents, attrs):
     # Makes sure these classes are not registered.
 
-    client = DocumentMetaclass._getProperty("client", attrs, parents)
+    client = getProperty("client", attrs, parents)
     if client is None:
       return type.__new__(cls, clsname, parents, attrs)
 
@@ -75,8 +60,6 @@ class DocumentMetaclass(type):
     uniques = []
 
     for name in attrs.keys():
-      if name in ("_links", "_references"):
-        raise RuntimeError("%s is not allowed." % name)
       if isinstance(attrs[name], LinkedDocuments):
         links[name] = prop = attrs.pop(name)
         if prop.collection_name:
@@ -118,7 +101,7 @@ class DocumentMetaclass(type):
     attrs["_meta"] = meta
     attrs["_uniques"] = uniques
     attrs["_hasdefaults"] = hasdefaults
-    attrs["SEARCHABLE"] = DocumentMetaclass._getProperty("SEARCHABLE", attrs, parents)
+    attrs["SEARCHABLE"] = getProperty("SEARCHABLE", attrs, parents)
     attrs["instances"] = {}
     new_class = type.__new__(cls, clsname, parents, attrs)
 
@@ -344,11 +327,20 @@ class Document(object):
       if name in self._meta["_links"]:
         self._links[name] = value
       else:
+        validator = lambda x: True
+        standardizer = lambda x: x
         if name in self._meta:
-          if not self._meta[name].validate(value):
-            raise ValueError("Validation did not pass for %s for the field %s.%s" % (value, self.__class__.__name__, name))
-          value = self._meta[name].standardize(value)
+          validator = self._meta[name].validate
+          standardizer = self._meta[name].standardize
+        elif name in self._meta["_references"]:
+          validator = self._meta["_references"][name].validate
+          standardizer = self._meta["_references"][name].standardize
+
+        if not validator(value):
+          raise ValueError("Validation did not pass for %s for the field %s.%s" % (value, self.__class__.__name__, name))
+        value = standardizer(value)
         self._data[name] = value
+
       self._saved = False
 
   def __delattr__(self, name):

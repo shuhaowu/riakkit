@@ -22,3 +22,4 @@ __authors__ = [
 VERSION = "0.2.1a"
 
 from riakkit.document import Document
+from riakkit.emdocument import EmDocument

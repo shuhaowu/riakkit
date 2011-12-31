@@ -466,6 +466,60 @@ the object is {key : <the key of the document>}. Let's see how that works.
     >>> anothercooluser = CoolUser(username="anotheruser")
     >>> anothercooluser.save()  # This is done successfully
 
+Embedded Document
+-----------------
+
+Since we're working with NoSQL.. we can store complex data types, such as
+a dictionary (or an array of dictionaries, to be implemented).
+
+This is where `EmDocument` comes in handy. `EmDocument` acts like a `Document`,
+but it is stored as just a plain old dictionary embedded inside a `Document`.
+
+We fist need to extend `EmDocument` similar to extending `Document`, though we
+don't need to specify `client` and `bucket_name` class variables.
+
+    >>> from riakkit import EmDocument
+    >>> class Admin(EmDocument):
+    ...     email = types.StringProperty(required=True)
+
+Then we need to use `EmDocumentProperty` and specify the `emdocument_class`.
+
+    >>> class Website(Document):
+    ...     client = some_client
+    ...     bucket_name = "test_website"
+    ...
+    ...     name = types.StringProperty()
+    ...     admin = types.EmDocumentProperty(emdocument_class=Admin)
+
+We can then use this:
+
+    >>> the_admin = Admin(email="admin@thekks.net")
+    >>> the_website = Website(name="The Website", admin=the_admin)
+    >>> the_website.save()
+    >>> print the_website.admin.email
+    admin@thekks.net
+    >>> same_website = Website.getWithKey(the_website.key)
+    >>> print same_website.admin.email
+    admin@thekks.net
+    >>> print isinstance(same_website.admin, Admin)
+    True
+
+We could also just set a dictionary.
+
+    >>> same_website.admin = {"email" : "email@example.com"}
+    >>> print isinstance(same_website.admin, Admin)
+    True
+    >>> print same_website.admin.email
+    email@example.com
+
+Essentially everything works with `EmDocument` works for `Document`.
+However, no methods (class or variable) is available other than setting
+variables via attributes or keys.
+
+Also, uniques are not allowed, reference properties cannot have collection_name
+LinkedDocuments are not allowed at all.
+
+Coming soon: List of EmDocuments
 
 Advanced stuff
 --------------

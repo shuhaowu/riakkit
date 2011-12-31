@@ -1,6 +1,4 @@
 #!/usr/bin/python
-import pdb
-
 
 def deleteAllKeys(client, bucketname):
   bucket = client.bucket(bucketname)
@@ -25,6 +23,7 @@ if __name__ == "__main__":
   deleteAllKeys(client, "test_users")
   deleteAllKeys(client, "test_comments")
   deleteAllKeys(client, "demos")
+  deleteAllKeys(client, "test_website")
   deleteAllKeys(client, "coolusers")
   deleteAllKeys(client, "_CoolUser_ul_username")
   deleteAllKeys(client, "testdoc")
