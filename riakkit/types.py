@@ -130,7 +130,11 @@ class BaseProperty(object):
     return True
 
   def defaultValue(self):
-    """The default value for this type
+    """The default value for this type.
+
+    The default value is the value after being standardize()'d. Whenever an
+    attribute is not present in the data when saved, this value will be
+    substituted in.
 
     Returns:
       The default value for this type.
@@ -310,7 +314,7 @@ class DateTimeProperty(BaseProperty):
     raise TypeError("DateTimeProperty only accepts integer, long, float, or datetime.datetime, not %s" % str(value))
 
   def defaultValue(self):
-    """Returns the default specified or now"""
+    """Returns the default specified or now."""
     return self.default or datetime.datetime.utcnow()
 
 
@@ -446,6 +450,7 @@ class EmDocumentProperty(BaseProperty):
       raise TypeError("The type of the EmDocument must be dict or None.")
 
   def convertToDb(self, value):
+    value.verify()
     value = BaseProperty.convertToDb(self, value)
     return None if value is None else dict(value)
 
@@ -471,6 +476,12 @@ class EmDocumentsListProperty(BaseProperty):
       self.emdocument_class = emdocument_class
       new_list = self._standardizeList(iterable)
       list.__init__(self, new_list)
+
+    def verifyAll(self):
+      """Verifies all the data to be ok to be saved. Currently only checking
+      default. Raises errors if not passed."""
+      for item in self:
+        item.verify()
 
     def _standardizeList(self, l):
       new_l = []
@@ -517,6 +528,7 @@ class EmDocumentsListProperty(BaseProperty):
     return EmDocumentsListProperty.EmDocumentsList(self.emdocument_class, value)
 
   def convertToDb(self, value):
+    value.verifyAll()
     value = BaseProperty.convertToDb(self, value)
     return None if value is None else list(value)
 

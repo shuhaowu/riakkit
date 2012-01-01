@@ -72,6 +72,16 @@ class EmDocument(dict):
     raise AttributeError("Attribute %s not found with %s." %
         (name, self.__class__.__name__))
 
+  def verify(self):
+    """Verifies the data. Currently only checking if required elements are
+    present."""
+    for name in self._meta:
+      if name[0] == "_":
+        continue
+
+      if name not in self and self._meta[name].required:
+        raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
+
   def __getitem__(self, name):
     inMeta = name in self._meta
     inData = name in self
@@ -101,7 +111,7 @@ class EmDocument(dict):
     if not validator(value):
       raise ValueError("Validation did not pass for %s for the field %s.%s" % (value, self.__class__.__name__, name))
     value = standardizer(value)
-    self.__setitem__(name, value)
+    dict.__setitem__(self, name, value)
 
   __getattr__ = __getitem__
   __setattr__ = __setitem__

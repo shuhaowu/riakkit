@@ -385,13 +385,13 @@ class Document(object):
       if name not in self._data:
         if self._meta[name].required:
           raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
-        data_to_be_saved[name] = self._meta[name].defaultValue()
+        self._data[name] = self._meta[name].defaultValue()
       else:
         if self._meta[name].unique:
           if self._meta[name].unique_bucket.get(self._meta[name].convertToDb(self._data[name])).exists():
             raise ValueError("'%s' already exists for '%s'!" % (self._data[name], name))
 
-        data_to_be_saved[name] = self._meta[name].convertToDb(self._data[name])
+      data_to_be_saved[name] = self._meta[name].convertToDb(self._data[name])
 
     # Processes the data that's not in the meta
     for name in self._data:

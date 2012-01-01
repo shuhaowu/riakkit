@@ -135,7 +135,6 @@ Deleting objects is equally as easy.
     NotFoundError: Key '<yourkey>' not found!
 
 
-
 Linked Documents
 ----------------
 
@@ -430,6 +429,14 @@ We can now retrieve it again and see if this worked.
     >>> print same_demo.levels
     user
 
+One more note on the `DateTimeProperty`: if you don't specify, it will use
+`utcnow` as the default value:
+
+    >>> another_demo = Demo()
+    >>> another_demo.save()
+    >>> print another_demo.some_date #doctest: +SKIP
+    <This will print the date time this is ran>
+
 
 Notice how the key of 42 (integer) got converted to u'42' (unicode). This is due
 to JSON only allowing strings as keys.
@@ -480,7 +487,7 @@ don't need to specify `client` and `bucket_name` class variables.
 
     >>> from riakkit import EmDocument
     >>> class Admin(EmDocument):
-    ...     email = types.StringProperty()
+    ...     email = types.StringProperty(required=True) # Required works, see demo later
     >>> class Page(EmDocument):
     ...     name = types.StringProperty()
     ...     content = types.StringProperty()
@@ -495,13 +502,21 @@ Then we need to use `EmDocumentProperty` and specify the `emdocument_class`.
     ...     admin = types.EmDocumentProperty(emdocument_class=Admin)
     ...     pages = types.EmDocumentsListProperty(emdocument_class=Page) # demo'ed later
 
-We can then use this:
+We can then use this, let's demo the `required` first:
 
-    >>> the_admin = Admin(email="admin@thekks.net")
+    >>> the_admin = Admin()
     >>> the_website = Website(name="The Website", admin=the_admin)
     >>> the_website.save()
+    Traceback (most recent call last):
+        ...
+    AttributeError: 'email' is required for 'Admin'.
+
+Alright, let's do this the right way this time:
+
+    >>> the_admin.email = "admin@thekks.net"
     >>> print the_website.admin.email
     admin@thekks.net
+    >>> the_website.save() # Save again as required.
     >>> same_website = Website.getWithKey(the_website.key)
     >>> print same_website.admin.email
     admin@thekks.net
@@ -521,7 +536,8 @@ However, no methods (class or variable) is available other than setting
 variables via attributes or keys.
 
 Also, uniques are not allowed, reference properties cannot have collection_name
-LinkedDocuments are not allowed at all.
+LinkedDocuments are not allowed at all. Required, however, works, as you have
+seen.
 
 We could also use a list of EmDocuments as you probably have figured out by now:
 
