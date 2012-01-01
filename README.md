@@ -82,7 +82,7 @@ Saving is easy, but how do we modify?
 
 Since the title is required.. we cannot save if it's not filled out.
 
-    >>> another_post = BlogPost()
+    >>> another_post = BlogPost(content="lolol")
     >>> another_post.save()
     Traceback (most recent call last):
         ...
@@ -488,6 +488,7 @@ don't need to specify `client` and `bucket_name` class variables.
     >>> from riakkit import EmDocument
     >>> class Admin(EmDocument):
     ...     email = types.StringProperty(required=True) # Required works, see demo later
+    ...     level = types.EnumProperty(["regular", "super"], default="regular") # Default works as well.
     >>> class Page(EmDocument):
     ...     name = types.StringProperty()
     ...     content = types.StringProperty()
@@ -516,12 +517,18 @@ Alright, let's do this the right way this time:
     >>> the_admin.email = "admin@thekks.net"
     >>> print the_website.admin.email
     admin@thekks.net
-    >>> the_website.save() # Save again as required.
+    >>> the_website.save() # Save again as required. This save also kicks in the default values.
+    >>> print the_website.admin.level
+    regular
+    >>> print the_admin.level
+    regular
     >>> same_website = Website.getWithKey(the_website.key)
     >>> print same_website.admin.email
     admin@thekks.net
     >>> print isinstance(same_website.admin, Admin)
     True
+    >>> print same_website.admin.level
+    regular
 
 We could also just set a dictionary.
 
@@ -665,8 +672,8 @@ reversing it to update the properties.
 Here's the work flow:
 
   1. `standardprocessors` are processors that takes values that's set by the
-     users (They are fired by the `__setattr__`). These should not be fired when
-     the objects are loaded/reloaded from the database.
+     users (They are fired by the `__setattr__`). These generally will
+     not be fired when the objects are loaded/reloaded from the database.
   2. `forwardprocessors` are processors that takes the value that's already
      "standardized" and converts it into database friendly format. (or friendly
      to `backwardprocessors`)

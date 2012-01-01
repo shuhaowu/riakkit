@@ -72,15 +72,62 @@ class EmDocument(dict):
     raise AttributeError("Attribute %s not found with %s." %
         (name, self.__class__.__name__))
 
-  def verify(self):
-    """Verifies the data. Currently only checking if required elements are
-    present."""
-    for name in self._meta:
-      if name[0] == "_":
+  @classmethod
+  def cleanupDataFromDatabase(cls, data):
+    """Cleans up the data from the database. Returns the same dictionary.
+
+    Will modify the data dictionary.
+    Used internally, you probably don't need this.
+
+    Args:
+      data: The data from the database as a dictionary
+
+    Returns:
+      The same data dictionary but altered.
+
+    """
+    for k in data:
+      if k in cls._meta:
+        data[k] = cls._meta[k].convertFromDb(data[k])
+
+    return data
+
+  def dbFriendlyData(self):
+    """Checks the data and returns the db friendly data.
+
+    This method will probably never be called manually, as it is used internally
+    This method will modify the data! (Default values if data not present)
+
+    Returns:
+      A dictionary of data that's db friendly.
+
+    """
+    data_to_be_saved = {}
+    keys = set(self._meta.keys())
+    keys.remove("_references")
+    keys.update(self.keys())
+    for name in keys:
+      if name not in self._meta:
+        data_to_be_saved[name] = dict.__getitem__(self, name)
         continue
 
-      if name not in self and self._meta[name].required:
-        raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
+      if name not in self:
+        if self._meta[name].required:
+          raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
+        dict.__setitem__(self, name, self._meta[name].defaultValue())
+
+      data_to_be_saved[name] = self._meta[name].convertToDb(dict.__getitem__(self, name)) # Faster because self.__getitem__ does checks
+
+
+    for name in self._meta["_references"]:
+      if name not in self:
+        if self._meta["_references"][name].required:
+          raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
+        dict.__setitem__(self, name, self._meta[name].defaultValue())
+
+      data_to_be_saved[name] = self._meta["_references"][name].convertToDb(dict.__getitem__(self, name))
+
+    return data_to_be_saved
 
   def __getitem__(self, name):
     inMeta = name in self._meta

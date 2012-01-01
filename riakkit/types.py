@@ -71,8 +71,10 @@ class BaseProperty(object):
   def convertToDb(self, value):
     """Converts the value from the access form a DB valid form
 
-    In theory, the value should always be valid (as it has to undergo validate
-    before this is called).
+    In theory, the value should always be valid (as it has to undergo
+    standardize before this is called).
+
+    Must be able to handle None.
 
     Args:
       value: The value to be converted
@@ -80,7 +82,10 @@ class BaseProperty(object):
     return self._processValue(value, self.forwardprocessors)
 
   def convertFromDb(self, value):
-    """Converts the value from the database back to an app friendly value.
+    """Converts the value from the database back to an app friendly value (a
+    value that standardize() will consider as valid).
+
+    Must be able to handle None.
 
     Args:
       value: The value to be converted
@@ -93,6 +98,8 @@ class BaseProperty(object):
     Document object. (i.e. standard form) (example: string to unicode etc.)
 
     This method will be called on __setattr__.
+
+    Must be able to handle None.
 
     Args:
       value: The value to be converted.
@@ -158,6 +165,8 @@ class DictProperty(BaseProperty):
     __setattr__ = dict.__setattr__
     __delattr__ = dict.__delattr__
 
+  # These will never have None, as the default value is always {}
+
   def standardize(self, value):
     value = BaseProperty.standardize(self, value)
     return DictProperty.DotDict(value)
@@ -179,7 +188,7 @@ class DictProperty(BaseProperty):
     Returns:
       {}
     """
-    return self.default or {}
+    return self.default or DictProperty.DotDict()
 
 class ListProperty(BaseProperty):
   """List property, []"""
@@ -195,12 +204,14 @@ class StringProperty(BaseProperty):
   """String property. By default this converts strings to unicode."""
   def standardize(self, value):
     value = BaseProperty.standardize(self, value)
+    if value is None: return None
     return unicode(value)
 
 class IntegerProperty(BaseProperty):
   """Integer property."""
   def standardize(self, value):
     value = BaseProperty.standardize(self, value)
+    if value is None: return None
     return int(value)
 
   def validate(self, value):
@@ -210,6 +221,7 @@ class FloatProperty(BaseProperty):
   """Floating point property"""
   def standardize(self, value):
     value = BaseProperty.standardize(self, value)
+    if value is None: return None
     return float(value)
 
   def validate(self, value):
@@ -219,6 +231,7 @@ class BooleanProperty(BaseProperty):
   """Boolean property. Pretty self explanatory."""
   def standardize(self, value):
     value = BaseProperty.standardize(self, value)
+    if value is None: return None
     return bool(value)
 
 class EnumProperty(BaseProperty):
@@ -268,7 +281,7 @@ class EnumProperty(BaseProperty):
     value = BaseProperty.standardize(self, value)
     if isinstance(value, int):
       return self._map_backward[value]
-    elif isinstance(value, str):
+    elif isinstance(value, (str, NONE_TYPE)):
       return value
 
     raise TypeError("EnumProperty only accepts string and integer, not %s." % str(value))
@@ -308,7 +321,7 @@ class DateTimeProperty(BaseProperty):
     value = BaseProperty.standardize(self, value)
     if isinstance(value, (int, float, long)):
       return datetime.datetime.utcfromtimestamp(value)
-    elif isinstance(value, datetime.datetime):
+    elif isinstance(value, (datetime.datetime, NONE_TYPE)):
       return value
 
     raise TypeError("DateTimeProperty only accepts integer, long, float, or datetime.datetime, not %s" % str(value))
@@ -450,13 +463,12 @@ class EmDocumentProperty(BaseProperty):
       raise TypeError("The type of the EmDocument must be dict or None.")
 
   def convertToDb(self, value):
-    value.verify()
     value = BaseProperty.convertToDb(self, value)
-    return None if value is None else dict(value)
+    return None if value is None else value.dbFriendlyData()
 
   def convertFromDb(self, value):
     if value is not None:
-      value = self.emdocument_class(value)
+      value = self.emdocument_class(self.emdocument_class.cleanupDataFromDatabase(value))
     return BaseProperty.convertFromDb(self, value)
 
 class EmDocumentsListProperty(BaseProperty):
@@ -472,16 +484,15 @@ class EmDocumentsListProperty(BaseProperty):
 
       Args:
         emdocument_class: The class for the custom EmDocument
+        iterable: The iterable of dictionary or the EmDocument objects
       """
       self.emdocument_class = emdocument_class
       new_list = self._standardizeList(iterable)
       list.__init__(self, new_list)
 
-    def verifyAll(self):
-      """Verifies all the data to be ok to be saved. Currently only checking
-      default. Raises errors if not passed."""
-      for item in self:
-        item.verify()
+    # Note that these standardize is not an actual property standardize.
+    # They don't have the restriction of not being able to be called after
+    # object reload.
 
     def _standardizeList(self, l):
       new_l = []
@@ -528,12 +539,19 @@ class EmDocumentsListProperty(BaseProperty):
     return EmDocumentsListProperty.EmDocumentsList(self.emdocument_class, value)
 
   def convertToDb(self, value):
-    value.verifyAll()
     value = BaseProperty.convertToDb(self, value)
-    return None if value is None else list(value)
+    if value is None:
+      return None
+
+    value = list(value)
+    for i, v in enumerate(value):
+      value[i] = v.dbFriendlyData()
+    return value
 
   def convertFromDb(self, value):
     if value is not None:
+      for i, v in enumerate(value):
+        value[i] = self.emdocument_class.cleanupDataFromDatabase(v)
       value = EmDocumentsListProperty.EmDocumentsList(self.emdocument_class, value)
     return BaseProperty.convertFromDb(self, value)
 

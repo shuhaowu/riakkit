@@ -188,7 +188,11 @@ class Document(object):
 
     for k in data:
       if k in cls._meta:
-        data[k] = cls._meta[k].convertFromDb(data[k])
+        try:
+          data[k] = cls._meta[k].convertFromDb(data[k])
+        except:
+          import pdb
+          pdb.set_trace()
 
     return data
 
@@ -378,8 +382,13 @@ class Document(object):
     data_to_be_saved = {}
 
     # Process regular data
-    for name in self._meta:
-      if name in ("_links", "_references"):
+    keys = set(self._meta.keys())
+    keys.remove("_links")
+    keys.remove("_references")
+    keys.update(self._data.keys())
+    for name in keys:
+      if name not in self._meta:
+        data_to_be_saved[name] = self._data[name]
         continue
 
       if name not in self._data:
@@ -393,11 +402,6 @@ class Document(object):
 
       data_to_be_saved[name] = self._meta[name].convertToDb(self._data[name])
 
-    # Processes the data that's not in the meta
-    for name in self._data:
-      if name not in data_to_be_saved:
-        data_to_be_saved[name] = self._data[name]
-
     other_docs_to_be_saved = []
 
     # Process References
@@ -405,21 +409,22 @@ class Document(object):
       if name not in self._data:
         if self._meta["_references"][name].required:
           raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
-        data_to_be_saved[name] = self._meta[name].defaultValue()
+        self._data[name] = self._meta[name].defaultValue()
       else:
-        data_to_be_saved[name] = self._meta["_references"][name].convertToDb(self._data[name])
         col_name = self._meta["_references"][name].collection_name
-        if isinstance(self._meta["_references"][name], ReferenceProperty):
-          docs = [self._data[name]]
-        else:
-          docs = self._data[name]
 
         if col_name:
+          if isinstance(self._meta["_references"][name], ReferenceProperty):
+            docs = [self._data[name]]
+          else:
+            docs = self._data[name]
           for doc in docs:
             current_list = doc._data.get(col_name, [])
             current_list.append(self)
             doc._data[col_name] = current_list
             other_docs_to_be_saved.append(doc)
+
+      data_to_be_saved[name] = self._meta["_references"][name].convertToDb(self._data[name])
 
     # Process object
     if self._obj:
