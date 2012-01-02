@@ -522,6 +522,19 @@ class Document(object):
       self._saved = False
 
 
+  @classmethod
+  def exists(cls, key, r=None):
+    """Check if a key exists.
+
+    Args:
+      key: The key to check if exists or not.
+      r: The R value
+
+    Returns:
+      True if the key exists, false otherwise.
+    """
+    riak_obj = cls.bucket.get(key, r)
+    return riak_obj.exists()
 
   @classmethod
   def getWithKey(cls, key, r=None):

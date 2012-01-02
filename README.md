@@ -4,11 +4,13 @@ Riakkit
 What is this?..
 ===============
 
-Riakkit is essentially an(other) object mapper for Riak. Meaning it's kind of
-like mongokit or couchdbkit, where it makes it easier to map an object to Riak.
-Initially a project designed to immitate mongokit, now it got inspired a lot by
-[riakalchemy](https://github.com/Linux2Go/riakalchemy). This is designed to fit
-a project of mine and my style of coding and use cases.
+Riakkit is essentially an([other]((https://github.com/Linux2Go/riakalchemy))
+object mapper for Riak. Meaning it's kind of like mongokit or couchdbkit,
+where it makes it easier to map an object to Riak.
+
+Initially a project designed to immitate mongokit, then I got tired of copying
+and went with my own style. This is designed to fit a project of mine and my
+style of coding and use cases.
 
 Just FYI: The project tries to follow the [Google Python style guide](http://google-styleguide.googlecode.com/svn/trunk/pyguide.html).
 
