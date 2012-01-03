@@ -518,6 +518,11 @@ class Document(object):
       if self.key in self.__class__.instances:
         del self.__class__.instances[self.key]
       self._obj.delete(rw=rw)
+
+      for name in self._uniques:
+        obj = self._meta[name].unique_bucket.get(self._data[name])
+        obj.delete()
+
       self._obj = None
       self._saved = False
 

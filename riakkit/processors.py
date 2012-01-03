@@ -32,3 +32,4 @@ def hashPassword(password, salt, algorithm=hashlib.sha1):
     So yourfunction = lambda v: hashPassword(v, SALT)
   """
   return algorithm(password + salt).hexdigest()
+
