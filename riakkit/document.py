@@ -409,7 +409,7 @@ class Document(object):
       if name not in self._data:
         if self._meta["_references"][name].required:
           raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
-        self._data[name] = self._meta[name].defaultValue()
+        self._data[name] = self._meta["_references"][name].defaultValue()
       else:
         col_name = self._meta["_references"][name].collection_name
 
