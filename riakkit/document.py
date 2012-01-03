@@ -59,19 +59,24 @@ class DocumentMetaclass(type):
     hasdefaults = {}
     uniques = []
 
+    linked_docs_col_classes = {} # propname : class
+    references_col_classes = {}
+
     for name in attrs.keys():
       if isinstance(attrs[name], LinkedDocuments):
         links[name] = prop = attrs.pop(name)
         if prop.collection_name:
           if prop.collection_name in prop.reference_class._meta["_links"] or prop.collection_name in prop.reference_class._meta["_references"]:
             raise RiakkitError("%s already in %s!" % (prop.collection_name, prop.reference_class))
-          prop.reference_class._meta["_links"][prop.collection_name] = LinkedDocuments(reference_class=cls)
+          linked_docs_col_classes[prop.collection_name] = prop.reference_class
+
       elif isinstance(attrs[name], ReferenceBaseProperty):
         references[name] = prop = attrs.pop(name)
         if prop.collection_name:
           if prop.collection_name in prop.reference_class._meta["_links"] or prop.collection_name in prop.reference_class._meta["_references"]:
             raise RiakkitError("%s already in %s!" % (prop.collection_name, prop.reference_class))
-          prop.reference_class._meta["_references"][prop.collection_name] = MultiReferenceProperty(reference_class=cls)
+          references_col_classes[prop.collection_name] = prop.reference_class
+
       elif isinstance(attrs[name], BaseProperty):
         meta[name] = prop = attrs.pop(name)
         if prop.unique:
@@ -115,6 +120,11 @@ class DocumentMetaclass(type):
       new_class.bucket = client.bucket(new_class.bucket_name)
       if new_class.SEARCHABLE:
         new_class.bucket.enable_search()
+
+    for col_name, reference_class in linked_docs_col_classes.iteritems():
+      reference_class._meta["_links"][col_name] = LinkedDocuments(reference_class=new_class)
+    for col_name, reference_class in references_col_classes.iteritems():
+      reference_class._meta["_references"][col_name] = MultiReferenceProperty(reference_class=new_class)
 
     return new_class
 
@@ -188,11 +198,9 @@ class Document(object):
 
     for k in data:
       if k in cls._meta:
-        try:
-          data[k] = cls._meta[k].convertFromDb(data[k])
-        except:
-          import pdb
-          pdb.set_trace()
+        data[k] = cls._meta[k].convertFromDb(data[k])
+      elif k in cls._meta["_references"]:
+        data[k] = cls._meta["_references"][k].convertFromDb(data[k])
 
     return data
 
@@ -225,19 +233,26 @@ class Document(object):
       else:
         return obj
 
-    if isinstance(riak_obj, str):
+    if isinstance(riak_obj, (str, unicode)):
       riak_obj = cls.bucket.get(riak_obj)
 
     if not riak_obj.exists():
       raise NotFoundError("%s not found!" % riak_obj.get_key())
 
-    data = cls._cleanupDataFromDatabase(riak_obj.get_data())
+    # This is done before so that _cleanupDataFromDatabase won't recurse
+    # infinitely with collection_name. This wouldn't cause an problem as
+    # _cleanupDataFromDatabase calls for the loading of the referenced document
+    # from cache, which load this document from cache, and it see that it
+    # exists, finish loading the referenced document, then come back and finish
+    # loading this document.
     obj = cls(riak_obj.get_key(), saved=True)
+    cls.instances[obj.key] = obj
+
+    data = cls._cleanupDataFromDatabase(riak_obj.get_data())
     obj._data = data
     links = riak_obj.get_links()
     obj._links = obj.updateLinks(links)
     obj._obj = riak_obj
-    cls.instances[obj.key] = obj
     return obj
 
   def updateLinks(self, links):
@@ -397,7 +412,7 @@ class Document(object):
         self._data[name] = self._meta[name].defaultValue()
       else:
         if self._meta[name].unique:
-          if self._meta[name].unique_bucket.get(self._meta[name].convertToDb(self._data[name])).exists():
+          if self._meta[name].unique_bucket.get(self._meta[name].convertToDb(self._data[name])).exists() and not self.__class__.bucket.get(self.key).exists():
             raise ValueError("'%s' already exists for '%s'!" % (self._data[name], name))
 
       data_to_be_saved[name] = self._meta[name].convertToDb(self._data[name])

@@ -89,6 +89,8 @@ class EmDocument(dict):
     for k in data:
       if k in cls._meta:
         data[k] = cls._meta[k].convertFromDb(data[k])
+      elif k in cls._meta["_references"]:
+        data[k] = cls._meta["_references"][k].convertFromDb(data[k])
 
     return data
 
