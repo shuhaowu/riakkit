@@ -22,7 +22,7 @@ from riakkit.types import BaseProperty, LinkedDocuments, ReferenceBaseProperty, 
 
 from riakkit.exceptions import *
 from riakkit.utils import *
-from copy import copy
+from copy import copy, deepcopy
 
 _document_classes = {}
 
@@ -165,12 +165,12 @@ class Document(object):
     else:
       raise RiakkitError("%s is not a proper key!" % key)
 
-    self._saved = saved
     self._obj = self.bucket.get(self.key) if saved else None
     self._links = {}
     self._data = {}
 
     self.mergeData(kwargs)
+    self._saved = saved
 
     self.__class__.instances[self.key] = self
 
@@ -248,7 +248,7 @@ class Document(object):
     obj = cls(riak_obj.get_key(), saved=True)
     cls.instances[obj.key] = obj
 
-    data = cls._cleanupDataFromDatabase(riak_obj.get_data())
+    data = cls._cleanupDataFromDatabase(deepcopy(riak_obj.get_data()))
     obj._data = data
     links = riak_obj.get_links()
     obj._links = obj.updateLinks(links)
@@ -379,6 +379,9 @@ class Document(object):
     The current implementation checks if the object exists in the database and
     if it has been modified or not.
 
+    This method is bugged when the reference to the object is called and they
+    are modified. Example. list.append will not make saved to be False.
+
     Returns:
       True if saved, False if not.
     """
@@ -434,10 +437,12 @@ class Document(object):
           else:
             docs = self._data[name]
           for doc in docs:
-            current_list = doc._data.get(col_name, [])
-            current_list.append(self)
-            doc._data[col_name] = current_list
-            other_docs_to_be_saved.append(doc)
+            key_list = doc._obj.get_data().get(col_name, [])
+            if self.key not in key_list:
+              current_list = doc._data.get(col_name, [])
+              current_list.append(self)
+              doc._data[col_name] = current_list
+              other_docs_to_be_saved.append(doc)
 
       data_to_be_saved[name] = self._meta["_references"][name].convertToDb(self._data[name])
 
@@ -463,9 +468,10 @@ class Document(object):
         else:
           if col_name:
             current_list = doc._links.get(col_name, [])
-            current_list.append(self)
-            doc._links[col_name] = current_list
-            other_docs_to_be_saved.append(doc)
+            if self.key not in [doc.key for doc in current_list]:
+              current_list.append(self)
+              doc._links[col_name] = current_list
+              other_docs_to_be_saved.append(doc)
 
           if doc._obj is None:
             raise RiakkitError("Add link failure as %s does not exist in the database." % str(doc))
@@ -495,7 +501,7 @@ class Document(object):
     """
     if self._obj:
       self._obj.reload(r=r, vtag=vtag)
-      data = self._cleanupDataFromDatabase(self._obj.get_data())
+      data = self._cleanupDataFromDatabase(deepcopy(self._obj.get_data()))
       self._data = data
       links = self._obj.get_links()
       self._links = self.updateLinks(links)

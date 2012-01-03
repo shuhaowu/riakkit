@@ -85,11 +85,19 @@ class BaseProperty(object):
     """Converts the value from the database back to an app friendly value (a
     value that standardize() will consider as valid).
 
+    Note that the BaseProperty's convertFromDb will change the value from None
+    (if that's how it was in the database) to the default value, if the default
+    value is not None. This is done so that any attributes that's added after
+    the object is saved that has a default value wouldn't be None.
+
     Must be able to handle None.
 
     Args:
       value: The value to be converted
     """
+    default = self.defaultValue()
+    if value is None and default is not None:
+      value = default
     return self._processValue(value, self.backwardprocessors)
 
   def standardize(self, value):
