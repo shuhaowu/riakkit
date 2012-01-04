@@ -51,6 +51,7 @@
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#DictProperty">DictProperty</a>
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#DynamicProperty">DynamicProperty</a>
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#EmDocumentProperty">EmDocumentProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#EmDocumentsDictProperty">EmDocumentsDictProperty</a>
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#EmDocumentsListProperty">EmDocumentsListProperty</a>
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#EnumProperty">EnumProperty</a>
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#FloatProperty">FloatProperty</a>
@@ -539,6 +540,73 @@ substituted&nbsp;in.<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="EmDocumentsDictProperty">class <strong>EmDocumentsDictProperty</strong></a>(<a href="riakkit.types.html#BaseProperty">BaseProperty</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Property&nbsp;for&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;EmDocuments.<br>
+&nbsp;<br>
+It&nbsp;would&nbsp;be&nbsp;like&nbsp;it's&nbsp;own&nbsp;key&nbsp;:&nbsp;EmDocuments.&nbsp;Example:<br>
+{"yourkey"&nbsp;:&nbsp;EmDocument,&nbsp;"another_key"&nbsp;:&nbsp;EmDocument}<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;for&nbsp;efficiency,&nbsp;as&nbsp;sometimes&nbsp;you&nbsp;want&nbsp;to&nbsp;grab&nbsp;a&nbsp;document&nbsp;given&nbsp;some<br>
+property.<br>
+&nbsp;<br>
+However,&nbsp;no&nbsp;convinient&nbsp;dot&nbsp;access&nbsp;for&nbsp;this..&nbsp;unless&nbsp;demanded.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.types.html#EmDocumentsDictProperty">EmDocumentsDictProperty</a></dd>
+<dd><a href="riakkit.types.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="EmDocumentsDictProperty-__init__"><strong>__init__</strong></a>(self, emdocument_class, required<font color="#909090">=False</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;<a href="#EmDocumentsDictProperty">EmDocumentsDictProperty</a>&nbsp;class<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;emdocument_class:&nbsp;The&nbsp;EmDocument&nbsp;class&nbsp;to&nbsp;be&nbsp;used.</tt></dd></dl>
+
+<dl><dt><a name="EmDocumentsDictProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="EmDocumentsDictProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="EmDocumentsDictProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="EmDocumentsDictProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>EmDocumentsDict</strong> = &lt;class 'riakkit.types.EmDocumentsDict'&gt;<dd><tt>A&nbsp;special&nbsp;dict&nbsp;that&nbsp;converts&nbsp;values&nbsp;like&nbsp;<a href="#EmDocumentProperty">EmDocumentProperty</a>&nbsp;and<br>
+<a href="#EmDocumentsListProperty">EmDocumentsListProperty</a>.</tt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><a name="EmDocumentsDictProperty-validate"><strong>validate</strong></a>(self, value)</dt><dd><tt>The&nbsp;default&nbsp;validation&nbsp;function.<br>
+&nbsp;<br>
+This&nbsp;validation&nbsp;function&nbsp;goes&nbsp;through&nbsp;the&nbsp;validators&nbsp;and&nbsp;checks&nbsp;each&nbsp;one.<br>
+Any&nbsp;subclass&nbsp;should&nbsp;do:<br>
+&nbsp;<br>
+return&nbsp;<a href="#BaseProperty">BaseProperty</a>.<a href="#EmDocumentsDictProperty-validate">validate</a>(self,&nbsp;value)&nbsp;and&nbsp;your_result<br>
+&nbsp;<br>
+where&nbsp;your_result&nbsp;is&nbsp;your&nbsp;validation&nbsp;result.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;validated<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;True&nbsp;if&nbsp;validation&nbsp;pass,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
 
 <hr>
 Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
