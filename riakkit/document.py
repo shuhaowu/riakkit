@@ -193,14 +193,18 @@ class Document(object):
 
   @classmethod
   def _cleanupDataFromDatabase(cls, data):
-    if "key" in data:
-      del data["key"]
-
-    for k in data:
+    keys = getKeys(data, cls._meta, cls._meta["_references"])
+    for k in keys:
       if k in cls._meta:
-        data[k] = cls._meta[k].convertFromDb(data[k])
+        if k in data:
+          data[k] = cls._meta[k].convertFromDb(data[k])
+        else:
+          data[k] = cls._meta[k].defaultValue()
       elif k in cls._meta["_references"]:
-        data[k] = cls._meta["_references"][k].convertFromDb(data[k])
+        if k in data:
+          data[k] = cls._meta["_references"][k].convertFromDb(data[k])
+        else:
+          data[k] = cls._meta["_references"][k].defaultValue()
 
     return data
 
@@ -400,10 +404,8 @@ class Document(object):
     data_to_be_saved = {}
 
     # Process regular data
-    keys = set(self._meta.keys())
-    keys.remove("_links")
-    keys.remove("_references")
-    keys.update(self._data.keys())
+    keys = getKeys(self._meta, self._data)
+
     for name in keys:
       if name not in self._meta:
         data_to_be_saved[name] = self._data[name]

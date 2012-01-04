@@ -696,6 +696,16 @@ when doing this as it could cause some weird bugs like the following:
 **Warning: This is an experimental feature. This may change in the future as
 there are concerns that this is too complicated.**
 
+### Changing the schema ###
+
+If you at one point saved a document, and then changed the schema in your code,
+the next time the documents are retrieved from the database, riakkit will
+automatically attach the default values of those types into the Document objects.
+It won't automatically save the default values (which most are None, some are
+[] and {}) into the database. That's up to you with a `.save()` call. However,
+those properties won't always come up as None if you have default specified.
+
+This is to make it easier for development.
 
 Accessing Underlying Riak API
 =============================

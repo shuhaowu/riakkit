@@ -104,13 +104,20 @@ class EmDocument(dict):
       The same data dictionary but altered.
 
     """
-    for k in data:
+    keys = getKeys(data, cls._meta, cls._meta["_references"])
+    for k in keys:
       if k in cls._meta:
-        data[k] = cls._meta[k].convertFromDb(data[k])
+        if k in data:
+          data[k] = cls._meta[k].convertFromDb(data[k])
+        else:
+          data[k] = cls._meta[k].defaultValue()
       elif k in cls._meta["_references"]:
-        data[k] = cls._meta["_references"][k].convertFromDb(data[k])
-
+        if k in data:
+          data[k] = cls._meta["_references"][k].convertFromDb(data[k])
+        else:
+          data[k] = cls._meta["_references"][k].defaultValue()
     return data
+
 
   def dbFriendlyData(self):
     """Checks the data and returns the db friendly data.

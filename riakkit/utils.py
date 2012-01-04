@@ -75,6 +75,20 @@ def getProperty(name, attrs, parents):
 
   return value
 
+def getKeys(*args):
+  """Gets the keys of all of the dictionaries and returns it in a list.
+
+  Removing any references to 'key', '_links', '_references'
+  """
+  keys = set()
+  for d in args:
+    keys.update(d.keys())
+    keys.discard("_links")
+    keys.discard("key")
+    keys.discard("_references")
+
+  return keys
+
 if __name__ == "__main__": # This should be in some sort of unittest
   class A(object): pass
   class B(A): pass
