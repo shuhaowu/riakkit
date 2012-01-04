@@ -51,6 +51,7 @@
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#DictProperty">DictProperty</a>
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#DynamicProperty">DynamicProperty</a>
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#EmDocumentProperty">EmDocumentProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#EmDocumentsDictProperty">EmDocumentsDictProperty</a>
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#EmDocumentsListProperty">EmDocumentsListProperty</a>
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#EnumProperty">EnumProperty</a>
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#FloatProperty">FloatProperty</a>
@@ -107,20 +108,34 @@ Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
 
-<dl><dt><a name="BaseProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value.<br>
+<dl><dt><a name="BaseProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
+value&nbsp;that&nbsp;<a href="#BaseProperty-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
+(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
+value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
+the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
 
 <dl><dt><a name="BaseProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
 &nbsp;<br>
-In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo&nbsp;validate<br>
-before&nbsp;this&nbsp;is&nbsp;called).<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
 
-<dl><dt><a name="BaseProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type<br>
+<dl><dt><a name="BaseProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#BaseProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
@@ -130,6 +145,8 @@ friendly&nbsp;for&nbsp;the&nbsp;user&nbsp;to&nbsp;access&nbsp;via&nbsp;dot&nbsp;
 Document&nbsp;<a href="__builtin__.html#object">object</a>.&nbsp;(i.e.&nbsp;standard&nbsp;form)&nbsp;(example:&nbsp;string&nbsp;to&nbsp;unicode&nbsp;etc.)<br>
 &nbsp;<br>
 This&nbsp;method&nbsp;will&nbsp;be&nbsp;called&nbsp;on&nbsp;__setattr__.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted.<br>
@@ -198,20 +215,34 @@ Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
 
-<dl><dt><a name="BooleanProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value.<br>
+<dl><dt><a name="BooleanProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
+value&nbsp;that&nbsp;<a href="#BooleanProperty-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
+(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
+value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
+the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
 
 <dl><dt><a name="BooleanProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
 &nbsp;<br>
-In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo&nbsp;validate<br>
-before&nbsp;this&nbsp;is&nbsp;called).<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
 
-<dl><dt><a name="BooleanProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type<br>
+<dl><dt><a name="BooleanProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#BooleanProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
@@ -262,7 +293,7 @@ Methods defined here:<br>
 
 <dl><dt><a name="DateTimeProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt></dl>
 
-<dl><dt><a name="DateTimeProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>Returns&nbsp;the&nbsp;default&nbsp;specified&nbsp;or&nbsp;now</tt></dd></dl>
+<dl><dt><a name="DateTimeProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>Returns&nbsp;the&nbsp;default&nbsp;specified&nbsp;or&nbsp;now.</tt></dd></dl>
 
 <dl><dt><a name="DateTimeProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
 
@@ -401,20 +432,34 @@ Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
 
-<dl><dt><a name="DynamicProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value.<br>
+<dl><dt><a name="DynamicProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
+value&nbsp;that&nbsp;<a href="#DynamicProperty-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
+(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
+value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
+the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
 
 <dl><dt><a name="DynamicProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
 &nbsp;<br>
-In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo&nbsp;validate<br>
-before&nbsp;this&nbsp;is&nbsp;called).<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
 
-<dl><dt><a name="DynamicProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type<br>
+<dl><dt><a name="DynamicProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#DynamicProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
@@ -424,6 +469,8 @@ friendly&nbsp;for&nbsp;the&nbsp;user&nbsp;to&nbsp;access&nbsp;via&nbsp;dot&nbsp;
 Document&nbsp;<a href="__builtin__.html#object">object</a>.&nbsp;(i.e.&nbsp;standard&nbsp;form)&nbsp;(example:&nbsp;string&nbsp;to&nbsp;unicode&nbsp;etc.)<br>
 &nbsp;<br>
 This&nbsp;method&nbsp;will&nbsp;be&nbsp;called&nbsp;on&nbsp;__setattr__.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted.<br>
@@ -485,10 +532,81 @@ Args:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="EmDocumentProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type<br>
+<dl><dt><a name="EmDocumentProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#EmDocumentProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="EmDocumentsDictProperty">class <strong>EmDocumentsDictProperty</strong></a>(<a href="riakkit.types.html#BaseProperty">BaseProperty</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Property&nbsp;for&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;EmDocuments.<br>
+&nbsp;<br>
+It&nbsp;would&nbsp;be&nbsp;like&nbsp;it's&nbsp;own&nbsp;key&nbsp;:&nbsp;EmDocuments.&nbsp;Example:<br>
+{"yourkey"&nbsp;:&nbsp;EmDocument,&nbsp;"another_key"&nbsp;:&nbsp;EmDocument}<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;for&nbsp;efficiency,&nbsp;as&nbsp;sometimes&nbsp;you&nbsp;want&nbsp;to&nbsp;grab&nbsp;a&nbsp;document&nbsp;given&nbsp;some<br>
+property.<br>
+&nbsp;<br>
+However,&nbsp;no&nbsp;convinient&nbsp;dot&nbsp;access&nbsp;for&nbsp;this..&nbsp;unless&nbsp;demanded.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.types.html#EmDocumentsDictProperty">EmDocumentsDictProperty</a></dd>
+<dd><a href="riakkit.types.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="EmDocumentsDictProperty-__init__"><strong>__init__</strong></a>(self, emdocument_class, required<font color="#909090">=False</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;<a href="#EmDocumentsDictProperty">EmDocumentsDictProperty</a>&nbsp;class<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;emdocument_class:&nbsp;The&nbsp;EmDocument&nbsp;class&nbsp;to&nbsp;be&nbsp;used.</tt></dd></dl>
+
+<dl><dt><a name="EmDocumentsDictProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="EmDocumentsDictProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="EmDocumentsDictProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="EmDocumentsDictProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>EmDocumentsDict</strong> = &lt;class 'riakkit.types.EmDocumentsDict'&gt;<dd><tt>A&nbsp;special&nbsp;dict&nbsp;that&nbsp;converts&nbsp;values&nbsp;like&nbsp;<a href="#EmDocumentProperty">EmDocumentProperty</a>&nbsp;and<br>
+<a href="#EmDocumentsListProperty">EmDocumentsListProperty</a>.</tt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><a name="EmDocumentsDictProperty-validate"><strong>validate</strong></a>(self, value)</dt><dd><tt>The&nbsp;default&nbsp;validation&nbsp;function.<br>
+&nbsp;<br>
+This&nbsp;validation&nbsp;function&nbsp;goes&nbsp;through&nbsp;the&nbsp;validators&nbsp;and&nbsp;checks&nbsp;each&nbsp;one.<br>
+Any&nbsp;subclass&nbsp;should&nbsp;do:<br>
+&nbsp;<br>
+return&nbsp;<a href="#BaseProperty">BaseProperty</a>.<a href="#EmDocumentsDictProperty-validate">validate</a>(self,&nbsp;value)&nbsp;and&nbsp;your_result<br>
+&nbsp;<br>
+where&nbsp;your_result&nbsp;is&nbsp;your&nbsp;validation&nbsp;result.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;validated<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;True&nbsp;if&nbsp;validation&nbsp;pass,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
 
 <hr>
 Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
@@ -596,7 +714,11 @@ Note:&nbsp;Probably&nbsp;a&nbsp;bad&nbsp;idea&nbsp;using&nbsp;unique&nbsp;on&nbs
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="EnumProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type<br>
+<dl><dt><a name="EnumProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#EnumProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
@@ -649,20 +771,34 @@ Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
 
-<dl><dt><a name="FloatProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value.<br>
+<dl><dt><a name="FloatProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
+value&nbsp;that&nbsp;<a href="#FloatProperty-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
+(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
+value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
+the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
 
 <dl><dt><a name="FloatProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
 &nbsp;<br>
-In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo&nbsp;validate<br>
-before&nbsp;this&nbsp;is&nbsp;called).<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
 
-<dl><dt><a name="FloatProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type<br>
+<dl><dt><a name="FloatProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#FloatProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
@@ -715,20 +851,34 @@ Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
 
-<dl><dt><a name="IntegerProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value.<br>
+<dl><dt><a name="IntegerProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
+value&nbsp;that&nbsp;<a href="#IntegerProperty-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
+(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
+value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
+the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
 
 <dl><dt><a name="IntegerProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
 &nbsp;<br>
-In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo&nbsp;validate<br>
-before&nbsp;this&nbsp;is&nbsp;called).<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
 
-<dl><dt><a name="IntegerProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type<br>
+<dl><dt><a name="IntegerProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#IntegerProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
@@ -796,15 +946,25 @@ Args:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="LinkedDocuments-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value.<br>
+<dl><dt><a name="LinkedDocuments-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
+value&nbsp;that&nbsp;<a href="#LinkedDocuments-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
+(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
+value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
+the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
 
 <dl><dt><a name="LinkedDocuments-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
 &nbsp;<br>
-In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo&nbsp;validate<br>
-before&nbsp;this&nbsp;is&nbsp;called).<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
@@ -814,6 +974,8 @@ friendly&nbsp;for&nbsp;the&nbsp;user&nbsp;to&nbsp;access&nbsp;via&nbsp;dot&nbsp;
 Document&nbsp;<a href="__builtin__.html#object">object</a>.&nbsp;(i.e.&nbsp;standard&nbsp;form)&nbsp;(example:&nbsp;string&nbsp;to&nbsp;unicode&nbsp;etc.)<br>
 &nbsp;<br>
 This&nbsp;method&nbsp;will&nbsp;be&nbsp;called&nbsp;on&nbsp;__setattr__.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted.<br>
@@ -870,15 +1032,25 @@ Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
 
-<dl><dt><a name="ListProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value.<br>
+<dl><dt><a name="ListProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
+value&nbsp;that&nbsp;<a href="#ListProperty-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
+(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
+value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
+the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
 
 <dl><dt><a name="ListProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
 &nbsp;<br>
-In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo&nbsp;validate<br>
-before&nbsp;this&nbsp;is&nbsp;called).<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
@@ -888,6 +1060,8 @@ friendly&nbsp;for&nbsp;the&nbsp;user&nbsp;to&nbsp;access&nbsp;via&nbsp;dot&nbsp;
 Document&nbsp;<a href="__builtin__.html#object">object</a>.&nbsp;(i.e.&nbsp;standard&nbsp;form)&nbsp;(example:&nbsp;string&nbsp;to&nbsp;unicode&nbsp;etc.)<br>
 &nbsp;<br>
 This&nbsp;method&nbsp;will&nbsp;be&nbsp;called&nbsp;on&nbsp;__setattr__.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted.<br>
@@ -1001,20 +1175,34 @@ Args:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="ReferenceBaseProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value.<br>
+<dl><dt><a name="ReferenceBaseProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
+value&nbsp;that&nbsp;<a href="#ReferenceBaseProperty-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
+(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
+value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
+the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
 
 <dl><dt><a name="ReferenceBaseProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
 &nbsp;<br>
-In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo&nbsp;validate<br>
-before&nbsp;this&nbsp;is&nbsp;called).<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
 
-<dl><dt><a name="ReferenceBaseProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type<br>
+<dl><dt><a name="ReferenceBaseProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#ReferenceBaseProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
@@ -1024,6 +1212,8 @@ friendly&nbsp;for&nbsp;the&nbsp;user&nbsp;to&nbsp;access&nbsp;via&nbsp;dot&nbsp;
 Document&nbsp;<a href="__builtin__.html#object">object</a>.&nbsp;(i.e.&nbsp;standard&nbsp;form)&nbsp;(example:&nbsp;string&nbsp;to&nbsp;unicode&nbsp;etc.)<br>
 &nbsp;<br>
 This&nbsp;method&nbsp;will&nbsp;be&nbsp;called&nbsp;on&nbsp;__setattr__.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted.<br>
@@ -1081,7 +1271,11 @@ Args:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="ReferenceProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type<br>
+<dl><dt><a name="ReferenceProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#ReferenceProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
@@ -1132,20 +1326,34 @@ Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
 
-<dl><dt><a name="StringProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value.<br>
+<dl><dt><a name="StringProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
+value&nbsp;that&nbsp;<a href="#StringProperty-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
+(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
+value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
+the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
 
 <dl><dt><a name="StringProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
 &nbsp;<br>
-In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo&nbsp;validate<br>
-before&nbsp;this&nbsp;is&nbsp;called).<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
 
-<dl><dt><a name="StringProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type<br>
+<dl><dt><a name="StringProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#StringProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>

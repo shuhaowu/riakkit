@@ -152,6 +152,9 @@ Args:<br>
 The&nbsp;current&nbsp;implementation&nbsp;checks&nbsp;if&nbsp;the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;exists&nbsp;in&nbsp;the&nbsp;database&nbsp;and<br>
 if&nbsp;it&nbsp;has&nbsp;been&nbsp;modified&nbsp;or&nbsp;not.<br>
 &nbsp;<br>
+This&nbsp;method&nbsp;is&nbsp;bugged&nbsp;when&nbsp;the&nbsp;reference&nbsp;to&nbsp;the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;called&nbsp;and&nbsp;they<br>
+are&nbsp;modified.&nbsp;Example.&nbsp;list.append&nbsp;will&nbsp;not&nbsp;make&nbsp;saved&nbsp;to&nbsp;be&nbsp;False.<br>
+&nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;True&nbsp;if&nbsp;saved,&nbsp;False&nbsp;if&nbsp;not.</tt></dd></dl>
 
@@ -175,6 +178,15 @@ Returns:<br>
 
 <hr>
 Class methods defined here:<br>
+<dl><dt><a name="Document-exists"><strong>exists</strong></a>(cls, key, r<font color="#909090">=None</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Check&nbsp;if&nbsp;a&nbsp;key&nbsp;exists.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;key:&nbsp;The&nbsp;key&nbsp;to&nbsp;check&nbsp;if&nbsp;exists&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;r:&nbsp;The&nbsp;R&nbsp;value<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;True&nbsp;if&nbsp;the&nbsp;key&nbsp;exists,&nbsp;false&nbsp;otherwise.</tt></dd></dl>
+
 <dl><dt><a name="Document-getWithKey"><strong>getWithKey</strong></a>(cls, key, r<font color="#909090">=None</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Get&nbsp;an&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;a&nbsp;given&nbsp;key.<br>
 &nbsp;<br>
 Args:<br>
