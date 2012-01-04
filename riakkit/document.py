@@ -68,14 +68,18 @@ class DocumentMetaclass(type):
         if prop.collection_name:
           if prop.collection_name in prop.reference_class._meta["_links"] or prop.collection_name in prop.reference_class._meta["_references"]:
             raise RiakkitError("%s already in %s!" % (prop.collection_name, prop.reference_class))
-          linked_docs_col_classes[prop.collection_name] = prop.reference_class
+          l = linked_docs_col_classes.get(prop.collection_name, [])
+          l.append(prop.reference_class)
+          linked_docs_col_classes[prop.collection_name] = l
 
       elif isinstance(attrs[name], ReferenceBaseProperty):
         references[name] = prop = attrs.pop(name)
         if prop.collection_name:
           if prop.collection_name in prop.reference_class._meta["_links"] or prop.collection_name in prop.reference_class._meta["_references"]:
             raise RiakkitError("%s already in %s!" % (prop.collection_name, prop.reference_class))
-          references_col_classes[prop.collection_name] = prop.reference_class
+          l = references_col_classes.get(prop.collection_name, [])
+          l.append(prop.reference_class)
+          references_col_classes[prop.collection_name] = l
 
       elif isinstance(attrs[name], BaseProperty):
         meta[name] = prop = attrs.pop(name)
@@ -121,10 +125,12 @@ class DocumentMetaclass(type):
       if new_class.SEARCHABLE:
         new_class.bucket.enable_search()
 
-    for col_name, reference_class in linked_docs_col_classes.iteritems():
-      reference_class._meta["_links"][col_name] = LinkedDocuments(reference_class=new_class)
-    for col_name, reference_class in references_col_classes.iteritems():
-      reference_class._meta["_references"][col_name] = MultiReferenceProperty(reference_class=new_class)
+    for col_name, reference_classes in linked_docs_col_classes.iteritems():
+      for rcls in reference_classes:
+        rcls._meta["_links"][col_name] = LinkedDocuments(reference_class=new_class)
+    for col_name, reference_classes in references_col_classes.iteritems():
+      for rcls in reference_classes:
+        rcls._meta["_references"][col_name] = MultiReferenceProperty(reference_class=new_class)
 
     return new_class
 
