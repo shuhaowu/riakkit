@@ -479,6 +479,92 @@ class EmDocumentProperty(BaseProperty):
       value = self.emdocument_class(self.emdocument_class.cleanupDataFromDatabase(value))
     return BaseProperty.convertFromDb(self, value)
 
+class EmDocumentsDictProperty(BaseProperty):
+  """Property for a dictionary of EmDocuments.
+
+  It would be like it's own key : EmDocuments. Example:
+  {"yourkey" : EmDocument, "another_key" : EmDocument}
+
+  This is for efficiency, as sometimes you want to grab a document given some
+  property.
+
+  However, no convinient dot access for this.. unless demanded.
+  """
+  class EmDocumentsDict(dict):
+    """A special dict that converts values like EmDocumentProperty and
+    EmDocumentsListProperty."""
+    def __init__(self, emdocument_class, x=None, **kwargs):
+      self.emdocument_class = emdocument_class
+      dict.__init__(self)
+      if x is not None:
+        self.update(x)
+      else:
+        self.update(kwargs)
+
+    def _standardize(self, x): # TODO: refactor and merge this with EmDocumentsListProperty
+      if isinstance(x, (self.emdocument_class, NONE_TYPE)):
+        value = x
+      elif isinstance(x, dict):
+        value = self.emdocument_class(x)
+      else:
+        raise TypeError("The type of the EmDocument must be either dict or the class itself.")
+      return value
+
+    def __setitem__(self, key, value):
+      dict.__setitem__(self, key, self._standardize(value))
+
+    def setdefault(self, key, default=None):
+      return dict.setdefault(self, key, self._standardize(default))
+
+    def update(self, other=None, **kwargs):
+      new_dict = {}
+      if other is not None:
+        if isinstance(other, dict):
+          iteritems = other.iteritems()
+        else:
+          iteritems = other
+      else:
+        iteritems = kwargs
+      for key, value in iteritems:
+        new_dict[key] = self._standardize(value)
+      dict.update(self, new_dict)
+
+  def __init__(self, emdocument_class, required=False, validators=[],
+                     forwardprocessors=[], backwardprocessors=[]):
+    """Initializes a EmDocumentsDictProperty class
+
+    Args:
+      emdocument_class: The EmDocument class to be used.
+    """
+    BaseProperty.__init__(self, required=required, validators=validators,
+                                forwardprocessors=forwardprocessors,
+                                backwardprocessors=backwardprocessors)
+    self.emdocument_class = emdocument_class
+
+  def standardize(self, value):
+    value = BaseProperty.standardize(self, value)
+    return EmDocumentsDictProperty.EmDocumentsDict(self.emdocument_class, value)
+
+  def convertToDb(self, value):
+    value = BaseProperty.convertToDb(self, value)
+    if value is None:
+      return None
+
+    value = dict(value)
+    for k, v in value.iteritems():
+      value[k] = v.dbFriendlyData()
+    return value
+
+  def convertFromDb(self, value):
+    if value is not None:
+      for k, v in value.iteritems():
+        value[k] = self.emdocument_class.cleanupDataFromDatabase(v)
+      value = EmDocumentsDictProperty.EmDocumentsDict(self.emdocument_class, value)
+    return BaseProperty.convertFromDb(self, value)
+
+  def defaultValue(self):
+    return EmDocumentsDictProperty.EmDocumentsDict(self.emdocument_class)
+
 class EmDocumentsListProperty(BaseProperty):
   """Property for a list of EmDocuments"""
   class EmDocumentsList(list):
@@ -509,7 +595,7 @@ class EmDocumentsListProperty(BaseProperty):
       return new_l
 
     def _standardize(self, x):
-      if isinstance(x, self.emdocument_class):
+      if isinstance(x, (self.emdocument_class, NONE_TYPE)):
         value = x
       elif isinstance(x, dict):
         value = self.emdocument_class(x)

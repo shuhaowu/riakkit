@@ -68,6 +68,24 @@ class EmDocument(dict):
 
   __metaclass__ = EmDocumentMetaclass
 
+  def __init__(self, x=None, **kwargs):
+    """Initialize a new EmDocumentInstance. Same interface as the dict class.
+
+    Note: .update hasn't been implemented yet to be EmDocument safe.
+
+    Args:
+      x: A dictionary or None
+      kwargs: Keyword arguments
+    """
+    dict.__init__(self)
+    if x is not None:
+      iteritems = x.iteritems()
+    else:
+      iteritems = kwargs.iteritems()
+
+    for k, v in iteritems:
+      self.__setitem__(k, v)
+
   def _error(self, name):
     raise AttributeError("Attribute %s not found with %s." %
         (name, self.__class__.__name__))
