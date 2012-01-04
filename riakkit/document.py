@@ -437,9 +437,9 @@ class Document(object):
           else:
             docs = self._data[name]
           for doc in docs:
-            key_list = doc._obj.get_data().get(col_name, [])
+            current_list = doc._data.get(col_name, [])
+            key_list = [d.key for d in current_list]
             if self.key not in key_list:
-              current_list = doc._data.get(col_name, [])
               current_list.append(self)
               doc._data[col_name] = current_list
               other_docs_to_be_saved.append(doc)
@@ -466,15 +466,17 @@ class Document(object):
         if not isinstance(doc, Document):
           raise AttributeError("%s is not a Document instance!" % item)
         else:
+          if doc._obj is None:
+            raise RiakkitError("Add link failure as %s does not exist in the database." % str(doc))
+
           if col_name:
             current_list = doc._links.get(col_name, [])
-            if self.key not in [doc.key for doc in current_list]:
+            if self.key not in [d.key for d in current_list]:
               current_list.append(self)
               doc._links[col_name] = current_list
               other_docs_to_be_saved.append(doc)
 
-          if doc._obj is None:
-            raise RiakkitError("Add link failure as %s does not exist in the database." % str(doc))
+
           self._obj.add_link(doc._obj, name) # TODO: doc._obj=None
 
     self._obj.store(w=w, dw=dw)
