@@ -83,6 +83,10 @@ class EmDocument(dict):
     else:
       iteritems = kwargs.iteritems()
 
+    for k, v in self._hasdefaults.iteritems():
+      if self.__getitem__(k) is None:
+        dict.__setitem__(self, k, v)
+
     for k, v in iteritems:
       self.__setitem__(k, v)
 

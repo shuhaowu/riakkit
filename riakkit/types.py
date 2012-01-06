@@ -40,7 +40,7 @@ class BaseProperty(object):
       unique: A boolean that determines if this is unique or not.
       validators: A list of callables of 1 callable that validates any value.
                   The function should be callback(value), returning a boolean.
-      default: A custom default value.
+      default: A custom default value or a function that generates a value.
       forwardprocessors: A list of callables or 1 callable that processes and
                          returns the data before convertToDb().
       backwardprocessors: A list of callables or 1 callables that processes the
@@ -154,6 +154,8 @@ class BaseProperty(object):
     Returns:
       The default value for this type.
     """
+    if callable(self.default):
+      return self.default()
     return self.default
 
 
