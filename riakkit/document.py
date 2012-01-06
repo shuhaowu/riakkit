@@ -89,8 +89,9 @@ class DocumentMetaclass(type):
           )
           uniques.append(name)
 
-        if prop.default is not None:
-          hasdefaults[name] = prop.defaultValue()
+        propDefaultValue = prop.defaultValue()
+        if propDefaultValue is not None:
+          hasdefaults[name] = propDefaultValue
 
     # reversed because we start at the bottom.
 

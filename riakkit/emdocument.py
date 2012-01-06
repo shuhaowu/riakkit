@@ -34,8 +34,9 @@ class EmDocumentMetaclass(type):
         references[name] = prop = attrs.pop(name)
       elif isinstance(attrs[name], BaseProperty) and not isinstance(attrs[name], LinkedDocuments):
         meta[name] = prop = attrs.pop(name)
-        if prop.default is not None:
-          hasdefaults[name] = prop.defaultValue()
+        propDefaultValue = prop.defaultValue()
+        if propDefaultValue is not None:
+          hasdefaults[name] = propDefaultValue
 
     all_parents = reversed(walkParents(parents, ("EmDocument", "object", "type")))
     for p_cls in all_parents:
