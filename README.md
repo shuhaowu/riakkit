@@ -16,7 +16,7 @@ Just FYI: The project tries to follow the [Google Python style guide](http://goo
 
 Licensed under LGPLv3
 
-[Donate to me to keep this going!](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FGWYWWS4CJJFW&lc=CA&item_name=Riakkit&item_number=riakkit&currency_code=CAD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted)
+[![Donate to me to keep this going!](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=FGWYWWS4CJJFW&lc=CA&item_name=Riakkit&item_number=riakkit&currency_code=CAD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted)
 
 Installation
 ============
