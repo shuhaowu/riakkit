@@ -97,7 +97,7 @@ Args:<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
-&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
 &nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#BaseProperty-convertToDb">convertToDb</a>().<br>
 &nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
@@ -204,7 +204,7 @@ Args:<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
-&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
 &nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#BooleanProperty-convertToDb">convertToDb</a>().<br>
 &nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
@@ -308,7 +308,7 @@ Args:<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
-&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
 &nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#DateTimeProperty-convertToDb">convertToDb</a>().<br>
 &nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
@@ -373,7 +373,7 @@ Args:<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
-&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
 &nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#DictProperty-convertToDb">convertToDb</a>().<br>
 &nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
@@ -421,7 +421,7 @@ Args:<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
-&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
 &nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#DynamicProperty-convertToDb">convertToDb</a>().<br>
 &nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
@@ -760,7 +760,7 @@ Args:<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
-&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
 &nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#FloatProperty-convertToDb">convertToDb</a>().<br>
 &nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
@@ -840,7 +840,7 @@ Args:<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
-&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
 &nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#IntegerProperty-convertToDb">convertToDb</a>().<br>
 &nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
@@ -1021,7 +1021,7 @@ Args:<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
-&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
 &nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#ListProperty-convertToDb">convertToDb</a>().<br>
 &nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
@@ -1315,7 +1315,7 @@ Args:<br>
 &nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
 &nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
-&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
 &nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#StringProperty-convertToDb">convertToDb</a>().<br>
 &nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
