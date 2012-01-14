@@ -34,6 +34,12 @@ Args:<br>
 Returns:<br>
 &nbsp;&nbsp;None&nbsp;if&nbsp;the&nbsp;attributes&nbsp;is&nbsp;not&nbsp;found&nbsp;from&nbsp;the&nbsp;attrs&nbsp;nor&nbsp;the&nbsp;parents.<br>
 &nbsp;&nbsp;Otherwise&nbsp;the&nbsp;first&nbsp;one&nbsp;that's&nbsp;found,&nbsp;from&nbsp;attrs&nbsp;to&nbsp;BFS'ed&nbsp;parents.</tt></dd></dl>
+ <dl><dt><a name="-mediocreCopy"><strong>mediocreCopy</strong></a>(obj)</dt><dd><tt>It's&nbsp;kind&nbsp;of&nbsp;like&nbsp;a&nbsp;deep&nbsp;copy,&nbsp;but&nbsp;it&nbsp;only&nbsp;make&nbsp;copies&nbsp;of&nbsp;lists,&nbsp;tuples,<br>
+and&nbsp;dictionaries&nbsp;(and&nbsp;other&nbsp;primitive&nbsp;types).&nbsp;Other&nbsp;complex&nbsp;object&nbsp;such&nbsp;as<br>
+ones&nbsp;you&nbsp;created&nbsp;are&nbsp;kept&nbsp;as&nbsp;references.<br>
+&nbsp;<br>
+Arg:<br>
+&nbsp;&nbsp;obj:&nbsp;Any&nbsp;object.</tt></dd></dl>
  <dl><dt><a name="-walkParents"><strong>walkParents</strong></a>(parents, bases<font color="#909090">=('Document', 'type', 'object')</font>)</dt><dd><tt>Walks&nbsp;through&nbsp;the&nbsp;parents&nbsp;and&nbsp;return&nbsp;each&nbsp;parent&nbsp;class&nbsp;object&nbsp;uptil&nbsp;the<br>
 name&nbsp;of&nbsp;the&nbsp;classes&nbsp;specified&nbsp;in&nbsp;bases.<br>
 &nbsp;<br>

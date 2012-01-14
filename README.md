@@ -268,6 +268,11 @@ Let's take a look some examples:
     John
     >>> print person.cakes[0].type
     chocolate
+    >>> cake.owner = None
+    >>> cake.save()
+    >>> person.reload()
+    >>> print person.cakes
+    []
 
 Advanced Query
 --------------
@@ -655,7 +660,7 @@ In the mean while, demo time:
     ...     bucket_name = "testdoc"
     ...
     ...     email = types.StringProperty(validators=emailValidator)
-    ...     some_property = types.IntegerProperty(standardprocessors=lambda x: x + 1)
+    ...     some_property = types.IntegerProperty(standardprocessors=lambda x: x if x is None else x + 1)
     >>> test = TestDocument()
     >>> test.email = "notvalid" #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
@@ -686,10 +691,16 @@ Here's the work flow:
      to an usuable format. The value it returns should be friendly to
      `standardprocessors`.
 
+
+It's very important that any processor and validators that you write can deal
+with the None type and shouldn't process the None type, which is what we did.
+The None type should also be able to pass any validation.
+
 So given this our example would be bad practise. We should also implement a
-`backwardprocessors` of `lambda x: x - 1` so that the x value don't keep
-incrementing. Unless that's what you want to do. Make sure you're responsible
-when doing this as it could cause some weird bugs like the following:
+`backwardprocessors` of `lambda x: x if x is None else x - 1` so that the x
+value don't keep incrementing. Unless that's what you want to do. Make sure
+you're responsible when doing this as it could cause some weird bugs like the
+following:
 
     >>> test.reload()
     >>> print test.some_property

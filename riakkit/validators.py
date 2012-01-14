@@ -27,4 +27,4 @@ import re
 
 _emailRegex = re.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", flags=re.I)
 
-emailValidator = lambda x: bool(_emailRegex.match(x.strip().lower()))
+emailValidator = lambda x: True if x is None else bool(_emailRegex.match(x.strip().lower()))

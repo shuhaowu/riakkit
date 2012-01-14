@@ -31,5 +31,7 @@ def hashPassword(password, salt, algorithm=hashlib.sha1):
     only take 1 argument.
     So yourfunction = lambda v: hashPassword(v, SALT)
   """
+  if password is None:
+    return None
   return algorithm(password + salt).hexdigest()
 

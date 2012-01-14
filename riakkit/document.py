@@ -56,7 +56,6 @@ class DocumentMetaclass(type):
     meta = {}
     links = {}
     references = {}
-    hasdefaults = {}
     uniques = []
 
     linked_docs_col_classes = {} # propname : class
@@ -89,10 +88,6 @@ class DocumentMetaclass(type):
           )
           uniques.append(name)
 
-        propDefaultValue = prop.defaultValue()
-        if propDefaultValue is not None:
-          hasdefaults[name] = propDefaultValue
-
     # reversed because we start at the bottom.
 
     all_parents = reversed(walkParents(parents))
@@ -103,14 +98,12 @@ class DocumentMetaclass(type):
       meta.update(p_meta)
       links.update(p_links)
       references.update(p_references)
-      hasdefaults.update(p_cls._hasdefaults)
       uniques.extend(p_cls._uniques)
 
     meta["_links"] = links
     meta["_references"] = references
     attrs["_meta"] = meta
     attrs["_uniques"] = uniques
-    attrs["_hasdefaults"] = hasdefaults
     attrs["SEARCHABLE"] = getProperty("SEARCHABLE", attrs, parents)
     attrs["instances"] = {}
     new_class = type.__new__(cls, clsname, parents, attrs)
@@ -178,6 +171,7 @@ class Document(object):
 
     self.mergeData(kwargs)
     self._saved = saved
+    self._storeOriginals()
 
     self.__class__.instances[self.key] = self
 
@@ -188,9 +182,11 @@ class Document(object):
     Args:
       data: A dictionary of the data to be merged into the object.
     """
-    for name in self._hasdefaults:
+    keys = getKeys(self._meta, self._meta["_references"])
+    for name in keys:
       if self.__getattr__(name) is None:
-        self.__setattr__(name, self._hasdefaults[name])
+        defaultValue = self._meta.get(name, self._meta["_references"].get(name, BaseProperty)).defaultValue # TODO: merge _meta and _references
+        self.__setattr__(name, defaultValue())
 
     for name in data:
       self.__setattr__(name, data[name])
@@ -263,8 +259,13 @@ class Document(object):
     obj._data = data
     links = riak_obj.get_links()
     obj._links = obj.updateLinks(links)
+    obj._storeOriginals()
     obj._obj = riak_obj
     return obj
+
+  def _storeOriginals(self):
+    self._originals = mediocreCopy(self._data)
+    self._originalLinks = mediocreCopy(self._links)
 
   def updateLinks(self, links):
     """Take a list of RiakLink objects and outputs tag : [Document]
@@ -323,7 +324,7 @@ class Document(object):
     if name in self._meta["_links"]:
       return self._links.get(name, [])
 
-    inMeta = name in self._meta
+    inMeta = name in self._meta or name in self._meta["_references"]
     inData = name in self._data
 
     if not inMeta and inData:
@@ -418,7 +419,7 @@ class Document(object):
         data_to_be_saved[name] = self._data[name]
         continue
 
-      if name not in self._data:
+      if name not in self._data or self._data[name] is None:
         if self._meta[name].required:
           raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
         self._data[name] = self._meta[name].defaultValue()
@@ -443,15 +444,34 @@ class Document(object):
         if col_name:
           if isinstance(self._meta["_references"][name], ReferenceProperty):
             docs = [self._data[name]]
+            originals = [self._originals[name]]
           else:
             docs = self._data[name]
+            originals = self._originals[name]
           for doc in docs:
+            if doc is None:
+              continue
+
             current_list = doc._data.get(col_name, [])
             key_list = [d.key for d in current_list]
             if self.key not in key_list:
               current_list.append(self)
               doc._data[col_name] = current_list
               other_docs_to_be_saved.append(doc)
+
+          for doc in originals:
+            if doc is None:
+              continue
+
+            if doc not in docs:
+              current_list = doc._data.get(col_name, [])
+              for i, d in enumerate(current_list):
+                if d.key == self.key:
+                  current_list.pop(i)
+                  break
+              doc._data[col_name] = current_list
+              other_docs_to_be_saved.append(doc)
+
 
       data_to_be_saved[name] = self._meta["_references"][name].convertToDb(self._data[name])
 
@@ -485,14 +505,25 @@ class Document(object):
               doc._links[col_name] = current_list
               other_docs_to_be_saved.append(doc)
 
+          self._obj.add_link(doc._obj, name) # TODO: check for doc._obj=None
 
-          self._obj.add_link(doc._obj, name) # TODO: doc._obj=None
+
+      for doc in self._originalLinks.get(name, []): # get() is a dirty hack?
+        if doc not in self._links[name] and col_name:
+          current_list = doc._links.get(col_name, [])
+          for i, d in enumerate(current_list):
+            if d.key == self.key:
+              current_list.pop(i)
+              break
+          doc.links[col_name] = current_list
+          other_docs_to_be_saved.append(doc)
 
     self._obj.store(w=w, dw=dw)
     for name in self._uniques:
       obj = self._meta[name].unique_bucket.new(self._data[name], {"key" : self.key})
       obj.store()
 
+    self._storeOriginals()
     self._saved = True
 
     for doc in other_docs_to_be_saved:
@@ -516,6 +547,7 @@ class Document(object):
       self._data = data
       links = self._obj.get_links()
       self._links = self.updateLinks(links)
+      self._storeOriginals()
       self._saved = True
     else:
       raise NotFoundError("Object not saved!")

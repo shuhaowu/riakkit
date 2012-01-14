@@ -89,6 +89,22 @@ def getKeys(*args):
 
   return keys
 
+def mediocreCopy(obj):
+  """It's kind of like a deep copy, but it only make copies of lists, tuples,
+  and dictionaries (and other primitive types). Other complex object such as
+  ones you created are kept as references.
+
+  Arg:
+    obj: Any object.
+  """
+  if isinstance(obj, list): # TODO: Sets
+    return [mediocreCopy(i) for i in obj]
+  if isinstance(obj, tuple):
+    return tuple(mediocreCopy(i) for i in obj)
+  if isinstance(obj, dict):
+    return dict(mediocreCopy(i) for i in obj.iteritems())
+  return obj
+
 if __name__ == "__main__": # This should be in some sort of unittest
   class A(object): pass
   class B(A): pass
