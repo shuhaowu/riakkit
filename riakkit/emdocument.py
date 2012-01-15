@@ -24,7 +24,6 @@ class EmDocumentMetaclass(type):
       return type.__new__(cls, clsname, parents, attrs)
 
     meta = {}
-    hasdefaults = {}
     references = {}
 
     for name in attrs.keys():
@@ -34,9 +33,6 @@ class EmDocumentMetaclass(type):
         references[name] = prop = attrs.pop(name)
       elif isinstance(attrs[name], BaseProperty) and not isinstance(attrs[name], LinkedDocuments):
         meta[name] = prop = attrs.pop(name)
-        propDefaultValue = prop.defaultValue()
-        if propDefaultValue is not None:
-          hasdefaults[name] = propDefaultValue
 
     all_parents = reversed(walkParents(parents, ("EmDocument", "object", "type")))
     for p_cls in all_parents:
@@ -44,11 +40,9 @@ class EmDocumentMetaclass(type):
       p_references = p_meta.pop("_references")
       meta.update(p_meta)
       references.update(p_references)
-      hasdefaults.update(p_cls._hasdefaults)
 
     meta["_references"] = references
     attrs["_meta"] = meta
-    attrs["_hasdefaults"] = hasdefaults
     return type.__new__(cls, clsname, parents, attrs)
 
 class EmDocument(dict):
@@ -84,9 +78,11 @@ class EmDocument(dict):
     else:
       iteritems = kwargs.iteritems()
 
-    for k, v in self._hasdefaults.iteritems():
-      if self.__getitem__(k) is None:
-        dict.__setitem__(self, k, v)
+    keys = getKeys(self._meta, self._meta["_references"], discard_key=False)
+
+    for name in keys:
+      dict.__setitem__(self, name,
+          self._meta.get(name, self._meta["_references"].get(name, BaseProperty)).defaultValue())
 
     for k, v in iteritems:
       self.__setitem__(k, v)
@@ -109,7 +105,7 @@ class EmDocument(dict):
       The same data dictionary but altered.
 
     """
-    keys = getKeys(data, cls._meta, cls._meta["_references"])
+    keys = getKeys(data, cls._meta, cls._meta["_references"], discard_key=False)
     for k in keys:
       if k in cls._meta:
         if k in data:
@@ -135,15 +131,13 @@ class EmDocument(dict):
 
     """
     data_to_be_saved = {}
-    keys = set(self._meta.keys())
-    keys.remove("_references")
-    keys.update(self.keys())
+    keys = getKeys(self._meta, self._meta["_references"], discard_key=False)
     for name in keys:
       if name not in self._meta:
         data_to_be_saved[name] = dict.__getitem__(self, name)
         continue
 
-      if name not in self:
+      if name not in self or dict.__getitem__(self, name) is None:
         if self._meta[name].required:
           raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
         dict.__setitem__(self, name, self._meta[name].defaultValue())
@@ -152,7 +146,7 @@ class EmDocument(dict):
 
 
     for name in self._meta["_references"]:
-      if name not in self:
+      if name not in self or dict.__getitem__(self, name) is None:
         if self._meta["_references"][name].required:
           raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
         dict.__setitem__(self, name, self._meta[name].defaultValue())

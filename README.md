@@ -98,6 +98,20 @@ What about getting it from the database?
     >>> print same_post
     Hello:mrrow
 
+After Riakkit v0.3.2a, the behaviour of getting object has changed. All object
+gotten are the **same** instance. There's one object per key. Any changes to
+the object will be reflected in all the references to it.
+
+    >>> same_post is post
+    True
+
+However, if your data got modified outside of riakkit, you could use the
+`.reload()` function for document objects.
+
+    >>> same_post.reload() # Obviously we haven't changed anything, but if we did, this would get those changes
+    >>> print same_post.title
+    Hello
+
 You can also use dictionary notation. However, there's Document is not a
 superclass of dict!
 
@@ -112,8 +126,11 @@ Need another attribute not in your schema? No problem.
     >>> same_post.save()
     >>> print same_post.random_attr
     42
-    >>> post_again = BlogPost.get_with_key(key)
-    >>> print post_again.random_attr
+
+Again, you can see the changes are instantly reflected on the other reference
+to it:
+
+    >>> print post.random_attr
     42
 
 While setting an attribute in your schema is allowed, getting one while it's not
@@ -187,11 +204,11 @@ validation. Also, `collection_name` knows where to go.
     >>> a_comment.save()
 
 This should save both the `a_comment`, and the `user` object. So no need to
-`user.reload()`. However, you could reload `same_user`.
+`user.reload()`. Since the `same_user` variable is just a reference to `user`,
+there is no need to reload that, either (Behaviour introduced after v0.3.2a).
 
     >>> print user.comments[0].title
     Riakkit ftw!
-    >>> same_user.reload()
     >>> print same_user.comments[0].title
     Riakkit ftw!
 
@@ -216,7 +233,6 @@ let's try it anyway.
 Now, as of the moment, we lose order (potentially) when we store LinkedDocuments.
 This means there's no guarentee that the comments will be at index 0 or 1.
 
-    >>> user.reload()
     >>> titles = sorted([comment.title for comment in user.comments])
     >>> print titles
     [u'Moo', u'Riakkit ftw!']
@@ -225,7 +241,6 @@ Saving the comment multiple times shouldn't create multiple links in the user:
 
     >>> another_comment.title = "Abc"
     >>> another_comment.save()
-    >>> user.reload()
     >>> titles = sorted([comment.title for comment in user.comments])
     >>> print len(titles)
     2
@@ -270,7 +285,6 @@ Let's take a look some examples:
     chocolate
     >>> cake.owner = None
     >>> cake.save()
-    >>> person.reload()
     >>> print person.cakes
     []
 
@@ -566,7 +580,6 @@ instance.
 
     >>> same_website.pages.append({"name" : "About", "content" : "Riakkit!"})
     >>> same_website.save()
-    >>> the_website.reload()
     >>> print the_website.pages[0].name, the_website.pages[0].content
     Home Hello World!
     >>> print the_website.pages[1].name, the_website.pages[1].content
@@ -577,7 +590,6 @@ You can add extra attributes to `EmDocument` just like you would with regular
 
     >>> same_website.pages.append({"name" : "Contact", "content" : "Contact us here!", "random_attr" : 1})
     >>> same_website.save()
-    >>> the_website.reload()
     >>> print the_website.pages[2].random_attr
     1
 
@@ -588,7 +600,6 @@ You can also use methods such as `extend`, `insert`, and just `[index]` like
     >>> same_website.save()
     >>> print isinstance(same_website.pages[2], Page)
     True
-    >>> the_website.reload()
     >>> print the_website.pages[2].name
     Products
 

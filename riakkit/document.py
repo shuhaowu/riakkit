@@ -158,6 +158,9 @@ class Document(object):
       kwargs: Keyword arguments that will fill up the object with data.
     """
 
+    if key in self.__class__.instances:
+      raise RiakkitError("%s already exists!" % key)
+
     if callable(key):
       self.__dict__["key"] = key(kwargs)
     elif isinstance(key, (str, unicode)):
@@ -174,7 +177,6 @@ class Document(object):
     self._storeOriginals()
 
     self.__class__.instances[self.key] = self
-
 
   def mergeData(self, data):
     """Merges data. This will trigger the standard processors.
@@ -217,51 +219,44 @@ class Document(object):
 
     Args:
       riak_obj: The RiakObject that the document is suppose to build from.
-      cached: If we want to get from the pool of objects or not.
-              Note that if you have multiple instances of the same object,
-              the most recent one to be cached will be used. If this is true,
-              riak_obj could just be a string that's the key of the object.
-              If not found in cache, it will be fetched from the db.
+      cached: Reload the object or not if it's found in the pool of objects.
 
     Returns:
       A Document object (whichever subclass this was called from).
     """
 
-    if cached:
-      if isinstance(riak_obj, RiakObject):
-        key = riak_obj.get_key()
-      else:
-        key = riak_obj # Assume string
+    if isinstance(riak_obj, RiakObject):
+      key = riak_obj.get_key()
+    else:
+      key = riak_obj
 
-      try:
-        obj = cls.instances[key]
-      except KeyError:
-        pass # This should allow it to go to the bottom ones and get the obj.
-      else:
-        return obj
+    try:
+      obj = cls.instances[key]
+    except KeyError:
+      if isinstance(riak_obj, (str, unicode)):
+        riak_obj = cls.bucket.get(key)
+      if not riak_obj.exists():
+        raise NotFoundError("%s not found!" % key)
+      # This is done before so that _cleanupDataFromDatabase won't recurse
+      # infinitely with collection_name. This wouldn't cause an problem as
+      # _cleanupDataFromDatabase calls for the loading of the referenced document
+      # from cache, which load this document from cache, and it see that it
+      # exists, finish loading the referenced document, then come back and finish
+      # loading this document.
+      obj = cls(riak_obj.get_key(), saved=True)
+      cls.instances[obj.key] = obj
 
-    if isinstance(riak_obj, (str, unicode)):
-      riak_obj = cls.bucket.get(riak_obj)
-
-    if not riak_obj.exists():
-      raise NotFoundError("%s not found!" % riak_obj.get_key())
-
-    # This is done before so that _cleanupDataFromDatabase won't recurse
-    # infinitely with collection_name. This wouldn't cause an problem as
-    # _cleanupDataFromDatabase calls for the loading of the referenced document
-    # from cache, which load this document from cache, and it see that it
-    # exists, finish loading the referenced document, then come back and finish
-    # loading this document.
-    obj = cls(riak_obj.get_key(), saved=True)
-    cls.instances[obj.key] = obj
-
-    data = cls._cleanupDataFromDatabase(deepcopy(riak_obj.get_data()))
-    obj._data = data
-    links = riak_obj.get_links()
-    obj._links = obj.updateLinks(links)
-    obj._storeOriginals()
-    obj._obj = riak_obj
-    return obj
+      data = cls._cleanupDataFromDatabase(deepcopy(riak_obj.get_data()))
+      obj._data = data
+      links = riak_obj.get_links()
+      obj._links = obj.updateLinks(links)
+      obj._storeOriginals()
+      obj._obj = riak_obj
+      return obj
+    else:
+      if not cached:
+        obj.reload()
+      return obj
 
   def _storeOriginals(self):
     self._originals = mediocreCopy(self._data)
@@ -538,6 +533,9 @@ class Document(object):
 
     This only works if the object has been saved at least once before.
 
+    Returns:
+      self for OOP.
+
     Raises:
       NotFoundError: if the object hasn't been saved before.
     """
@@ -613,6 +611,11 @@ class Document(object):
       key: The key value.
       r: The r value, defaults to None.
     """
+    if key in cls.instances:
+      obj = cls.instances[key]
+      obj.reload()
+      return obj
+
     riak_obj = cls.bucket.get(key, r)
     if not riak_obj.exists():
       raise NotFoundError("Key '%s' not found!" % key)

@@ -75,16 +75,21 @@ def getProperty(name, attrs, parents):
 
   return value
 
-def getKeys(*args):
+def getKeys(*args, **kwargs):
   """Gets the keys of all of the dictionaries and returns it in a list.
 
-  Removing any references to 'key', '_links', '_references'
+  Removing any references to 'key' (if specified), '_links', '_references'
+
+  Args:
+    discard_key: Boolean that determine whether or not to discard the 'key' attr
   """
+  discard_key = kwargs.get("discard_key", True)
   keys = set()
   for d in args:
     keys.update(d.keys())
     keys.discard("_links")
-    keys.discard("key")
+    if discard_key:
+      keys.discard("key")
     keys.discard("_references")
 
   return keys
