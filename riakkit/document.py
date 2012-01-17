@@ -193,9 +193,6 @@ class Document(object):
     for name in data:
       self.__setattr__(name, data[name])
 
-  def equals(self, other):
-    return self.key == other.key if type(self) == type(other) else False
-
   @classmethod
   def _cleanupDataFromDatabase(cls, data):
     keys = getKeys(data, cls._meta, cls._meta["_references"])
