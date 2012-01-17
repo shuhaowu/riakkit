@@ -344,15 +344,15 @@ Google Python styling guide.
 
 To add an index, simply do
 
-  >>> cake.addIndex("field1_bin", "val1")
-  >>> cake.save()
+    >>> cake.addIndex("field1_bin", "val1")
+    >>> cake.save()
 
 To get the indexes:
 
-  >>> print cake.getIndexes("field1_bin")
-  ['val1']
-  >>> print cake.getIndexes()
-  {'field1_bin': ['val1']}
+    >>> print cake.getIndexes("field1_bin")
+    ['val1']
+    >>> print cake.getIndexes()
+    {'field1_bin': ['val1']}
 
 To do an index based query:
 
