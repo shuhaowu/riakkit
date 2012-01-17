@@ -118,9 +118,28 @@ Raises:<br>
 
 <dl><dt><a name="Document-__setitem__"><strong>__setitem__</strong></a> = <a href="#Document-__setattr__">__setattr__</a>(self, name, value)</dt></dl>
 
+<dl><dt><a name="Document-addIndex"><strong>addIndex</strong></a>(self, field, value)</dt><dd><tt>Adds&nbsp;an&nbsp;index&nbsp;to&nbsp;the&nbsp;document&nbsp;for&nbsp;Riak&nbsp;2i.<br>
+&nbsp;<br>
+eleveldb&nbsp;must&nbsp;be&nbsp;enabled&nbsp;instead&nbsp;of&nbsp;bitcask<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;field:&nbsp;The&nbsp;index&nbsp;field<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;index&nbsp;value</tt></dd></dl>
+
 <dl><dt><a name="Document-delete"><strong>delete</strong></a>(self, rw<font color="#909090">=None</font>)</dt></dl>
 
-<dl><dt><a name="Document-equals"><strong>equals</strong></a>(self, other)</dt></dl>
+<dl><dt><a name="Document-getIndexes"><strong>getIndexes</strong></a>(self, field<font color="#909090">=None</font>)</dt><dd><tt>Gets&nbsp;the&nbsp;indexes.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;field:&nbsp;The&nbsp;field&nbsp;name.&nbsp;If&nbsp;it&nbsp;is&nbsp;None,&nbsp;all&nbsp;the&nbsp;indexes&nbsp;will&nbsp;be&nbsp;returned&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;dictionary.&nbsp;Otherwise&nbsp;it&nbsp;will&nbsp;return&nbsp;the&nbsp;list&nbsp;of&nbsp;index&nbsp;values.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default:&nbsp;None<br>
+Returns:<br>
+&nbsp;&nbsp;If&nbsp;field&nbsp;is&nbsp;None&nbsp;this&nbsp;returns&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;field&nbsp;:&nbsp;[value,&nbsp;value]<br>
+&nbsp;&nbsp;Otherwise&nbsp;it&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;[value,&nbsp;value]<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;KeyError:&nbsp;if&nbsp;field&nbsp;doesn't&nbsp;exists</tt></dd></dl>
 
 <dl><dt><a name="Document-mergeData"><strong>mergeData</strong></a>(self, data)</dt><dd><tt>Merges&nbsp;data.&nbsp;This&nbsp;will&nbsp;trigger&nbsp;the&nbsp;standard&nbsp;processors.<br>
 &nbsp;<br>
@@ -140,6 +159,15 @@ Returns:<br>
 &nbsp;<br>
 Raises:<br>
 &nbsp;&nbsp;NotFoundError:&nbsp;if&nbsp;the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;hasn't&nbsp;been&nbsp;saved&nbsp;before.</tt></dd></dl>
+
+<dl><dt><a name="Document-removeIndex"><strong>removeIndex</strong></a>(self, field, value)</dt><dd><tt>Removes&nbsp;an&nbsp;index&nbsp;from&nbsp;the&nbsp;document<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;field:&nbsp;The&nbsp;field&nbsp;name<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;ValueError:&nbsp;If&nbsp;field,&nbsp;value&nbsp;is&nbsp;not&nbsp;found..</tt></dd></dl>
 
 <dl><dt><a name="Document-save"><strong>save</strong></a>(self, w<font color="#909090">=None</font>, dw<font color="#909090">=None</font>)</dt><dd><tt>Saves&nbsp;the&nbsp;document&nbsp;into&nbsp;the&nbsp;database.<br>
 &nbsp;<br>
@@ -201,6 +229,16 @@ Args:<br>
 Args:<br>
 &nbsp;&nbsp;key:&nbsp;The&nbsp;key&nbsp;value.<br>
 &nbsp;&nbsp;r:&nbsp;The&nbsp;r&nbsp;value,&nbsp;defaults&nbsp;to&nbsp;None.</tt></dd></dl>
+
+<dl><dt><a name="Document-index"><strong>index</strong></a>(cls, index, startkey, endkey<font color="#909090">=None</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Short&nbsp;hand&nbsp;for&nbsp;creating&nbsp;a&nbsp;new&nbsp;mapreduce&nbsp;index<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;index:&nbsp;The&nbsp;index&nbsp;field<br>
+&nbsp;&nbsp;startkey:&nbsp;The&nbsp;starting&nbsp;key<br>
+&nbsp;&nbsp;endkey:&nbsp;The&nbsp;ending&nbsp;key.&nbsp;If&nbsp;not&nbsp;none,&nbsp;search&nbsp;a&nbsp;range.&nbsp;Default:&nbsp;None<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;RiakMapReduce&nbsp;<a href="__builtin__.html#object">object</a></tt></dd></dl>
 
 <dl><dt><a name="Document-load"><strong>load</strong></a>(cls, riak_obj, cached<font color="#909090">=False</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Construct&nbsp;a&nbsp;<a href="#Document">Document</a>&nbsp;based&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;given&nbsp;a&nbsp;RiakObject.<br>
 &nbsp;<br>
@@ -265,5 +303,12 @@ Args:<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;Returns&nbsp;the&nbsp;bucket&nbsp;name.</tt></dd></dl>
-</td></tr></table>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>MD_INDEX</strong> = 'index'</td></tr></table>
 </body></html>

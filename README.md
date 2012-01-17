@@ -335,6 +335,38 @@ Solr search allows you to do limit and sorting.
     >>> print sorted([comment.title for comment in query.all()])
     [u'Abc', u'Riakkit ftw!']
 
+
+### Riak 2i ###
+
+After v0.3.2a, Riakkit gained support for easier Riak 2i. The interface stayed
+relatively the same, with the renaming of `add_index` to `addIndex` due to the
+Google Python styling guide.
+
+To add an index, simply do
+
+  >>> cake.addIndex("field1_bin", "val1")
+  >>> cake.save()
+
+To get the indexes:
+
+  >>> print cake.getIndexes("field1_bin")
+  ['val1']
+  >>> print cake.getIndexes()
+  {'field1_bin': ['val1']}
+
+To do an index based query:
+
+    >>> query = Cake.index("field1_bin", "val1")
+    >>> for cake in query.run():
+    ...     print cake.type
+    chocolate
+
+**Note: I'm unable to guarentee the effectiveness of `removeIndex`. The
+underlying code that does the removal of the index appears faulty and will
+never succeed. I'm currently working on a way to patch that with my own fork.**
+
+
+
 ### Map Reduce ###
 
 Map Reduce with Riakkit is the same to the python-riak's map reduce. In fact,

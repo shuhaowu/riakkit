@@ -24,6 +24,8 @@ from riakkit.exceptions import *
 from riakkit.utils import *
 from copy import copy, deepcopy
 
+from riak.metadata import MD_INDEX
+
 _document_classes = {}
 
 def getUniqueListBucketName(class_name, property_name):
@@ -172,11 +174,67 @@ class Document(object):
     self._links = {}
     self._data = {}
 
+    self._indexes = {}
+
     self.mergeData(kwargs)
     self._saved = saved
     self._storeOriginals()
 
     self.__class__.instances[self.key] = self
+
+
+  def addIndex(self, field, value):
+    """Adds an index to the document for Riak 2i.
+
+    eleveldb must be enabled instead of bitcask
+
+    Args:
+      field: The index field
+      value: The index value
+    """
+    l = self._indexes.get(field, [])
+    l.append(value)
+    self._indexes[field] = l
+
+  def removeIndex(self, field, value):
+    """Removes an index from the document
+
+    Args:
+      field: The field name
+      value: The value
+
+    Raises:
+      ValueError: If field, value is not found..
+    """
+    l = self._indexes.get(field, [])
+    try:
+      l.remove(value)
+    except ValueError:
+      raise ValueError("%s: %s index not found!" % (field, value))
+    else:
+      self._indexes[field] = l
+
+  def getIndexes(self, field=None):
+    """Gets the indexes.
+
+    Args:
+      field: The field name. If it is None, all the indexes will be returned in
+             a dictionary. Otherwise it will return the list of index values.
+             Default: None
+    Returns:
+      If field is None this returns a dictionary of field : [value, value]
+      Otherwise it returns a list of [value, value]
+
+    Raises:
+      KeyError: if field doesn't exists
+    """
+    if field is None:
+      return deepcopy(self._indexes)
+    else:
+      try:
+        return copy(self._indexes[field])
+      except KeyError:
+        raise KeyError("Index field %s doesn't exist!" % field)
 
   def mergeData(self, data):
     """Merges data. This will trigger the standard processors.
@@ -192,6 +250,18 @@ class Document(object):
 
     for name in data:
       self.__setattr__(name, data[name])
+
+  @classmethod
+  def _getIndexesFromObj(cls, obj): # TODO: These really needs to get some sort of coordination. Should be static? naming? ..etc...
+    obj_indexes = obj.get_indexes()
+    indexes = {}
+    for index_entry in obj_indexes:
+      field = index_entry.get_field()
+      value = index_entry.get_value()
+      l = indexes.get(field, [])
+      l.append(value)
+      indexes[field] = l
+    return indexes
 
   @classmethod
   def _cleanupDataFromDatabase(cls, data):
@@ -247,6 +317,7 @@ class Document(object):
       obj._data = data
       links = riak_obj.get_links()
       obj._links = obj.updateLinks(links)
+      obj._indexes = cls._getIndexesFromObj(obj)
       obj._storeOriginals()
       obj._obj = riak_obj
       return obj
@@ -510,6 +581,13 @@ class Document(object):
           doc.links[col_name] = current_list
           other_docs_to_be_saved.append(doc)
 
+    # Indexes
+
+    for field in self._indexes:
+      l = self._indexes[field]
+      for value in l:
+        self._obj.add_index(field, value) # multiple same index?
+
     self._obj.store(w=w, dw=dw)
     for name in self._uniques:
       obj = self._meta[name].unique_bucket.new(self._data[name], {"key" : self.key})
@@ -646,6 +724,20 @@ class Document(object):
     if not cls.SEARCHABLE:
       raise NotImplementedError("Searchable is disabled, this is therefore not implemented.")
     return SolrQuery(cls, cls.client.solr().search(cls.bucket_name, querytext, **kwargs))
+
+  @classmethod
+  def index(cls, index, startkey, endkey=None):
+    """Short hand for creating a new mapreduce index
+
+    Args:
+      index: The index field
+      startkey: The starting key
+      endkey: The ending key. If not none, search a range. Default: None
+
+    Returns:
+      A RiakMapReduce object
+    """
+    return MapReduceQuery(cls, cls.client.index(cls.bucket_name, index, startkey, endkey))
 
   @classmethod
   def mapreduce(cls):
