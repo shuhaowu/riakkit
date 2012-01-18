@@ -361,11 +361,6 @@ To do an index based query:
     ...     print cake.type
     chocolate
 
-**Note: I'm unable to guarentee the effectiveness of `removeIndex`. The
-underlying code that does the removal of the index appears faulty and will
-never succeed. I'm currently working on a way to patch that with my own fork.**
-
-
 
 ### Map Reduce ###
 
