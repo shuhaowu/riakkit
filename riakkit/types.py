@@ -381,6 +381,11 @@ class ReferenceBaseProperty(BaseProperty):
         if not isinstance(v, rc):
           return False
       return True
+    elif isinstance(l, dict):
+      for k in l:
+        if not isinstance(l[k], rc):
+          return False
+      return True
     else:
       return isinstance(l, (rc, NONE_TYPE))
 
@@ -421,6 +426,36 @@ class MultiReferenceProperty(ReferenceBaseProperty):
 
   def defaultValue(self):
     return []
+
+class DictReferenceProperty(ReferenceBaseProperty):
+  def convertToDb(self, value):
+    value = BaseProperty.convertToDb(self, value)
+    if value is None:
+      return {}
+
+    new_values = {}
+    for key in value:
+      new_values[key] = value[key].key # key != value[key].key
+
+    return new_values
+
+  def convertFromDb(self, value):
+    if value is not None:
+      for key in value:
+        value[key] = self.reference_class.load(value[key], True)
+    else:
+      value = {}
+    return BaseProperty.convertFromDb(self, value)
+
+  def standardize(self, value):
+    value = BaseProperty.standardize(self, value)
+    new_values = {}
+    for key in value:
+      new_values[key] = self.reference_class.load(value[key]) if isinstance(value[key], (str, unicode)) else value[key]
+    return new_values
+
+  def defaultValue(self):
+    return {}
 
 class LinkedDocuments(ReferenceBaseProperty):
   """Linked documents property.

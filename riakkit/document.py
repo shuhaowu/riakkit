@@ -246,7 +246,8 @@ class Document(object):
     for name in keys:
       if self.__getattr__(name) is None:
         defaultValue = self._meta.get(name, self._meta["_references"].get(name, BaseProperty)).defaultValue # TODO: merge _meta and _references
-        self.__setattr__(name, defaultValue())
+        self._data[name] = defaultValue()
+        # self.__setattr__(name, defaultValue())
 
     for name in data:
       self.__setattr__(name, data[name])
@@ -662,7 +663,6 @@ class Document(object):
 
       self._obj = None
       self._saved = False
-
 
   @classmethod
   def exists(cls, key, r=None):
