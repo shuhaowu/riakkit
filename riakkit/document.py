@@ -317,7 +317,7 @@ class Document(object):
       obj._data = data
       links = riak_obj.get_links()
       obj._links = obj.updateLinks(links)
-      obj._indexes = cls._getIndexesFromObj(obj)
+      obj._indexes = cls._getIndexesFromObj(riak_obj)
       obj._storeOriginals()
       obj._obj = riak_obj
       return obj
