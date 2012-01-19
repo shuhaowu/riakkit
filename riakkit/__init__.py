@@ -19,7 +19,7 @@ __authors__ = [
     '"Shuhao Wu" <admin@thekks.net>'
 ]
 
-VERSION = "0.3.3a"
+VERSION = "0.4.0a"
 
 from riakkit.document import Document
 from riakkit.emdocument import EmDocument

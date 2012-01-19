@@ -182,6 +182,36 @@ class Document(object):
 
     self.__class__.instances[self.key] = self
 
+  @classmethod
+  def flushDocumentFromCache(cls, k=None):
+    """Removes an instance from the instances being tracked.
+
+    A potentially dangerous method. This only flushes riakkit's internal cache.
+    Those objects are not destroyed. Any references to it will still work. This
+    will break the 1 key per object. Use at your own risk.
+
+    Some potential uses: since a lot of objects could accumulate in RAM, this
+    could be used there.
+
+    However, Riakkit is not very optimized as of right now.. perhaps in the
+    future it will be.
+
+    Args:
+      k: A key or a Document instance. If None, it will flush the entire cache
+         for this class. Default: None
+    """
+
+    if k is None:
+      k = cls.instances.keys()
+
+    if isinstance(k, cls):
+      k = [k.key]
+    elif isinstance(k, (unicode, str)):
+      k = [k]
+
+    for key in k:
+      cls.instances.pop(key)
+
 
   def addIndex(self, field, value):
     """Adds an index to the document for Riak 2i.

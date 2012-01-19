@@ -60,7 +60,8 @@
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#ReferenceBaseProperty">ReferenceBaseProperty</a>
 </font></dt><dd>
 <dl>
-<dt><font face="helvetica, arial"><a href="riakkit.types.html#LinkedDocuments">LinkedDocuments</a>
+<dt><font face="helvetica, arial"><a href="riakkit.types.html#DictReferenceProperty">DictReferenceProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#LinkedDocuments">LinkedDocuments</a>
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#MultiReferenceProperty">MultiReferenceProperty</a>
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#ReferenceProperty">ReferenceProperty</a>
 </font></dt></dl>
@@ -383,6 +384,56 @@ Args:<br>
 &nbsp;&nbsp;standardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;the<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="DictReferenceProperty">class <strong>DictReferenceProperty</strong></a>(<a href="riakkit.types.html#ReferenceBaseProperty">ReferenceBaseProperty</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.types.html#DictReferenceProperty">DictReferenceProperty</a></dd>
+<dd><a href="riakkit.types.html#ReferenceBaseProperty">ReferenceBaseProperty</a></dd>
+<dd><a href="riakkit.types.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="DictReferenceProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="DictReferenceProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="DictReferenceProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="DictReferenceProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.types.html#ReferenceBaseProperty">ReferenceBaseProperty</a>:<br>
+<dl><dt><a name="DictReferenceProperty-__init__"><strong>__init__</strong></a>(self, reference_class<font color="#909090">=None</font>, collection_name<font color="#909090">=None</font>, required<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;Reference&nbsp;Property<br>
+&nbsp;<br>
+You&nbsp;can&nbsp;set&nbsp;it&nbsp;up&nbsp;so&nbsp;that&nbsp;riakkit&nbsp;automatically&nbsp;link&nbsp;back&nbsp;from<br>
+the&nbsp;reference_class&nbsp;like&nbsp;GAE's&nbsp;<a href="#ReferenceProperty">ReferenceProperty</a>.&nbsp;Except&nbsp;everything&nbsp;here<br>
+is&nbsp;a&nbsp;list.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;reference_class:&nbsp;The&nbsp;classes&nbsp;that&nbsp;should&nbsp;be&nbsp;added&nbsp;to&nbsp;this&nbsp;<a href="#LinkedDocuments">LinkedDocuments</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i.e.&nbsp;Documents&nbsp;have&nbsp;to&nbsp;be&nbsp;objects&nbsp;of&nbsp;that&nbsp;class&nbsp;to&nbsp;pass<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validation.&nbsp;None&nbsp;if&nbsp;you&nbsp;wish&nbsp;to&nbsp;allow&nbsp;any&nbsp;Document&nbsp;class.<br>
+&nbsp;&nbsp;collection_name:&nbsp;The&nbsp;collection&nbsp;name&nbsp;for&nbsp;the&nbsp;reference_class.&nbsp;Works&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;same&nbsp;way&nbsp;as&nbsp;GAE's&nbsp;collection_name&nbsp;for&nbsp;their<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ReferenceProperty">ReferenceProperty</a>.&nbsp;See&nbsp;the&nbsp;README&nbsp;file&nbsp;at&nbsp;the&nbsp;repository<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;detailed&nbsp;tutorial.</tt></dd></dl>
+
+<dl><dt><a name="DictReferenceProperty-validate"><strong>validate</strong></a>(self, value)</dt></dl>
 
 <hr>
 Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>

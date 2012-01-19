@@ -218,6 +218,22 @@ Args:<br>
 Returns:<br>
 &nbsp;&nbsp;True&nbsp;if&nbsp;the&nbsp;key&nbsp;exists,&nbsp;false&nbsp;otherwise.</tt></dd></dl>
 
+<dl><dt><a name="Document-flushDocumentFromCache"><strong>flushDocumentFromCache</strong></a>(cls, k<font color="#909090">=None</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Removes&nbsp;an&nbsp;instance&nbsp;from&nbsp;the&nbsp;instances&nbsp;being&nbsp;tracked.<br>
+&nbsp;<br>
+A&nbsp;potentially&nbsp;dangerous&nbsp;method.&nbsp;This&nbsp;only&nbsp;flushes&nbsp;riakkit's&nbsp;internal&nbsp;cache.<br>
+Those&nbsp;objects&nbsp;are&nbsp;not&nbsp;destroyed.&nbsp;Any&nbsp;references&nbsp;to&nbsp;it&nbsp;will&nbsp;still&nbsp;work.&nbsp;This<br>
+will&nbsp;break&nbsp;the&nbsp;1&nbsp;key&nbsp;per&nbsp;<a href="__builtin__.html#object">object</a>.&nbsp;Use&nbsp;at&nbsp;your&nbsp;own&nbsp;risk.<br>
+&nbsp;<br>
+Some&nbsp;potential&nbsp;uses:&nbsp;since&nbsp;a&nbsp;lot&nbsp;of&nbsp;objects&nbsp;could&nbsp;accumulate&nbsp;in&nbsp;RAM,&nbsp;this<br>
+could&nbsp;be&nbsp;used&nbsp;there.<br>
+&nbsp;<br>
+However,&nbsp;Riakkit&nbsp;is&nbsp;not&nbsp;very&nbsp;optimized&nbsp;as&nbsp;of&nbsp;right&nbsp;now..&nbsp;perhaps&nbsp;in&nbsp;the<br>
+future&nbsp;it&nbsp;will&nbsp;be.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;k:&nbsp;A&nbsp;key&nbsp;or&nbsp;a&nbsp;<a href="#Document">Document</a>&nbsp;instance.&nbsp;If&nbsp;None,&nbsp;it&nbsp;will&nbsp;flush&nbsp;the&nbsp;entire&nbsp;cache<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;this&nbsp;class.&nbsp;Default:&nbsp;None</tt></dd></dl>
+
 <dl><dt><a name="Document-getWithKey"><strong>getWithKey</strong></a>(cls, key, r<font color="#909090">=None</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Get&nbsp;an&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;a&nbsp;given&nbsp;key.<br>
 &nbsp;<br>
 Args:<br>
