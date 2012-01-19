@@ -27,4 +27,16 @@ import re
 
 _emailRegex = re.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", flags=re.I)
 
-emailValidator = lambda x: True if x is None else bool(_emailRegex.match(x.strip().lower()))
+# Credit goes to dictshield at https://github.com/j2labs/dictshield/blob/master/dictshield/fields/base.py
+_urlRegex = re.compile(
+    r'^https?://'
+    r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'
+    r'localhost|'
+    r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
+    r'(?::\d+)?'
+    r'(?:/?|[/?]\S+)$', re.IGNORECASE
+  )
+
+_regexMatch = lambda x, r: True if x is None else bool(r.match(x.strip().lower()))
+emailValidator = lambda x: _regexMatch(x, _emailRegex)
+urlValidator = lambda x: _regexMatch(x, _urlRegex)
