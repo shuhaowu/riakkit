@@ -683,8 +683,11 @@ class Document(object):
           docs = [docs]
         deleteBackRef(self._meta["_references"][name].collection_name, docs, False)
 
-      if self.key in self.__class__.instances:
+      try:
         del self.__class__.instances[self.key]
+      except KeyError:
+        pass
+
       self._obj.delete(rw=rw)
 
       for name in self._uniques:
