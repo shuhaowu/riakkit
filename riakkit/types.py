@@ -18,6 +18,8 @@ import time
 
 NONE_TYPE = type(None)
 
+_valueOrList = lambda value: [] if value is None else value
+
 class BaseProperty(object):
   """Base property type
 
@@ -31,8 +33,8 @@ class BaseProperty(object):
                 a boolean.
   """
   def __init__(self, required=False, unique=False, default=None,
-               validators=[], forwardprocessors=[], backwardprocessors=[],
-               standardprocessors=[]):
+               validators=None, forwardprocessors=None, backwardprocessors=None,
+               standardprocessors=None):
     """Initializes the property field
 
     Args:
@@ -54,11 +56,11 @@ class BaseProperty(object):
     """
     self.required = required
     self.unique = unique
-    self.validators = validators
+    self.validators = _valueOrList(validators)
     self.default = default
-    self.forwardprocessors = forwardprocessors
-    self.backwardprocessors = backwardprocessors
-    self.standardprocessors = standardprocessors
+    self.forwardprocessors = _valueOrList(forwardprocessors)
+    self.backwardprocessors = _valueOrList(backwardprocessors)
+    self.standardprocessors = _valueOrList(standardprocessors)
 
   def _processValue(self, value, processors):
     if callable(processors):
@@ -253,7 +255,7 @@ class EnumProperty(BaseProperty):
   """
 
   def __init__(self, possible_values, required=False, unique=False, default=None,
-               validators=[], forwardprocessors=[], backwardprocessors=[]):
+               validators=None, forwardprocessors=None, backwardprocessors=None):
     """Initialize the Enum Property.
 
     Args:
@@ -481,8 +483,8 @@ class LinkedDocuments(ReferenceBaseProperty):
 
 class EmDocumentProperty(BaseProperty):
   """The EmDocument property"""
-  def __init__(self, emdocument_class, required=False, validators=[],
-                     forwardprocessors=[], backwardprocessors=[]):
+  def __init__(self, emdocument_class, required=False, validators=None,
+                     forwardprocessors=None, backwardprocessors=None):
     """Initializes a EmDocumentProperty class
 
     Args:
@@ -566,8 +568,8 @@ class EmDocumentsDictProperty(BaseProperty):
         new_dict[key] = self._standardize(value)
       dict.update(self, new_dict)
 
-  def __init__(self, emdocument_class, required=False, validators=[],
-                     forwardprocessors=[], backwardprocessors=[]):
+  def __init__(self, emdocument_class, required=False, validators=None,
+                     forwardprocessors=None, backwardprocessors=None):
     """Initializes a EmDocumentsDictProperty class
 
     Args:
@@ -609,7 +611,7 @@ class EmDocumentsListProperty(BaseProperty):
     converts values like EmDocumentProperty. All interfaces except init stays
     the same. __init__ takes in a mandatory emdocument_class
     """
-    def __init__(self, emdocument_class, iterable=[]):
+    def __init__(self, emdocument_class, iterable=None):
       """Initializes the list.
       The iterable will be turned into EmDocuments as well.
 
@@ -618,7 +620,7 @@ class EmDocumentsListProperty(BaseProperty):
         iterable: The iterable of dictionary or the EmDocument objects
       """
       self.emdocument_class = emdocument_class
-      new_list = self._standardizeList(iterable)
+      new_list = self._standardizeList(_valueOrList(iterable))
       list.__init__(self, new_list)
 
     # Note that these standardize is not an actual property standardize.
@@ -653,8 +655,8 @@ class EmDocumentsListProperty(BaseProperty):
       value = self._standardize(value)
       list.__setitem__(self, name, value)
 
-  def __init__(self, emdocument_class, required=False, validators=[],
-                     forwardprocessors=[], backwardprocessors=[]):
+  def __init__(self, emdocument_class, required=False, validators=None,
+                     forwardprocessors=None, backwardprocessors=None):
     """Initializes a EmDocumentsListProperty class
 
     Args:
