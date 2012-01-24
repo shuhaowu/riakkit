@@ -301,15 +301,19 @@ class EnumProperty(BaseProperty):
 class DateTimeProperty(BaseProperty):
   """The datetime property.
 
-  Stores the UTC time as a float in the database. Maps to the python object of
+  Stores the time as a float in the database. Maps to the python object of
   datetime.datetime or the utc timestamp.
+
+  Note that this is your timezone's time. Time is handled with your time only.
+
+  TODO: utc only feature later.
   """
 
   def validate(self, value):
     check = False
     if isinstance(value, (long, int, float)): # timestamp
       try:
-        value = datetime.datetime.utcfromtimestamp(value)
+        value = datetime.datetime.fromtimestamp(value)
       except ValueError:
         check = False
       else:
@@ -322,17 +326,17 @@ class DateTimeProperty(BaseProperty):
     value = BaseProperty.convertToDb(self, value)
     if isinstance(value, (long, int, float, NONE_TYPE)):
       return value
-    return time.mktime(value.utctimetuple())
+    return time.mktime(value.timetuple())
 
   def convertFromDb(self, value):
     if value is not None:
-      value = datetime.datetime.utcfromtimestamp(value)
+      value = datetime.datetime.fromtimestamp(value)
     return BaseProperty.convertFromDb(self, value)
 
   def standardize(self, value):
     value = BaseProperty.standardize(self, value)
     if isinstance(value, (int, float, long)):
-      return datetime.datetime.utcfromtimestamp(value)
+      return datetime.datetime.fromtimestamp(value)
     elif isinstance(value, (datetime.datetime, NONE_TYPE)):
       return value
 
@@ -340,7 +344,7 @@ class DateTimeProperty(BaseProperty):
 
   def defaultValue(self):
     """Returns the default specified or now."""
-    return self.default or datetime.datetime.utcnow()
+    return self.default or datetime.datetime.fromtimestamp(time.time())
 
 
 class DynamicProperty(BaseProperty):

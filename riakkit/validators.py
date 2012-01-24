@@ -38,5 +38,5 @@ _urlRegex = re.compile(
   )
 
 _regexMatch = lambda x, r: True if x is None else bool(r.match(x.strip().lower()))
-emailValidator = lambda x: _regexMatch(x, _emailRegex)
-urlValidator = lambda x: _regexMatch(x, _urlRegex)
+emailValidator = lambda x: _regexMatch(x, _emailRegex) or x == ""
+urlValidator = lambda x: _regexMatch(x, _urlRegex) or x == ""
