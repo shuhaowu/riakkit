@@ -60,7 +60,8 @@
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#ReferenceBaseProperty">ReferenceBaseProperty</a>
 </font></dt><dd>
 <dl>
-<dt><font face="helvetica, arial"><a href="riakkit.types.html#LinkedDocuments">LinkedDocuments</a>
+<dt><font face="helvetica, arial"><a href="riakkit.types.html#DictReferenceProperty">DictReferenceProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#LinkedDocuments">LinkedDocuments</a>
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#MultiReferenceProperty">MultiReferenceProperty</a>
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#ReferenceProperty">ReferenceProperty</a>
 </font></dt></dl>
@@ -90,7 +91,7 @@ Attributes:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;boolean.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="BaseProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>, standardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="BaseProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
@@ -197,7 +198,7 @@ Methods defined here:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="BooleanProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>, standardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="BooleanProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
@@ -279,8 +280,12 @@ Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BasePr
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
 <td colspan=2><tt>The&nbsp;datetime&nbsp;property.<br>
 &nbsp;<br>
-Stores&nbsp;the&nbsp;UTC&nbsp;time&nbsp;as&nbsp;a&nbsp;float&nbsp;in&nbsp;the&nbsp;database.&nbsp;Maps&nbsp;to&nbsp;the&nbsp;python&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;of<br>
-datetime.datetime&nbsp;or&nbsp;the&nbsp;utc&nbsp;timestamp.<br>&nbsp;</tt></td></tr>
+Stores&nbsp;the&nbsp;time&nbsp;as&nbsp;a&nbsp;float&nbsp;in&nbsp;the&nbsp;database.&nbsp;Maps&nbsp;to&nbsp;the&nbsp;python&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;of<br>
+datetime.datetime&nbsp;or&nbsp;the&nbsp;utc&nbsp;timestamp.<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;this&nbsp;is&nbsp;your&nbsp;timezone's&nbsp;time.&nbsp;Time&nbsp;is&nbsp;handled&nbsp;with&nbsp;your&nbsp;time&nbsp;only.<br>
+&nbsp;<br>
+TODO:&nbsp;utc&nbsp;only&nbsp;feature&nbsp;later.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="riakkit.types.html#DateTimeProperty">DateTimeProperty</a></dd>
@@ -301,7 +306,7 @@ Methods defined here:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="DateTimeProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>, standardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="DateTimeProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
@@ -366,7 +371,7 @@ Data and other attributes defined here:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="DictProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>, standardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="DictProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
@@ -383,6 +388,56 @@ Args:<br>
 &nbsp;&nbsp;standardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;the<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="DictReferenceProperty">class <strong>DictReferenceProperty</strong></a>(<a href="riakkit.types.html#ReferenceBaseProperty">ReferenceBaseProperty</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.types.html#DictReferenceProperty">DictReferenceProperty</a></dd>
+<dd><a href="riakkit.types.html#ReferenceBaseProperty">ReferenceBaseProperty</a></dd>
+<dd><a href="riakkit.types.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="DictReferenceProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="DictReferenceProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="DictReferenceProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="DictReferenceProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.types.html#ReferenceBaseProperty">ReferenceBaseProperty</a>:<br>
+<dl><dt><a name="DictReferenceProperty-__init__"><strong>__init__</strong></a>(self, reference_class<font color="#909090">=None</font>, collection_name<font color="#909090">=None</font>, required<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;Reference&nbsp;Property<br>
+&nbsp;<br>
+You&nbsp;can&nbsp;set&nbsp;it&nbsp;up&nbsp;so&nbsp;that&nbsp;riakkit&nbsp;automatically&nbsp;link&nbsp;back&nbsp;from<br>
+the&nbsp;reference_class&nbsp;like&nbsp;GAE's&nbsp;<a href="#ReferenceProperty">ReferenceProperty</a>.&nbsp;Except&nbsp;everything&nbsp;here<br>
+is&nbsp;a&nbsp;list.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;reference_class:&nbsp;The&nbsp;classes&nbsp;that&nbsp;should&nbsp;be&nbsp;added&nbsp;to&nbsp;this&nbsp;<a href="#LinkedDocuments">LinkedDocuments</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i.e.&nbsp;Documents&nbsp;have&nbsp;to&nbsp;be&nbsp;objects&nbsp;of&nbsp;that&nbsp;class&nbsp;to&nbsp;pass<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validation.&nbsp;None&nbsp;if&nbsp;you&nbsp;wish&nbsp;to&nbsp;allow&nbsp;any&nbsp;Document&nbsp;class.<br>
+&nbsp;&nbsp;collection_name:&nbsp;The&nbsp;collection&nbsp;name&nbsp;for&nbsp;the&nbsp;reference_class.&nbsp;Works&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;same&nbsp;way&nbsp;as&nbsp;GAE's&nbsp;collection_name&nbsp;for&nbsp;their<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ReferenceProperty">ReferenceProperty</a>.&nbsp;See&nbsp;the&nbsp;README&nbsp;file&nbsp;at&nbsp;the&nbsp;repository<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;detailed&nbsp;tutorial.</tt></dd></dl>
+
+<dl><dt><a name="DictReferenceProperty-validate"><strong>validate</strong></a>(self, value)</dt></dl>
 
 <hr>
 Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
@@ -414,7 +469,7 @@ Python&nbsp;json&nbsp;module...<br>&nbsp;</tt></td></tr>
 </dl>
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="DynamicProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>, standardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="DynamicProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
@@ -517,7 +572,7 @@ Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BasePr
 </dl>
 <hr>
 Methods defined here:<br>
-<dl><dt><a name="EmDocumentProperty-__init__"><strong>__init__</strong></a>(self, emdocument_class, required<font color="#909090">=False</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;<a href="#EmDocumentProperty">EmDocumentProperty</a>&nbsp;class<br>
+<dl><dt><a name="EmDocumentProperty-__init__"><strong>__init__</strong></a>(self, emdocument_class, required<font color="#909090">=False</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;<a href="#EmDocumentProperty">EmDocumentProperty</a>&nbsp;class<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;emdocument_class:&nbsp;The&nbsp;EmDocument&nbsp;class&nbsp;to&nbsp;be&nbsp;used.</tt></dd></dl>
@@ -573,7 +628,7 @@ However,&nbsp;no&nbsp;convinient&nbsp;dot&nbsp;access&nbsp;for&nbsp;this..&nbsp;
 </dl>
 <hr>
 Methods defined here:<br>
-<dl><dt><a name="EmDocumentsDictProperty-__init__"><strong>__init__</strong></a>(self, emdocument_class, required<font color="#909090">=False</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;<a href="#EmDocumentsDictProperty">EmDocumentsDictProperty</a>&nbsp;class<br>
+<dl><dt><a name="EmDocumentsDictProperty-__init__"><strong>__init__</strong></a>(self, emdocument_class, required<font color="#909090">=False</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;<a href="#EmDocumentsDictProperty">EmDocumentsDictProperty</a>&nbsp;class<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;emdocument_class:&nbsp;The&nbsp;EmDocument&nbsp;class&nbsp;to&nbsp;be&nbsp;used.</tt></dd></dl>
@@ -632,7 +687,7 @@ Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BasePr
 </dl>
 <hr>
 Methods defined here:<br>
-<dl><dt><a name="EmDocumentsListProperty-__init__"><strong>__init__</strong></a>(self, emdocument_class, required<font color="#909090">=False</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;<a href="#EmDocumentsListProperty">EmDocumentsListProperty</a>&nbsp;class<br>
+<dl><dt><a name="EmDocumentsListProperty-__init__"><strong>__init__</strong></a>(self, emdocument_class, required<font color="#909090">=False</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;<a href="#EmDocumentsListProperty">EmDocumentsListProperty</a>&nbsp;class<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;emdocument_class:&nbsp;The&nbsp;EmDocument&nbsp;class&nbsp;to&nbsp;be&nbsp;used.</tt></dd></dl>
@@ -696,7 +751,7 @@ will&nbsp;be&nbsp;kept&nbsp;if&nbsp;they&nbsp;are&nbsp;objects,&nbsp;so&nbsp;try
 </dl>
 <hr>
 Methods defined here:<br>
-<dl><dt><a name="EnumProperty-__init__"><strong>__init__</strong></a>(self, possible_values, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initialize&nbsp;the&nbsp;Enum&nbsp;Property.<br>
+<dl><dt><a name="EnumProperty-__init__"><strong>__init__</strong></a>(self, possible_values, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initialize&nbsp;the&nbsp;Enum&nbsp;Property.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;possible_values:&nbsp;Possible&nbsp;values&nbsp;to&nbsp;be&nbsp;taken.<br>
@@ -753,7 +808,7 @@ Methods defined here:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="FloatProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>, standardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="FloatProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
@@ -833,7 +888,7 @@ Methods defined here:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="IntegerProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>, standardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="IntegerProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
@@ -1014,7 +1069,7 @@ Returns:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="ListProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>, standardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="ListProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
@@ -1308,7 +1363,7 @@ Methods defined here:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="StringProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=[]</font>, forwardprocessors<font color="#909090">=[]</font>, backwardprocessors<font color="#909090">=[]</font>, standardprocessors<font color="#909090">=[]</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+<dl><dt><a name="StringProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>

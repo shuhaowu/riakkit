@@ -118,9 +118,28 @@ Raises:<br>
 
 <dl><dt><a name="Document-__setitem__"><strong>__setitem__</strong></a> = <a href="#Document-__setattr__">__setattr__</a>(self, name, value)</dt></dl>
 
+<dl><dt><a name="Document-addIndex"><strong>addIndex</strong></a>(self, field, value)</dt><dd><tt>Adds&nbsp;an&nbsp;index&nbsp;to&nbsp;the&nbsp;document&nbsp;for&nbsp;Riak&nbsp;2i.<br>
+&nbsp;<br>
+eleveldb&nbsp;must&nbsp;be&nbsp;enabled&nbsp;instead&nbsp;of&nbsp;bitcask<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;field:&nbsp;The&nbsp;index&nbsp;field<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;index&nbsp;value</tt></dd></dl>
+
 <dl><dt><a name="Document-delete"><strong>delete</strong></a>(self, rw<font color="#909090">=None</font>)</dt></dl>
 
-<dl><dt><a name="Document-equals"><strong>equals</strong></a>(self, other)</dt></dl>
+<dl><dt><a name="Document-getIndexes"><strong>getIndexes</strong></a>(self, field<font color="#909090">=None</font>)</dt><dd><tt>Gets&nbsp;the&nbsp;indexes.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;field:&nbsp;The&nbsp;field&nbsp;name.&nbsp;If&nbsp;it&nbsp;is&nbsp;None,&nbsp;all&nbsp;the&nbsp;indexes&nbsp;will&nbsp;be&nbsp;returned&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;dictionary.&nbsp;Otherwise&nbsp;it&nbsp;will&nbsp;return&nbsp;the&nbsp;list&nbsp;of&nbsp;index&nbsp;values.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default:&nbsp;None<br>
+Returns:<br>
+&nbsp;&nbsp;If&nbsp;field&nbsp;is&nbsp;None&nbsp;this&nbsp;returns&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;field&nbsp;:&nbsp;[value,&nbsp;value]<br>
+&nbsp;&nbsp;Otherwise&nbsp;it&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;[value,&nbsp;value]<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;KeyError:&nbsp;if&nbsp;field&nbsp;doesn't&nbsp;exists</tt></dd></dl>
 
 <dl><dt><a name="Document-mergeData"><strong>mergeData</strong></a>(self, data)</dt><dd><tt>Merges&nbsp;data.&nbsp;This&nbsp;will&nbsp;trigger&nbsp;the&nbsp;standard&nbsp;processors.<br>
 &nbsp;<br>
@@ -135,8 +154,20 @@ from&nbsp;the&nbsp;database&nbsp;has&nbsp;been&nbsp;changed&nbsp;at&nbsp;one&nbs
 &nbsp;<br>
 This&nbsp;only&nbsp;works&nbsp;if&nbsp;the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;has&nbsp;been&nbsp;saved&nbsp;at&nbsp;least&nbsp;once&nbsp;before.<br>
 &nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;self&nbsp;for&nbsp;OOP.<br>
+&nbsp;<br>
 Raises:<br>
 &nbsp;&nbsp;NotFoundError:&nbsp;if&nbsp;the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;hasn't&nbsp;been&nbsp;saved&nbsp;before.</tt></dd></dl>
+
+<dl><dt><a name="Document-removeIndex"><strong>removeIndex</strong></a>(self, field, value)</dt><dd><tt>Removes&nbsp;an&nbsp;index&nbsp;from&nbsp;the&nbsp;document<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;field:&nbsp;The&nbsp;field&nbsp;name<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;ValueError:&nbsp;If&nbsp;field,&nbsp;value&nbsp;is&nbsp;not&nbsp;found..</tt></dd></dl>
 
 <dl><dt><a name="Document-save"><strong>save</strong></a>(self, w<font color="#909090">=None</font>, dw<font color="#909090">=None</font>)</dt><dd><tt>Saves&nbsp;the&nbsp;document&nbsp;into&nbsp;the&nbsp;database.<br>
 &nbsp;<br>
@@ -187,6 +218,22 @@ Args:<br>
 Returns:<br>
 &nbsp;&nbsp;True&nbsp;if&nbsp;the&nbsp;key&nbsp;exists,&nbsp;false&nbsp;otherwise.</tt></dd></dl>
 
+<dl><dt><a name="Document-flushDocumentFromCache"><strong>flushDocumentFromCache</strong></a>(cls, k<font color="#909090">=None</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Removes&nbsp;an&nbsp;instance&nbsp;from&nbsp;the&nbsp;instances&nbsp;being&nbsp;tracked.<br>
+&nbsp;<br>
+A&nbsp;potentially&nbsp;dangerous&nbsp;method.&nbsp;This&nbsp;only&nbsp;flushes&nbsp;riakkit's&nbsp;internal&nbsp;cache.<br>
+Those&nbsp;objects&nbsp;are&nbsp;not&nbsp;destroyed.&nbsp;Any&nbsp;references&nbsp;to&nbsp;it&nbsp;will&nbsp;still&nbsp;work.&nbsp;This<br>
+will&nbsp;break&nbsp;the&nbsp;1&nbsp;key&nbsp;per&nbsp;<a href="__builtin__.html#object">object</a>.&nbsp;Use&nbsp;at&nbsp;your&nbsp;own&nbsp;risk.<br>
+&nbsp;<br>
+Some&nbsp;potential&nbsp;uses:&nbsp;since&nbsp;a&nbsp;lot&nbsp;of&nbsp;objects&nbsp;could&nbsp;accumulate&nbsp;in&nbsp;RAM,&nbsp;this<br>
+could&nbsp;be&nbsp;used&nbsp;there.<br>
+&nbsp;<br>
+However,&nbsp;Riakkit&nbsp;is&nbsp;not&nbsp;very&nbsp;optimized&nbsp;as&nbsp;of&nbsp;right&nbsp;now..&nbsp;perhaps&nbsp;in&nbsp;the<br>
+future&nbsp;it&nbsp;will&nbsp;be.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;k:&nbsp;A&nbsp;key&nbsp;or&nbsp;a&nbsp;<a href="#Document">Document</a>&nbsp;instance.&nbsp;If&nbsp;None,&nbsp;it&nbsp;will&nbsp;flush&nbsp;the&nbsp;entire&nbsp;cache<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;this&nbsp;class.&nbsp;Default:&nbsp;None</tt></dd></dl>
+
 <dl><dt><a name="Document-getWithKey"><strong>getWithKey</strong></a>(cls, key, r<font color="#909090">=None</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Get&nbsp;an&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;a&nbsp;given&nbsp;key.<br>
 &nbsp;<br>
 Args:<br>
@@ -199,15 +246,21 @@ Args:<br>
 &nbsp;&nbsp;key:&nbsp;The&nbsp;key&nbsp;value.<br>
 &nbsp;&nbsp;r:&nbsp;The&nbsp;r&nbsp;value,&nbsp;defaults&nbsp;to&nbsp;None.</tt></dd></dl>
 
+<dl><dt><a name="Document-index"><strong>index</strong></a>(cls, index, startkey, endkey<font color="#909090">=None</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Short&nbsp;hand&nbsp;for&nbsp;creating&nbsp;a&nbsp;new&nbsp;mapreduce&nbsp;index<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;index:&nbsp;The&nbsp;index&nbsp;field<br>
+&nbsp;&nbsp;startkey:&nbsp;The&nbsp;starting&nbsp;key<br>
+&nbsp;&nbsp;endkey:&nbsp;The&nbsp;ending&nbsp;key.&nbsp;If&nbsp;not&nbsp;none,&nbsp;search&nbsp;a&nbsp;range.&nbsp;Default:&nbsp;None<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;RiakMapReduce&nbsp;<a href="__builtin__.html#object">object</a></tt></dd></dl>
+
 <dl><dt><a name="Document-load"><strong>load</strong></a>(cls, riak_obj, cached<font color="#909090">=False</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Construct&nbsp;a&nbsp;<a href="#Document">Document</a>&nbsp;based&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;given&nbsp;a&nbsp;RiakObject.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;riak_obj:&nbsp;The&nbsp;RiakObject&nbsp;that&nbsp;the&nbsp;document&nbsp;is&nbsp;suppose&nbsp;to&nbsp;build&nbsp;from.<br>
-&nbsp;&nbsp;cached:&nbsp;If&nbsp;we&nbsp;want&nbsp;to&nbsp;get&nbsp;from&nbsp;the&nbsp;pool&nbsp;of&nbsp;objects&nbsp;or&nbsp;not.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Note&nbsp;that&nbsp;if&nbsp;you&nbsp;have&nbsp;multiple&nbsp;instances&nbsp;of&nbsp;the&nbsp;same&nbsp;<a href="__builtin__.html#object">object</a>,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;most&nbsp;recent&nbsp;one&nbsp;to&nbsp;be&nbsp;cached&nbsp;will&nbsp;be&nbsp;used.&nbsp;If&nbsp;this&nbsp;is&nbsp;true,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;riak_obj&nbsp;could&nbsp;just&nbsp;be&nbsp;a&nbsp;string&nbsp;that's&nbsp;the&nbsp;key&nbsp;of&nbsp;the&nbsp;<a href="__builtin__.html#object">object</a>.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;not&nbsp;found&nbsp;in&nbsp;cache,&nbsp;it&nbsp;will&nbsp;be&nbsp;fetched&nbsp;from&nbsp;the&nbsp;db.<br>
+&nbsp;&nbsp;cached:&nbsp;Reload&nbsp;the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;or&nbsp;not&nbsp;if&nbsp;it's&nbsp;found&nbsp;in&nbsp;the&nbsp;pool&nbsp;of&nbsp;objects.<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;A&nbsp;<a href="#Document">Document</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;(whichever&nbsp;subclass&nbsp;this&nbsp;was&nbsp;called&nbsp;from).</tt></dd></dl>
@@ -266,5 +319,12 @@ Args:<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;Returns&nbsp;the&nbsp;bucket&nbsp;name.</tt></dd></dl>
-</td></tr></table>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>MD_INDEX</strong> = 'index'</td></tr></table>
 </body></html>

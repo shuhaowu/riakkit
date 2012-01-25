@@ -18,9 +18,12 @@ uses.</tt></p>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-getKeys"><strong>getKeys</strong></a>(*args)</dt><dd><tt>Gets&nbsp;the&nbsp;keys&nbsp;of&nbsp;all&nbsp;of&nbsp;the&nbsp;dictionaries&nbsp;and&nbsp;returns&nbsp;it&nbsp;in&nbsp;a&nbsp;list.<br>
+<td width="100%"><dl><dt><a name="-getKeys"><strong>getKeys</strong></a>(*args, **kwargs)</dt><dd><tt>Gets&nbsp;the&nbsp;keys&nbsp;of&nbsp;all&nbsp;of&nbsp;the&nbsp;dictionaries&nbsp;and&nbsp;returns&nbsp;it&nbsp;in&nbsp;a&nbsp;list.<br>
 &nbsp;<br>
-Removing&nbsp;any&nbsp;references&nbsp;to&nbsp;'key',&nbsp;'_links',&nbsp;'_references'</tt></dd></dl>
+Removing&nbsp;any&nbsp;references&nbsp;to&nbsp;'key'&nbsp;(if&nbsp;specified),&nbsp;'_links',&nbsp;'_references'<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;discard_key:&nbsp;Boolean&nbsp;that&nbsp;determine&nbsp;whether&nbsp;or&nbsp;not&nbsp;to&nbsp;discard&nbsp;the&nbsp;'key'&nbsp;attr</tt></dd></dl>
  <dl><dt><a name="-getProperty"><strong>getProperty</strong></a>(name, attrs, parents)</dt><dd><tt>Used&nbsp;in&nbsp;__new__&nbsp;while&nbsp;getting&nbsp;attributes&nbsp;of&nbsp;class&nbsp;objects&nbsp;that's&nbsp;about&nbsp;to<br>
 be&nbsp;created.<br>
 &nbsp;<br>
@@ -34,6 +37,12 @@ Args:<br>
 Returns:<br>
 &nbsp;&nbsp;None&nbsp;if&nbsp;the&nbsp;attributes&nbsp;is&nbsp;not&nbsp;found&nbsp;from&nbsp;the&nbsp;attrs&nbsp;nor&nbsp;the&nbsp;parents.<br>
 &nbsp;&nbsp;Otherwise&nbsp;the&nbsp;first&nbsp;one&nbsp;that's&nbsp;found,&nbsp;from&nbsp;attrs&nbsp;to&nbsp;BFS'ed&nbsp;parents.</tt></dd></dl>
+ <dl><dt><a name="-mediocreCopy"><strong>mediocreCopy</strong></a>(obj)</dt><dd><tt>It's&nbsp;kind&nbsp;of&nbsp;like&nbsp;a&nbsp;deep&nbsp;copy,&nbsp;but&nbsp;it&nbsp;only&nbsp;make&nbsp;copies&nbsp;of&nbsp;lists,&nbsp;tuples,<br>
+and&nbsp;dictionaries&nbsp;(and&nbsp;other&nbsp;primitive&nbsp;types).&nbsp;Other&nbsp;complex&nbsp;object&nbsp;such&nbsp;as<br>
+ones&nbsp;you&nbsp;created&nbsp;are&nbsp;kept&nbsp;as&nbsp;references.<br>
+&nbsp;<br>
+Arg:<br>
+&nbsp;&nbsp;obj:&nbsp;Any&nbsp;object.</tt></dd></dl>
  <dl><dt><a name="-walkParents"><strong>walkParents</strong></a>(parents, bases<font color="#909090">=('Document', 'type', 'object')</font>)</dt><dd><tt>Walks&nbsp;through&nbsp;the&nbsp;parents&nbsp;and&nbsp;return&nbsp;each&nbsp;parent&nbsp;class&nbsp;object&nbsp;uptil&nbsp;the<br>
 name&nbsp;of&nbsp;the&nbsp;classes&nbsp;specified&nbsp;in&nbsp;bases.<br>
 &nbsp;<br>
