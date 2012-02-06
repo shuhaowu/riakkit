@@ -522,6 +522,11 @@ the object is {key : <the key of the document>}. Let's see how that works.
     False
     >>> anothercooluser = CoolUser(username="anotheruser")
     >>> anothercooluser.save()  # This is done successfully
+    >>> anothercooluser.username = "cool"
+    >>> anothercooluser.save()
+    Traceback (most recent call last):
+      ...
+    ValueError: 'cool' already exists for 'username'!
 
 Embedded Document
 -----------------

@@ -504,6 +504,7 @@ class Document(object):
       dw: DW value
     """
     data_to_be_saved = {}
+    uniques_to_be_deleted = []
 
     # Process regular data
     keys = getKeys(self._meta, self._data)
@@ -519,7 +520,11 @@ class Document(object):
         self._data[name] = self._meta[name].defaultValue()
       else:
         if self._meta[name].unique:
-          if self._meta[name].unique_bucket.get(self._meta[name].convertToDb(self._data[name])).exists() and not self.__class__.bucket.get(self.key).exists():
+          if self._obj is not None:
+            old = self._obj.get_data()[name]
+            if old != self._data[name]: # Nasty hack?
+              uniques_to_be_deleted.append((self._meta[name].unique_bucket, old))
+          if self._meta[name].unique_bucket.get(self._meta[name].convertToDb(self._data[name])).exists():
             raise ValueError("'%s' already exists for '%s'!" % (self._data[name], name))
 
       data_to_be_saved[name] = self._meta[name].convertToDb(self._data[name])
@@ -623,6 +628,9 @@ class Document(object):
     for name in self._uniques:
       obj = self._meta[name].unique_bucket.new(self._data[name], {"key" : self.key})
       obj.store()
+
+    for bucket, key in uniques_to_be_deleted:
+      bucket.get(key).delete()
 
     self._storeOriginals()
     self._saved = True

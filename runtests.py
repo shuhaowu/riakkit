@@ -30,6 +30,11 @@ class B(CustomDocument):
 
   someA = DictReferenceProperty(reference_class=A)
 
+class UniqueTest(CustomDocument):
+  bucket_name = "test_unique"
+
+  attr = StringProperty(unique=True)
+
 class OtherTests(unittest.TestCase):
   def test_referenceModifiedOnSave(self):
     a = A(l=["1", "2", "3"], em={"a" : {"name" : ["1", "2", "3"]}})
@@ -46,6 +51,14 @@ class OtherTests(unittest.TestCase):
     b.reload()
     self.assertEqual(b.someA["a"], a)
     self.assertEqual(b.someA["c"], c)
+
+  def test_uniqueAttributesSetup(self):
+    unique = UniqueTest(attr="test")
+    unique.save()
+    unique.attr = "non-test"
+    unique.save()
+    unique.attr = "test"
+    unique.save()
 
 if __name__ == "__main__":
   try:
@@ -65,7 +78,8 @@ if __name__ == "__main__":
     # Clean up
     buckets_to_be_cleaned = ("test_blog", "test_users", "test_comments", "demos",
         "test_website", "coolusers", "_CoolUser_ul_username", "testdoc",
-        "test_person", "test_cake", "some_extended_bucket", "test_A", "test_B")
+        "test_person", "test_cake", "some_extended_bucket", "test_A", "test_B",
+        "test_unique", "_UniqueTest_ul_attr")
 
     for bucket in buckets_to_be_cleaned:
       deleteAllKeys(rc, bucket)
