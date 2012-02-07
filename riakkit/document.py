@@ -520,11 +520,15 @@ class Document(object):
         self._data[name] = self._meta[name].defaultValue()
       else:
         if self._meta[name].unique:
+          thesame = False
           if self._obj is not None:
             old = self._obj.get_data()[name]
-            if old != self._data[name]: # Nasty hack?
+            if old == self._data[name]: # Nasty hack?
+              thesame = True
+            else:
               uniques_to_be_deleted.append((self._meta[name].unique_bucket, old))
-          if self._meta[name].unique_bucket.get(self._meta[name].convertToDb(self._data[name])).exists():
+
+          if not thesame and self._meta[name].unique_bucket.get(self._meta[name].convertToDb(self._data[name])).exists():
             raise ValueError("'%s' already exists for '%s'!" % (self._data[name], name))
 
       data_to_be_saved[name] = self._meta[name].convertToDb(self._data[name])

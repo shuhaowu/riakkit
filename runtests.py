@@ -59,6 +59,7 @@ class OtherTests(unittest.TestCase):
     unique.save()
     unique.attr = "test"
     unique.save()
+    unique.save()
 
 if __name__ == "__main__":
   try:
