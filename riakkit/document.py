@@ -529,7 +529,7 @@ class Document(object):
             changed = False
             if self._obj is not None:
               old = self._obj.get_data()[k]
-              if self._data[k] != old:
+              if self._data[k] != old and old is not None:
                 uniques_to_be_deleted.append((prop.unique_bucket, old))
                 changed = True
             else:
