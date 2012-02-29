@@ -463,8 +463,6 @@ class Document(object):
         if prop.unique:
           old = self._obj.get_data().get(k, None)
           if old is not None:
-            import pdb
-            pdb.set_trace()
             uniques_to_be_deleted.append((prop.unique_bucket, old))
 
         self._data[k] = prop.defaultValue()
