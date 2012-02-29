@@ -156,10 +156,16 @@ Deleting objects is equally as easy.
     NotFoundError: Key '<yourkey>' not found!
 
 
-Linked Documents
-----------------
+Referencing Documents
+---------------------
 
-You can link to a foreign document very easily. Let me illustrate:
+*Notes for pre 0.5 users: LinkedDocuments no longer exists! It's all about
+ReferenceProperty now. The problem with LinkedDocuments is like using 2i to
+do referencing.. You could, but it's not really the preferred way to do it.
+If you really want to store meta data linked objects, you could do so, and
+the API is similar to 2i's API now!*
+
+You can link to a "foreign" document very easily. Let me illustrate:
 
     >>> class User(Document):
     ...     bucket_name = "test_users"
@@ -168,23 +174,19 @@ You can link to a foreign document very easily. Let me illustrate:
     ...     SEARCHABLE = True  # Marking this to be searchable.
     ...
     ...     name = types.StringProperty(required=True)
-    ...     posts = types.LinkedDocuments()
+    ...     post = types.ReferenceProperty(reference_class=BlogPost)
     >>> user = User(name="mrrow")
     >>> some_post = BlogPost(title="Hello", content="World")
-    >>> user.posts = [] # Initially this is set to nothing. So it's a good idea to initialize it.
-    >>> user.posts.append(some_post)
-    >>> some_post.save() # We must save this first, because we can't link to an object that doesn't exist yet.
+    >>> user.post = some_post
     >>> user.save()
-    >>> print user.posts[0].title
+    >>> print user.post.title
     Hello
     >>> same_user = User.get_with_key(user.key)
-    >>> print same_user.posts[0].title
+    >>> print same_user.post.title
     Hello
 
-LinkedDocuments is always a list.
-
-You can also "back reference" these linked documents. The API is similar to
-Google App Engine's `ReferenceProperty`, except everything is a list.
+You can also "back reference" these documents. The API is similar to
+Google App Engine's `ReferenceProperty`.
 
     >>> class Comment(Document):
     ...     bucket_name = "test_comments"
@@ -193,14 +195,14 @@ Google App Engine's `ReferenceProperty`, except everything is a list.
     ...     SEARCHABLE = True
     ...
     ...     title = types.StringProperty()
-    ...     owner = types.LinkedDocuments(reference_class=User,
+    ...     owner = types.ReferenceProperty(reference_class=User,
     ...                                   collection_name="comments")
 
 Note how we specified the `reference_class`. This will activate additional
 validation. Also, `collection_name` knows where to go.
 
-    >>> a_comment = Comment(title="Riakkit ftw!", owner=[])
-    >>> a_comment.owner.append(user) # Since there's only 1 owner, we will just leave 1 element.
+    >>> a_comment = Comment(title="Riakkit ftw!")
+    >>> a_comment.owner = user
     >>> a_comment.save()
 
 This should save both the `a_comment`, and the `user` object. So no need to
@@ -212,81 +214,36 @@ there is no need to reload that, either (Behaviour introduced after v0.3.2a).
     >>> print same_user.comments[0].title
     Riakkit ftw!
 
-
 Let's add another comment.
 
-    >>> another_comment = Comment(title="Moo", owner=[])
-
-This time let's try having 2 owners. Even though this doesn't make any sense,
-let's try it anyway.
-
-    >>> another_owner = User(name="anotheruser")
-    >>> another_owner.save()
-    >>> another_comment.owner.append(same_user)
-    >>> another_comment.owner.append(another_owner)
-    >>> another_comment.save()
-    >>> print same_user.comments[1].title
-    Moo
-    >>> print User.get_with_key(another_owner.key).comments[0].title
-    Moo
-
-Now, as of the moment, we lose order (potentially) when we store LinkedDocuments.
-This means there's no guarentee that the comments will be at index 0 or 1.
-
-    >>> titles = sorted([comment.title for comment in user.comments])
-    >>> print titles
-    [u'Moo', u'Riakkit ftw!']
-
-Saving the comment multiple times shouldn't create multiple links in the user:
-
-    >>> another_comment.title = "Abc"
-    >>> another_comment.save()
-    >>> titles = sorted([comment.title for comment in user.comments])
-    >>> print len(titles)
-    2
-    >>> print titles
-    [u'Abc', u'Riakkit ftw!']
-
-`LinkedDocuments` store their properties in the object's meta information. This
-may not be the best way to store things. Sometimes you want to use
-`ReferenceProperty` and `MultiReferenceProperty`. These properties stores the
-key of the object as a field in the JSON document. They have the same
-capabilities as `LinkedDocuments` (`MultiReferenceProperty` is actually
-identical to LinkedDocuments instead of the technical differences). They have
-the same limitations as well.
-
-Note that `ReferenceProperty` is NOT a list of documents, rather, it is only 1
-document.
+    >>> another_comment = Comment(title="Moo")
 
 Note that `ReferenceProperty` and `MultiReferenceProperty` requires a
 `reference_class`.
 
-Let's take a look some examples:
+Let's look at `MultiReferenceProperty`, it's very simple as it's just a list of
+`Documents`
 
-
-    >>> class Person(Document):
-    ...     bucket_name = "test_person"
-    ...     client = some_client
-    ...
-    ...     name = types.StringProperty()
     >>> class Cake(Document):
     ...     bucket_name = "test_cake"
     ...     client = some_client
     ...
     ...     type = types.EnumProperty(["chocolate", "icecream"])
-    ...     owner = types.ReferenceProperty(reference_class=Person, collection_name="cakes")
-    >>> person = Person(name="John")
-    >>> cake = Cake(type="chocolate")
-    >>> cake.owner = person
+    ...     owner = types.MultiReferenceProperty(reference_class=User, collection_name="cakes")
+    >>> person = User(name="John")
+    >>> cake = Cake(type="chocolate", owner=[])
+    >>> cake.owner.append(person)
     >>> cake.save()
-    >>> print cake.owner.name
+    >>> print cake.owner[0].name
     John
     >>> print person.cakes[0].type
     chocolate
-    >>> cake.owner = None
+    >>> cake.owner = [user]
     >>> cake.save()
     >>> print person.cakes
     []
+    >>> print cake.owner[0].name
+    mrrow
 
 Advanced Query
 --------------
@@ -331,9 +288,9 @@ Solr search allows you to do limit and sorting.
 
     >>> query = Comment.solrSearch("title:[A TO z]", sort="title")
     >>> print query.length()
-    2
+    1
     >>> print sorted([comment.title for comment in query.all()])
-    [u'Abc', u'Riakkit ftw!']
+    [u'Riakkit ftw!']
 
 
 ### Riak 2i ###
@@ -360,6 +317,37 @@ To do an index based query:
     >>> for cake in query.run():
     ...     print cake.type
     chocolate
+
+### Riak Links ###
+
+After v0.5.0b, Riakkit dropped `LinkedDocuments` and moved on to
+`ReferenceProperty` only, and Riak Links are now treated like Riak 2i.
+
+To add a link:
+
+    >>> user = User(name="John")
+    >>> user.addLink(cake) # cake is the previous chocolate cake we had.
+    >>> user.save()
+
+Fetching them is also as easy:
+
+    >>> for cake, tag in user.getLinks():
+    ...     print cake.type
+    chocolate
+
+The API is identical to riak-python's API, only slightly altered to fit Google
+Python Style Guide (`addLink` also takes a tag) and it takes/returns `Document`
+instead of `RiakObject`.
+
+`removeLink` is used to remove links, and it takes either a `Document` instance
+or a key string.
+
+
+
+Like that, you could also add multiple links to an object with different
+Documents. This is more flexible than `ReferenceProperty`
+
+
 
 
 ### Map Reduce ###
@@ -598,8 +586,7 @@ However, no methods (class or variable) is available other than setting
 variables via attributes or keys.
 
 Also, uniques are not allowed, reference properties cannot have collection_name
-LinkedDocuments are not allowed at all. Required, however, works, as you have
-seen.
+Required, however, works, as you have seen.
 
 We could also use a list of EmDocuments as you probably have figured out by now:
 

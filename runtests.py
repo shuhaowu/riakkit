@@ -53,13 +53,23 @@ class OtherTests(unittest.TestCase):
     self.assertEqual(b.someA["c"], c)
 
   def test_uniqueAttributesSetup(self):
+    # Testing changing unique attribute
     unique = UniqueTest(attr="test")
     unique.save()
     unique.attr = "non-test"
     unique.save()
     unique.attr = "test"
     unique.save()
+
+    # Test double saving
     unique.save()
+
+    # Test deleting unique attributes
+    del unique.attr
+    unique.save()
+    unique.attr = "test"
+    unique.save()
+    self.assertEqual("test", unique.attr)
 
 if __name__ == "__main__":
   try:

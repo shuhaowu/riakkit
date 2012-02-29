@@ -78,7 +78,7 @@ def getProperty(name, attrs, parents):
 def getKeys(*args, **kwargs):
   """Gets the keys of all of the dictionaries and returns it in a list.
 
-  Removing any references to 'key' (if specified), '_links', '_references'
+  Removing any references to 'key' (if specified)
 
   Args:
     discard_key: Boolean that determine whether or not to discard the 'key' attr
@@ -87,10 +87,9 @@ def getKeys(*args, **kwargs):
   keys = set()
   for d in args:
     keys.update(d.keys())
-    keys.discard("_links")
-    if discard_key:
-      keys.discard("key")
-    keys.discard("_references")
+
+  if discard_key:
+    keys.discard("key")
 
   return keys
 

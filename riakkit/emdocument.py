@@ -14,36 +14,29 @@
 # along with RiakKit.  If not, see <http://www.gnu.org/licenses/>.
 
 from riakkit.exceptions import *
-from riakkit.types import BaseProperty, LinkedDocuments, ReferenceProperty, MultiReferenceProperty
+from riakkit.types import BaseProperty, ReferenceProperty, MultiReferenceProperty, ReferenceBaseProperty
 from riakkit.utils import *
+
 
 class EmDocumentMetaclass(type):
   """Meta class that the EmDocuments class is made from."""
   def __new__(cls, clsname, parents, attrs):
-    if clsname == "EmDocument":
+    if clsname == "EmDocument": # TODO: inheritance..
       return type.__new__(cls, clsname, parents, attrs)
 
     meta = {}
-    references = {}
 
     for name in attrs.keys():
-      # No LinkedDocuments, ReferenceProperties only work with NON-Embedded
-      # Documents. collection_name does not work either!
-      if isinstance(attrs[name], (ReferenceProperty, MultiReferenceProperty)):
-        references[name] = prop = attrs.pop(name)
-      elif isinstance(attrs[name], BaseProperty) and not isinstance(attrs[name], LinkedDocuments):
+      if isinstance(attrs[name], BaseProperty):
         meta[name] = prop = attrs.pop(name)
 
     all_parents = reversed(walkParents(parents, ("EmDocument", "object", "type")))
     for p_cls in all_parents:
-      p_meta = copy(p_cls._meta) # Shallow copy should be ok.
-      p_references = p_meta.pop("_references")
-      meta.update(p_meta)
-      references.update(p_references)
+      meta.update(copy(p_cls._meta))
 
-    meta["_references"] = references
     attrs["_meta"] = meta
     return type.__new__(cls, clsname, parents, attrs)
+
 
 class EmDocument(dict):
   """The base Embedded Document class for embedded documents to extend from.
@@ -78,11 +71,8 @@ class EmDocument(dict):
     else:
       iteritems = kwargs.iteritems()
 
-    keys = getKeys(self._meta, self._meta["_references"], discard_key=False)
-
-    for name in keys:
-      dict.__setitem__(self, name,
-          self._meta.get(name, self._meta["_references"].get(name, BaseProperty)).defaultValue())
+    for name, prop in self._meta.iteritems():
+      dict.__setitem__(self, name, prop.defaultValue())
 
     for k, v in iteritems:
       self.__setitem__(k, v)
@@ -105,18 +95,14 @@ class EmDocument(dict):
       The same data dictionary but altered.
 
     """
-    keys = getKeys(data, cls._meta, cls._meta["_references"], discard_key=False)
+    keys = getKeys(data, cls._meta, discard_key=False)
     for k in keys:
       if k in cls._meta:
         if k in data:
           data[k] = cls._meta[k].convertFromDb(data[k])
         else:
           data[k] = cls._meta[k].defaultValue()
-      elif k in cls._meta["_references"]:
-        if k in data:
-          data[k] = cls._meta["_references"][k].convertFromDb(data[k])
-        else:
-          data[k] = cls._meta["_references"][k].defaultValue()
+
     return data
 
 
@@ -131,7 +117,7 @@ class EmDocument(dict):
 
     """
     data_to_be_saved = {}
-    keys = getKeys(self._meta, self._meta["_references"], discard_key=False)
+    keys = getKeys(self._meta, self, discard_key=False)
     for name in keys:
       if name not in self._meta:
         data_to_be_saved[name] = dict.__getitem__(self, name)
@@ -144,29 +130,17 @@ class EmDocument(dict):
 
       data_to_be_saved[name] = self._meta[name].convertToDb(dict.__getitem__(self, name)) # Faster because self.__getitem__ does checks
 
-
-    for name in self._meta["_references"]:
-      if name not in self or dict.__getitem__(self, name) is None:
-        if self._meta["_references"][name].required:
-          raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
-        dict.__setitem__(self, name, self._meta[name].defaultValue())
-
-      data_to_be_saved[name] = self._meta["_references"][name].convertToDb(dict.__getitem__(self, name))
-
     return data_to_be_saved
 
   def __getitem__(self, name):
     inMeta = name in self._meta
     inData = name in self
 
-    if not inMeta and inData:
+    if inData:
       return dict.__getitem__(self, name)
 
     if inMeta and not inData:
       return None
-
-    if inMeta and inData:
-      return dict.__getitem__(self, name)
 
     if not inMeta and not inData:
       self._error(name)
@@ -177,9 +151,6 @@ class EmDocument(dict):
     if name in self._meta:
       validator = self._meta[name].validate
       standardizer = self._meta[name].standardize
-    elif name in self._meta["_references"]:
-      validator = self._meta["_references"][name].validate
-      standardizer = self._meta["_references"][name].standardize
 
     if not validator(value):
       raise ValueError("Validation did not pass for %s for the field %s.%s" % (value, self.__class__.__name__, name))

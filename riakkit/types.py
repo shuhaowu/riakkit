@@ -463,28 +463,6 @@ class DictReferenceProperty(ReferenceBaseProperty):
   def defaultValue(self):
     return {}
 
-class LinkedDocuments(ReferenceBaseProperty):
-  """Linked documents property.
-
-  This is always a list and they reference other documents. This property
-  disallow uniqueness. Setting .unique will have no effect.
-
-  Keep in mind that when you call .save on your object,
-  it will change the objects that you're linking to as well, as the
-  implementation will call save there.
-
-  Processors does not exist for this property.
-
-  Default does not exist for this property.
-
-  This doesn't actually store the data. It stores it into the metadata of the
-  object. For storing the actual key into the json data, use ReferenceProperty
-  or MultiReferenceProperty
-  """
-
-  def defaultValue(self):
-    return []
-
 class EmDocumentProperty(BaseProperty):
   """The EmDocument property"""
   def __init__(self, emdocument_class, required=False, validators=None,

@@ -13,18 +13,16 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with RiakKit.  If not, see <http://www.gnu.org/licenses/>.
 
-from riakkit.queries import *
-import json
-from uuid import uuid1
-
 from riak.mapreduce import RiakLink, RiakObject
-from riakkit.types import BaseProperty, LinkedDocuments, ReferenceBaseProperty, ReferenceProperty, MultiReferenceProperty
 
+from riakkit.queries import *
+from riakkit.types import *
 from riakkit.exceptions import *
 from riakkit.utils import *
-from copy import copy, deepcopy
 
-from riak.metadata import MD_INDEX
+from copy import copy, deepcopy
+import json
+from uuid import uuid1
 
 _document_classes = {}
 
@@ -40,6 +38,7 @@ def getUniqueListBucketName(class_name, property_name):
   """
   return "_%s_ul_%s" % (class_name, property_name)
 
+
 class DocumentMetaclass(type):
   """Meta class that the Document class is made from.
 
@@ -47,67 +46,42 @@ class DocumentMetaclass(type):
   """
 
   def __new__(cls, clsname, parents, attrs):
-    # Makes sure these classes are not registered.
-
     client = getProperty("client", attrs, parents)
+
     if client is None:
       return type.__new__(cls, clsname, parents, attrs)
 
     attrs["client"] = client
-
     meta = {}
-    links = {}
-    references = {}
     uniques = []
-
-    linked_docs_col_classes = {} # propname : class
     references_col_classes = {}
 
     for name in attrs.keys():
-      if isinstance(attrs[name], LinkedDocuments):
-        links[name] = prop = attrs.pop(name)
-        if prop.collection_name:
-          if prop.collection_name in prop.reference_class._meta["_links"] or prop.collection_name in prop.reference_class._meta["_references"]:
-            raise RiakkitError("%s already in %s!" % (prop.collection_name, prop.reference_class))
-          l = linked_docs_col_classes.get(prop.collection_name, [])
-          l.append(prop.reference_class)
-          linked_docs_col_classes[prop.collection_name] = l
-
-      elif isinstance(attrs[name], ReferenceBaseProperty):
-        references[name] = prop = attrs.pop(name)
-        if prop.collection_name:
-          if prop.collection_name in prop.reference_class._meta["_links"] or prop.collection_name in prop.reference_class._meta["_references"]:
+      if isinstance(attrs[name], BaseProperty):
+        meta[name] = prop = attrs.pop(name)
+        if hasattr(prop, "collection_name") and prop.collection_name:
+          if prop.collection_name in prop.reference_class._meta:
             raise RiakkitError("%s already in %s!" % (prop.collection_name, prop.reference_class))
           l = references_col_classes.get(prop.collection_name, [])
           l.append(prop.reference_class)
           references_col_classes[prop.collection_name] = l
-
-      elif isinstance(attrs[name], BaseProperty):
-        meta[name] = prop = attrs.pop(name)
-        if prop.unique:
+        elif prop.unique:
           prop.unique_bucket = attrs["client"].bucket(
               getUniqueListBucketName(clsname, name)
           )
           uniques.append(name)
 
-    # reversed because we start at the bottom.
-
+    # DUPLICATE WORK WITH getProperty
     all_parents = reversed(walkParents(parents))
     for p_cls in all_parents:
-      p_meta = copy(p_cls._meta) # Shallow copy should be ok.
-      p_links = p_meta.pop("_links")
-      p_references = p_meta.pop("_references")
-      meta.update(p_meta)
-      links.update(p_links)
-      references.update(p_references)
+      meta.update(p_cls._meta)
       uniques.extend(p_cls._uniques)
 
-    meta["_links"] = links
-    meta["_references"] = references
     attrs["_meta"] = meta
     attrs["_uniques"] = uniques
     attrs["SEARCHABLE"] = getProperty("SEARCHABLE", attrs, parents)
     attrs["instances"] = {}
+
     new_class = type.__new__(cls, clsname, parents, attrs)
 
     if "bucket_name" in attrs:
@@ -121,14 +95,12 @@ class DocumentMetaclass(type):
       if new_class.SEARCHABLE:
         new_class.bucket.enable_search()
 
-    for col_name, reference_classes in linked_docs_col_classes.iteritems():
-      for rcls in reference_classes:
-        rcls._meta["_links"][col_name] = LinkedDocuments(reference_class=new_class)
     for col_name, reference_classes in references_col_classes.iteritems():
       for rcls in reference_classes:
-        rcls._meta["_references"][col_name] = MultiReferenceProperty(reference_class=new_class)
+        rcls._meta[col_name] = MultiReferenceProperty(reference_class=new_class)
 
     return new_class
+
 
 
 class Document(object):
@@ -144,6 +116,7 @@ class Document(object):
   """
 
   __metaclass__ = DocumentMetaclass
+
   SEARCHABLE = False
   client = None
 
@@ -159,28 +132,67 @@ class Document(object):
       saved: Is this object already saved? True or False
       kwargs: Keyword arguments that will fill up the object with data.
     """
-
-    if key in self.__class__.instances:
-      raise RiakkitError("%s already exists!" % key)
-
     if callable(key):
-      self.__dict__["key"] = key(kwargs)
-    elif isinstance(key, (str, unicode)):
-      self.__dict__["key"] = key
-    else:
+      key = key(kwargs)
+
+    if not isinstance(key, (str, unicode)):
       raise RiakkitError("%s is not a proper key!" % key)
 
+    if key in self.__class__.instances:
+      raise RiakkitError("%s already exists! Use get instead!" % key)
+
+    self.__dict__["key"] = key
+
     self._obj = self.bucket.get(self.key) if saved else None
-    self._links = {}
     self._data = {}
 
+    self._links = {}
     self._indexes = {}
 
     self.mergeData(kwargs)
+
     self._saved = saved
-    self._storeOriginals()
+    # self._storeOriginals()
 
     self.__class__.instances[self.key] = self
+
+
+  def mergeData(self, data):
+    """Merges data. This will trigger the standard processors.
+
+    Args:
+      data: A dictionary of the data to be merged into the object.
+    """
+    for key, value in data.iteritems():
+      self.__setattr__(key, value)
+
+  @classmethod
+  def _getIndexesFromObj(cls, obj): # TODO: These really needs to get some sort of coordination. Should be static? naming? ..etc...
+    obj_indexes = obj.get_indexes()
+    indexes = {}
+    for index_entry in obj_indexes:
+      field = index_entry.get_field()
+      value = index_entry.get_value()
+      l = indexes.get(field, [])
+      l.append(value)
+      indexes[field] = l
+    return indexes
+
+  @classmethod
+  def _getLinksFromObj(cls, obj):
+    return {}
+
+  @classmethod
+  def _cleanupDataFromDatabase(cls, data):
+    keys = getKeys(data, cls._meta)
+    for k in keys:
+      if k in cls._meta:
+        if k in data:
+          data[k] = cls._meta[k].convertFromDb(data[k])
+        else:
+          data[k] = cls._meta[k].defaultValue()
+
+    return data
 
   @classmethod
   def flushDocumentFromCache(cls, k=None):
@@ -194,7 +206,7 @@ class Document(object):
     could be used there.
 
     However, Riakkit is not very optimized as of right now.. perhaps in the
-    future it will be.
+    future it will be. This means, Riakkit needs a more awesome caching backend.
 
     Args:
       k: A key or a Document instance. If None, it will flush the entire cache
@@ -212,7 +224,6 @@ class Document(object):
     for key in k:
       cls.instances.pop(key)
 
-
   def addIndex(self, field, value):
     """Adds an index to the document for Riak 2i.
 
@@ -222,6 +233,7 @@ class Document(object):
       field: The index field
       value: The index value
     """
+
     l = self._indexes.get(field, [])
     l.append(value)
     self._indexes[field] = l
@@ -266,50 +278,29 @@ class Document(object):
       except KeyError:
         raise KeyError("Index field %s doesn't exist!" % field)
 
-  def mergeData(self, data):
-    """Merges data. This will trigger the standard processors.
+  def setIndexes(self):
+    pass
 
-    Args:
-      data: A dictionary of the data to be merged into the object.
-    """
-    keys = getKeys(self._meta, self._meta["_references"])
-    for name in keys:
-      if self.__getattr__(name) is None:
-        defaultValue = self._meta.get(name, self._meta["_references"].get(name, BaseProperty)).defaultValue # TODO: merge _meta and _references
-        self._data[name] = defaultValue()
-        # self.__setattr__(name, defaultValue())
+  def addLink(self, doc, tag=None):
+    l = self._links.get(tag, [])
+    l.append(doc)
+    self._links[tag] = l
 
-    for name in data:
-      self.__setattr__(name, data[name])
+  def removeLink(self):
+    pass
 
-  @classmethod
-  def _getIndexesFromObj(cls, obj): # TODO: These really needs to get some sort of coordination. Should be static? naming? ..etc...
-    obj_indexes = obj.get_indexes()
-    indexes = {}
-    for index_entry in obj_indexes:
-      field = index_entry.get_field()
-      value = index_entry.get_value()
-      l = indexes.get(field, [])
-      l.append(value)
-      indexes[field] = l
-    return indexes
+  def getLinks(self, tag=None):
+    if tag is None:
+      links = []
+      for tag in self._links:
+        for doc in self._links[tag]:
+          links.append((doc, tag))
+      return links
+    else:
+      return self._links.get(tag, [])
 
-  @classmethod
-  def _cleanupDataFromDatabase(cls, data):
-    keys = getKeys(data, cls._meta, cls._meta["_references"])
-    for k in keys:
-      if k in cls._meta:
-        if k in data:
-          data[k] = cls._meta[k].convertFromDb(data[k])
-        else:
-          data[k] = cls._meta[k].defaultValue()
-      elif k in cls._meta["_references"]:
-        if k in data:
-          data[k] = cls._meta["_references"][k].convertFromDb(data[k])
-        else:
-          data[k] = cls._meta["_references"][k].defaultValue()
-
-    return data
+  def setLinks(self):
+    pass
 
   @classmethod
   def load(cls, riak_obj, cached=False):
@@ -346,10 +337,8 @@ class Document(object):
 
       data = cls._cleanupDataFromDatabase(deepcopy(riak_obj.get_data()))
       obj._data = data
-      links = riak_obj.get_links()
-      obj._links = obj.updateLinks(links)
+      obj._links = cls._getLinksFromObj(riak_obj)
       obj._indexes = cls._getIndexesFromObj(riak_obj)
-      obj._storeOriginals()
       obj._obj = riak_obj
       return obj
     else:
@@ -357,42 +346,6 @@ class Document(object):
         obj.reload()
       return obj
 
-  def _storeOriginals(self):
-    self._originals = mediocreCopy(self._data)
-    self._originalLinks = mediocreCopy(self._links)
-
-  def updateLinks(self, links):
-    """Take a list of RiakLink objects and outputs tag : [Document]
-
-    You probably won't need this function as it's used internally and marked
-    public in case something is required.
-
-    However, this function does not convert those reference properties.
-
-    Args:
-      links: A list of RiakLink objects
-
-    Returns:
-      This returns a dict that has the tags of the links as keys and a list
-      of documents as values. The documents are constructed using the classes
-      that is associated with the link's bucket. It's probably not a good idea
-      to mix this with links that doesn't have a Document subclass associated to
-      it. Example:
-      {tag : [Document, Document]}
-    """
-    l = {}
-    links = sorted(links, key=lambda x: x.get_tag())
-    last_tag = None
-    for link in links:
-      obj = link.get()
-      cls = _document_classes[link.get_bucket()]
-      tag = link.get_tag()
-      if tag != last_tag:
-        l[tag] = []
-        last_tag = tag
-
-      l[tag].append(cls.load(obj, True))  # TODO: Is this a nasty hack?
-    return l
 
   def _error(self, name):
     raise AttributeError("Attribute %s not found with %s." %
@@ -415,20 +368,14 @@ class Document(object):
       AttributeError: When the name is not registered in the schema nor set.
     """
 
-    if name in self._meta["_links"]:
-      return self._links.get(name, [])
-
-    inMeta = name in self._meta or name in self._meta["_references"]
+    inMeta = name in self._meta
     inData = name in self._data
 
-    if not inMeta and inData:
+    if inData:
       return self._data[name]
 
     if inMeta and not inData:
       return None
-
-    if inMeta and inData:
-      return self._data[name]
 
     if not inMeta and not inData:
       self._error(name)
@@ -449,22 +396,16 @@ class Document(object):
     if name.startswith("_"):
       self.__dict__[name] = value
     else:
-      if name in self._meta["_links"]:
-        self._links[name] = value
-      else:
-        validator = lambda x: True
-        standardizer = lambda x: x
-        if name in self._meta:
-          validator = self._meta[name].validate
-          standardizer = self._meta[name].standardize
-        elif name in self._meta["_references"]:
-          validator = self._meta["_references"][name].validate
-          standardizer = self._meta["_references"][name].standardize
+      validator = lambda x: True
+      standardizer = lambda x: x
+      if name in self._meta:
+        validator = self._meta[name].validate
+        standardizer = self._meta[name].standardize
 
-        if not validator(value):
-          raise ValueError("Validation did not pass for %s for the field %s.%s" % (value, self.__class__.__name__, name))
-        value = standardizer(value)
-        self._data[name] = value
+      if not validator(value):
+        raise ValueError("Validation did not pass for %s for the field %s.%s" % (value, self.__class__.__name__, name))
+      value = standardizer(value)
+      self._data[name] = value
 
       self._saved = False
 
@@ -473,11 +414,10 @@ class Document(object):
 
     Args:
       name: The name of the field.
+    Raises:
+      KeyError: if name is not found in the data set
     """
-    if name in self._links:
-      del self._links[name]
-    elif name in self._data:
-      del self._data[name]
+    del self._data[name]
 
   def saved(self):
     """See if the object has been saved or not.
@@ -505,140 +445,147 @@ class Document(object):
     """
     data_to_be_saved = {}
     uniques_to_be_deleted = []
-
-    # Process regular data
-    keys = getKeys(self._meta, self._data)
-
-    for name in keys:
-      if name not in self._meta:
-        data_to_be_saved[name] = self._data[name]
-        continue
-
-      if name not in self._data or self._data[name] is None:
-        if self._meta[name].required:
-          raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
-        self._data[name] = self._meta[name].defaultValue()
-      else:
-        if self._meta[name].unique:
-          thesame = False
-          if self._obj is not None:
-            old = self._obj.get_data()[name]
-            if old == self._data[name]: # Nasty hack?
-              thesame = True
-            else:
-              uniques_to_be_deleted.append((self._meta[name].unique_bucket, old))
-
-          if not thesame and self._meta[name].unique_bucket.get(self._meta[name].convertToDb(self._data[name])).exists():
-            raise ValueError("'%s' already exists for '%s'!" % (self._data[name], name))
-
-      data_to_be_saved[name] = self._meta[name].convertToDb(self._data[name])
-
     other_docs_to_be_saved = []
 
-    # Process References
-    for name in self._meta["_references"]:
-      if name not in self._data:
-        if self._meta["_references"][name].required:
-          raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
-        self._data[name] = self._meta["_references"][name].defaultValue()
+    keys = getKeys(self._meta, self._data)
+    for k in keys:
+      inMeta = k in self._meta
+      if not inMeta: # in dictionary is O(1). Stop freaking out like you did..
+        data_to_be_saved[k] = self._data[k]
+        continue
+
+      prop = self._meta[k]
+      is_ref = hasattr(prop, "collection_name")
+
+      if k not in self._data:
+        if prop.required:
+          raise AttributeError("'%s' is required for '%s'." % (k, self.__class__.__name__))
+        if prop.unique:
+          old = self._obj.get_data().get(k, None)
+          if old is not None:
+            import pdb
+            pdb.set_trace()
+            uniques_to_be_deleted.append((prop.unique_bucket, old))
+
+        self._data[k] = prop.defaultValue()
       else:
-        col_name = self._meta["_references"][name].collection_name
+        if is_ref:
+          col_name = prop.collection_name
+          if col_name:
+            if self._obj is not None:
+              originals = self._obj.get_data()[k]
+              if originals is None:
+                originals = []
+              elif not isinstance(originals, list):
+                originals = [originals]
+            else:
+              originals = []
 
-        if col_name:
-          if isinstance(self._meta["_references"][name], ReferenceProperty):
-            docs = [self._data[name]]
-            originals = [self._originals[name]]
-          else:
-            docs = self._data[name]
-            originals = self._originals[name]
-          for doc in docs:
-            if doc is None:
-              continue
+            if isinstance(prop, ReferenceProperty):
+              docs = [self._data[k]]
+            else:
+              docs = self._data[k]
 
-            current_list = doc._data.get(col_name, [])
-            key_list = [d.key for d in current_list]
-            if self.key not in key_list:
-              current_list.append(self)
-              doc._data[col_name] = current_list
-              other_docs_to_be_saved.append(doc)
+            dockeys = {} # for fast look up
 
-          for doc in originals:
-            if doc is None:
-              continue
+            for doc in docs:
+              if doc is None:
+                continue
 
-            if doc not in docs:
+              dockeys[doc.key] = doc
+
               current_list = doc._data.get(col_name, [])
-              for i, d in enumerate(current_list):
+              found = False
+              for d in current_list:
                 if d.key == self.key:
-                  current_list.pop(i)
+                  found = True
                   break
-              doc._data[col_name] = current_list
-              other_docs_to_be_saved.append(doc)
+
+              if not found:
+                current_list.append(self)
+                doc._data[col_name] = current_list
+                other_docs_to_be_saved.append(doc)
+
+            for dockey in originals:
+              if dockey is None:
+                continue
+
+              if dockey in dockeys:
+                pass
+              else:
+                doc = self._meta[k].reference_class.load(dockey, True)
+                current_list = doc._data.get(col_name, [])
+                found = False
+                for i, d in enumerate(current_list):
+                  if d.key == self.key:
+                    current_list.pop(i)
+                    found = True
+                    break
+
+                if found:
+                  doc._data[col_name] = current_list
+                  other_docs_to_be_saved.append(doc)
+
+        else:
+          if prop.unique:
+            changed = False
+            if self._obj is not None:
+              old = self._obj.get_data()[k]
+              if self._data[k] != old:
+                uniques_to_be_deleted.append((prop.unique_bucket, old))
+                changed = True
+            else:
+              changed = True
+
+            if changed and prop.unique_bucket.get(prop.convertToDb(self._data[k])).exists():
+              raise ValueError("'%s' already exists for '%s'!" % (self._data[k], k))
+
+      data_to_be_saved[k] = prop.convertToDb(self._data[k]) # dup work with conversion
 
 
-      data_to_be_saved[name] = self._meta["_references"][name].convertToDb(self._data[name])
-
-    # Process object
     if self._obj:
-      for link in self._obj.get_links():
-        self._obj.remove_link(link)
       self._obj.set_data(data_to_be_saved)
     else:
       self._obj = self.bucket.new(self.key, data_to_be_saved)
 
-    for name in self._meta["_links"]:
-      if name not in self._links: # TODO: REFACTOR THIS
-        if self._meta["_links"][name].required:
-          raise AttributeError("'%s' is required for '%s'." % (name, self.__class__.__name__))
-        else:
-          self._links[name] = []
 
-      col_name = self._meta["_links"][name].collection_name
-      for doc in self._links[name]:
-        if not isinstance(doc, Document):
-          raise AttributeError("%s is not a Document instance!" % item)
-        else:
-          if doc._obj is None:
-            raise RiakkitError("Add link failure as %s does not exist in the database." % str(doc))
+    # Handle links.
+    links = []
+    for tag, l in self._links.iteritems():
+      for d in l:
+        links.append(RiakLink(self.bucket_name, d.key, tag))
 
-          if col_name:
-            current_list = doc._links.get(col_name, [])
-            if self.key not in [d.key for d in current_list]:
-              current_list.append(self)
-              doc._links[col_name] = current_list
-              other_docs_to_be_saved.append(doc)
+    if hasattr(self._obj, "set_links"): # If you live on my setlinks branch on my repo.
+      self._obj.set_links(links, True)
+    else:
+      for link in self._obj.get_links():
+        self._obj.remove_link(link)
+      for link in links:
+        self._obj.add_link(link)
 
-          self._obj.add_link(doc._obj, name) # TODO: check for doc._obj=None
-
-
-      for doc in self._originalLinks.get(name, []): # get() is a dirty hack?
-        if doc not in self._links[name] and col_name:
-          current_list = doc._links.get(col_name, [])
-          for i, d in enumerate(current_list):
-            if d.key == self.key:
-              current_list.pop(i)
-              break
-          doc.links[col_name] = current_list
-          other_docs_to_be_saved.append(doc)
-
-    # Indexes
-
-    for field in self._indexes:
-      l = self._indexes[field]
+    indexes = []
+    for field, l in self._indexes.iteritems():
       for value in l:
-        self._obj.add_index(field, value) # multiple same index?
+        indexes.append((field, value))
+
+    if hasattr(self._obj, "set_indexes"):
+      self._obj.set_indexes(indexes)
+    else:
+      for index in self._obj.get_indexes():
+        self._obj.remove_index(index.get_field(), index.get_value())
+
+      for field, value in indexes:
+        self._obj.add_index(field, value)
 
     self._obj.store(w=w, dw=dw)
     for name in self._uniques:
       obj = self._meta[name].unique_bucket.new(self._data[name], {"key" : self.key})
-      obj.store()
+      obj.store(w=w, dw=dw)
 
     for bucket, key in uniques_to_be_deleted:
       bucket.get(key).delete()
 
-    self._storeOriginals()
     self._saved = True
-
     for doc in other_docs_to_be_saved:
       doc.save(w, dw)
 
@@ -657,43 +604,48 @@ class Document(object):
     Raises:
       NotFoundError: if the object hasn't been saved before.
     """
+
     if self._obj:
       self._obj.reload(r=r, vtag=vtag)
       data = self._cleanupDataFromDatabase(deepcopy(self._obj.get_data()))
       self._data = data
-      links = self._obj.get_links()
-      self._links = self.updateLinks(links)
-      self._storeOriginals()
+      self._links = self._getLinksFromObj(self._obj)
       self._saved = True
     else:
       raise NotFoundError("Object not saved!")
 
   def delete(self, rw=None):
-    def deleteBackRef(col_name, docs, link):
-      if col_name:
-        for doc in docs:
-          if link:
-            current_list = doc._links.get(col_name, [])
-          else:
-            current_list = doc._data.get(col_name, [])
+    """Deletes this object from the database. Same interface as riak-python.
 
-          modified = False
-          for i, linkback in enumerate(current_list):
-            if linkback.key == self.key:
-              modified = True
-              current_list.pop(i) # This is a reference, which should modify the original list.
+    However, this object can still be resaved. Not sure what you would do
+    with it, though.
+    """
+    def deleteBackRef(col_name, docs):
+      docs_to_be_saved = []
+      for doc in docs:
+        current_list = doc._data.get(col_name, [])
+        modified = False
 
-          if modified:
-            doc.save()
+        for i, linkback in enumerate(current_list):
+          if linkback.key == self.key:
+            modified = True
+            current_list.pop(i) # This is a reference, which should modify the original list.
+
+        if modified:
+          docs_to_be_saved.append(doc)
+
+      return docs_to_be_saved
 
     if self._obj is not None:
-      for name in self._meta["_links"]:
-        deleteBackRef(self._meta["_links"][name].collection_name, self._links.get(name, []), True)
-      for name in self._meta["_references"]:
-        docs = self._data.get(name, [])
+      docs_to_be_saved = []
+      for k in self._meta:
+        if not hasattr(self._meta[k], "collection_name") or not self._meta[k].collection_name:
+          continue
+
+        docs = self._data.get(k, [])
         if isinstance(docs, Document):
           docs = [docs]
-        deleteBackRef(self._meta["_references"][name].collection_name, docs, False)
+        docs_to_be_saved.extend(deleteBackRef(self._meta[k].collection_name, docs))
 
       try:
         del self.__class__.instances[self.key]
@@ -709,6 +661,9 @@ class Document(object):
       self._obj = None
       self._saved = False
 
+      for doc in docs_to_be_saved:
+        doc.save()
+
   @classmethod
   def exists(cls, key, r=None):
     """Check if a key exists.
@@ -720,11 +675,10 @@ class Document(object):
     Returns:
       True if the key exists, false otherwise.
     """
-    riak_obj = cls.bucket.get(key, r)
-    return riak_obj.exists()
+    return cls.bucket.get(key, r).exists()
 
   @classmethod
-  def getWithKey(cls, key, r=None):
+  def get(cls, key, r=None): # TODO: This should be merged with load()
     """Get an object with a given key.
 
     Args:
@@ -741,6 +695,7 @@ class Document(object):
       raise NotFoundError("Key '%s' not found!" % key)
     return cls.load(riak_obj)
 
+  getWithKey = get
   get_with_key = getWithKey
 
   @classmethod
