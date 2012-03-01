@@ -54,7 +54,7 @@ class DocumentMetaclass(type):
     attrs["client"] = client
     meta = {}
     uniques = []
-    references_col_classes = {}
+    references_col_classes = []
 
     for name in attrs.keys():
       if isinstance(attrs[name], BaseProperty):
@@ -62,9 +62,7 @@ class DocumentMetaclass(type):
         if hasattr(prop, "collection_name") and prop.collection_name:
           if prop.collection_name in prop.reference_class._meta:
             raise RiakkitError("%s already in %s!" % (prop.collection_name, prop.reference_class))
-          l = references_col_classes.get(prop.collection_name, [])
-          l.append(prop.reference_class)
-          references_col_classes[prop.collection_name] = l
+          references_col_classes.append((prop.collection_name, prop.reference_class, name))
         elif prop.unique:
           prop.unique_bucket = attrs["client"].bucket(
               getUniqueListBucketName(clsname, name)
@@ -95,12 +93,13 @@ class DocumentMetaclass(type):
       if new_class.SEARCHABLE:
         new_class.bucket.enable_search()
 
-    for col_name, reference_classes in references_col_classes.iteritems():
-      for rcls in reference_classes:
-        rcls._meta[col_name] = MultiReferenceProperty(reference_class=new_class)
+    for col_name, rcls, back_name in references_col_classes:
+      # col_name is the collection name from this class
+      # back_name is the name that points from the original class.
+      rcls._meta[col_name] = MultiReferenceProperty(reference_class=new_class)
+      rcls._meta[col_name].is_reference_back = back_name
 
     return new_class
-
 
 
 class Document(object):
@@ -144,7 +143,11 @@ class Document(object):
     self.__dict__["key"] = key
 
     self._obj = self.bucket.get(self.key) if saved else None
+
     self._data = {}
+    for k, prop in self._meta.iteritems():
+      if not prop.required:
+        self._data[k] = prop.defaultValue()
 
     self._links = {}
     self._indexes = {}
@@ -511,7 +514,11 @@ class Document(object):
               if dockey in dockeys:
                 pass
               else:
-                doc = self._meta[k].reference_class.load(dockey, True)
+                try:
+                  doc = self._meta[k].reference_class.load(dockey, True)
+                except NotFoundError: # TODO: Another hackjob? This is _probably_ due to we're back deleting the reference.
+                  continue
+
                 current_list = doc._data.get(col_name, [])
                 found = False
                 for i, d in enumerate(current_list):
@@ -624,10 +631,14 @@ class Document(object):
         current_list = doc._data.get(col_name, [])
         modified = False
 
-        for i, linkback in enumerate(current_list):
-          if linkback.key == self.key:
-            modified = True
-            current_list.pop(i) # This is a reference, which should modify the original list.
+        if isinstance(current_list, Document): # For collection_name referencing back
+          doc._data[col_name] = None
+          modified = True
+        else:
+          for i, linkback in enumerate(current_list):
+            if linkback.key == self.key:
+              modified = True
+              current_list.pop(i) # This is a reference, which should modify the original list.
 
         if modified:
           docs_to_be_saved.append(doc)
@@ -637,13 +648,15 @@ class Document(object):
     if self._obj is not None:
       docs_to_be_saved = []
       for k in self._meta:
-        if not hasattr(self._meta[k], "collection_name") or not self._meta[k].collection_name:
-          continue
+        col_name = getattr(self._meta[k], "is_reference_back", False)
+        if not col_name:
+          col_name = getattr(self._meta[k], "collection_name", None)
 
-        docs = self._data.get(k, [])
-        if isinstance(docs, Document):
-          docs = [docs]
-        docs_to_be_saved.extend(deleteBackRef(self._meta[k].collection_name, docs))
+        if col_name:
+          docs = self._data.get(k, [])
+          if isinstance(docs, Document):
+            docs = [docs]
+          docs_to_be_saved.extend(deleteBackRef(col_name, docs))
 
       try:
         del self.__class__.instances[self.key]

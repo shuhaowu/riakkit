@@ -15,6 +15,7 @@
 
 import datetime
 import time
+from riakkit.exceptions import RiakkitError
 
 NONE_TYPE = type(None)
 
@@ -378,6 +379,7 @@ class ReferenceBaseProperty(BaseProperty):
     BaseProperty.__init__(self, required=required)
     self.reference_class = reference_class
     self.collection_name = collection_name
+    self.is_reference_back = False
 
   def _checkForReferenceClass(self, l):
     rc = self.reference_class
@@ -434,6 +436,16 @@ class MultiReferenceProperty(ReferenceBaseProperty):
     return []
 
 class DictReferenceProperty(ReferenceBaseProperty):
+  """Dictionary based reference property.
+
+  This doesn't allow collection_name.
+  """
+
+  def __init__(self, *args, **kwargs):
+    ReferenceBaseProperty.__init__(self, *args, **kwargs)
+    if self.collection_name:
+      raise RiakkitError("collection_name not allowed with DictReferenceProperty!")
+
   def convertToDb(self, value):
     value = BaseProperty.convertToDb(self, value)
     if value is None:
