@@ -30,6 +30,17 @@ class B(CustomDocument):
 
   someA = DictReferenceProperty(reference_class=A)
 
+class ClassPage(CustomDocument):
+  bucket_name = "test_class"
+
+  name = StringProperty()
+
+class SomeUser(CustomDocument):
+  bucket_name = "test_someuser"
+
+  page = ReferenceProperty(reference_class=ClassPage, collection_name="users")
+  name = StringProperty()
+
 class UniqueTest(CustomDocument):
   bucket_name = "test_unique"
 
@@ -71,6 +82,17 @@ class OtherTests(unittest.TestCase):
     unique.save()
     self.assertEqual("test", unique.attr)
 
+  def test_deleteCollection(self):
+    page = ClassPage(name="Some Page")
+    u = SomeUser(page=page)
+    u.save() # this saves page
+    self.assertEqual(u.page.name, "Some Page")
+
+    SomeUser.flushDocumentFromCache(u)
+    page.delete()
+    user = SomeUser.get(u.key)
+    self.assertEqual(user.page, None)
+
 if __name__ == "__main__":
   try:
     import doctest
@@ -90,7 +112,7 @@ if __name__ == "__main__":
     buckets_to_be_cleaned = ("test_blog", "test_users", "test_comments", "demos",
         "test_website", "coolusers", "_CoolUser_ul_username", "testdoc",
         "test_person", "test_cake", "some_extended_bucket", "test_A", "test_B",
-        "test_unique", "_UniqueTest_ul_attr")
+        "test_unique", "_UniqueTest_ul_attr", "test_class", "test_someuser")
 
     for bucket in buckets_to_be_cleaned:
       deleteAllKeys(rc, bucket)
