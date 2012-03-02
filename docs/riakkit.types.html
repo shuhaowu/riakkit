@@ -61,7 +61,6 @@
 </font></dt><dd>
 <dl>
 <dt><font face="helvetica, arial"><a href="riakkit.types.html#DictReferenceProperty">DictReferenceProperty</a>
-</font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#LinkedDocuments">LinkedDocuments</a>
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#MultiReferenceProperty">MultiReferenceProperty</a>
 </font></dt><dt><font face="helvetica, arial"><a href="riakkit.types.html#ReferenceProperty">ReferenceProperty</a>
 </font></dt></dl>
@@ -403,7 +402,11 @@ Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BasePr
 <td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#000000" face="helvetica, arial"><a name="DictReferenceProperty">class <strong>DictReferenceProperty</strong></a>(<a href="riakkit.types.html#ReferenceBaseProperty">ReferenceBaseProperty</a>)</font></td></tr>
     
-<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Dictionary&nbsp;based&nbsp;reference&nbsp;property.<br>
+&nbsp;<br>
+This&nbsp;doesn't&nbsp;allow&nbsp;collection_name.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="riakkit.types.html#DictReferenceProperty">DictReferenceProperty</a></dd>
 <dd><a href="riakkit.types.html#ReferenceBaseProperty">ReferenceBaseProperty</a></dd>
@@ -412,6 +415,8 @@ Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BasePr
 </dl>
 <hr>
 Methods defined here:<br>
+<dl><dt><a name="DictReferenceProperty-__init__"><strong>__init__</strong></a>(self, *args, **kwargs)</dt></dl>
+
 <dl><dt><a name="DictReferenceProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt></dl>
 
 <dl><dt><a name="DictReferenceProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt></dl>
@@ -422,21 +427,6 @@ Methods defined here:<br>
 
 <hr>
 Methods inherited from <a href="riakkit.types.html#ReferenceBaseProperty">ReferenceBaseProperty</a>:<br>
-<dl><dt><a name="DictReferenceProperty-__init__"><strong>__init__</strong></a>(self, reference_class<font color="#909090">=None</font>, collection_name<font color="#909090">=None</font>, required<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;Reference&nbsp;Property<br>
-&nbsp;<br>
-You&nbsp;can&nbsp;set&nbsp;it&nbsp;up&nbsp;so&nbsp;that&nbsp;riakkit&nbsp;automatically&nbsp;link&nbsp;back&nbsp;from<br>
-the&nbsp;reference_class&nbsp;like&nbsp;GAE's&nbsp;<a href="#ReferenceProperty">ReferenceProperty</a>.&nbsp;Except&nbsp;everything&nbsp;here<br>
-is&nbsp;a&nbsp;list.<br>
-&nbsp;<br>
-Args:<br>
-&nbsp;&nbsp;reference_class:&nbsp;The&nbsp;classes&nbsp;that&nbsp;should&nbsp;be&nbsp;added&nbsp;to&nbsp;this&nbsp;<a href="#LinkedDocuments">LinkedDocuments</a>.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i.e.&nbsp;Documents&nbsp;have&nbsp;to&nbsp;be&nbsp;objects&nbsp;of&nbsp;that&nbsp;class&nbsp;to&nbsp;pass<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validation.&nbsp;None&nbsp;if&nbsp;you&nbsp;wish&nbsp;to&nbsp;allow&nbsp;any&nbsp;Document&nbsp;class.<br>
-&nbsp;&nbsp;collection_name:&nbsp;The&nbsp;collection&nbsp;name&nbsp;for&nbsp;the&nbsp;reference_class.&nbsp;Works&nbsp;the<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;same&nbsp;way&nbsp;as&nbsp;GAE's&nbsp;collection_name&nbsp;for&nbsp;their<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ReferenceProperty">ReferenceProperty</a>.&nbsp;See&nbsp;the&nbsp;README&nbsp;file&nbsp;at&nbsp;the&nbsp;repository<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;detailed&nbsp;tutorial.</tt></dd></dl>
-
 <dl><dt><a name="DictReferenceProperty-validate"><strong>validate</strong></a>(self, value)</dt></dl>
 
 <hr>
@@ -950,106 +940,6 @@ Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BasePr
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ffc8d8">
 <td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#000000" face="helvetica, arial"><a name="LinkedDocuments">class <strong>LinkedDocuments</strong></a>(<a href="riakkit.types.html#ReferenceBaseProperty">ReferenceBaseProperty</a>)</font></td></tr>
-    
-<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>Linked&nbsp;documents&nbsp;property.<br>
-&nbsp;<br>
-This&nbsp;is&nbsp;always&nbsp;a&nbsp;list&nbsp;and&nbsp;they&nbsp;reference&nbsp;other&nbsp;documents.&nbsp;This&nbsp;property<br>
-disallow&nbsp;uniqueness.&nbsp;Setting&nbsp;.unique&nbsp;will&nbsp;have&nbsp;no&nbsp;effect.<br>
-&nbsp;<br>
-Keep&nbsp;in&nbsp;mind&nbsp;that&nbsp;when&nbsp;you&nbsp;call&nbsp;.save&nbsp;on&nbsp;your&nbsp;<a href="__builtin__.html#object">object</a>,<br>
-it&nbsp;will&nbsp;change&nbsp;the&nbsp;objects&nbsp;that&nbsp;you're&nbsp;linking&nbsp;to&nbsp;as&nbsp;well,&nbsp;as&nbsp;the<br>
-implementation&nbsp;will&nbsp;call&nbsp;save&nbsp;there.<br>
-&nbsp;<br>
-Processors&nbsp;does&nbsp;not&nbsp;exist&nbsp;for&nbsp;this&nbsp;property.<br>
-&nbsp;<br>
-Default&nbsp;does&nbsp;not&nbsp;exist&nbsp;for&nbsp;this&nbsp;property.<br>
-&nbsp;<br>
-This&nbsp;doesn't&nbsp;actually&nbsp;store&nbsp;the&nbsp;data.&nbsp;It&nbsp;stores&nbsp;it&nbsp;into&nbsp;the&nbsp;metadata&nbsp;of&nbsp;the<br>
-<a href="__builtin__.html#object">object</a>.&nbsp;For&nbsp;storing&nbsp;the&nbsp;actual&nbsp;key&nbsp;into&nbsp;the&nbsp;json&nbsp;data,&nbsp;use&nbsp;<a href="#ReferenceProperty">ReferenceProperty</a><br>
-or&nbsp;<a href="#MultiReferenceProperty">MultiReferenceProperty</a><br>&nbsp;</tt></td></tr>
-<tr><td>&nbsp;</td>
-<td width="100%"><dl><dt>Method resolution order:</dt>
-<dd><a href="riakkit.types.html#LinkedDocuments">LinkedDocuments</a></dd>
-<dd><a href="riakkit.types.html#ReferenceBaseProperty">ReferenceBaseProperty</a></dd>
-<dd><a href="riakkit.types.html#BaseProperty">BaseProperty</a></dd>
-<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
-</dl>
-<hr>
-Methods defined here:<br>
-<dl><dt><a name="LinkedDocuments-defaultValue"><strong>defaultValue</strong></a>(self)</dt></dl>
-
-<hr>
-Methods inherited from <a href="riakkit.types.html#ReferenceBaseProperty">ReferenceBaseProperty</a>:<br>
-<dl><dt><a name="LinkedDocuments-__init__"><strong>__init__</strong></a>(self, reference_class<font color="#909090">=None</font>, collection_name<font color="#909090">=None</font>, required<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;Reference&nbsp;Property<br>
-&nbsp;<br>
-You&nbsp;can&nbsp;set&nbsp;it&nbsp;up&nbsp;so&nbsp;that&nbsp;riakkit&nbsp;automatically&nbsp;link&nbsp;back&nbsp;from<br>
-the&nbsp;reference_class&nbsp;like&nbsp;GAE's&nbsp;<a href="#ReferenceProperty">ReferenceProperty</a>.&nbsp;Except&nbsp;everything&nbsp;here<br>
-is&nbsp;a&nbsp;list.<br>
-&nbsp;<br>
-Args:<br>
-&nbsp;&nbsp;reference_class:&nbsp;The&nbsp;classes&nbsp;that&nbsp;should&nbsp;be&nbsp;added&nbsp;to&nbsp;this&nbsp;<a href="#LinkedDocuments">LinkedDocuments</a>.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i.e.&nbsp;Documents&nbsp;have&nbsp;to&nbsp;be&nbsp;objects&nbsp;of&nbsp;that&nbsp;class&nbsp;to&nbsp;pass<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validation.&nbsp;None&nbsp;if&nbsp;you&nbsp;wish&nbsp;to&nbsp;allow&nbsp;any&nbsp;Document&nbsp;class.<br>
-&nbsp;&nbsp;collection_name:&nbsp;The&nbsp;collection&nbsp;name&nbsp;for&nbsp;the&nbsp;reference_class.&nbsp;Works&nbsp;the<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;same&nbsp;way&nbsp;as&nbsp;GAE's&nbsp;collection_name&nbsp;for&nbsp;their<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ReferenceProperty">ReferenceProperty</a>.&nbsp;See&nbsp;the&nbsp;README&nbsp;file&nbsp;at&nbsp;the&nbsp;repository<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;detailed&nbsp;tutorial.</tt></dd></dl>
-
-<dl><dt><a name="LinkedDocuments-validate"><strong>validate</strong></a>(self, value)</dt></dl>
-
-<hr>
-Methods inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><a name="LinkedDocuments-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
-value&nbsp;that&nbsp;<a href="#LinkedDocuments-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
-&nbsp;<br>
-Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
-(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
-value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
-the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
-&nbsp;<br>
-Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
-&nbsp;<br>
-Args:<br>
-&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
-
-<dl><dt><a name="LinkedDocuments-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
-&nbsp;<br>
-In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
-standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
-&nbsp;<br>
-Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
-&nbsp;<br>
-Args:<br>
-&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
-
-<dl><dt><a name="LinkedDocuments-standardize"><strong>standardize</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;any&nbsp;form&nbsp;(input&nbsp;form,&nbsp;db&nbsp;form)&nbsp;into&nbsp;a&nbsp;form&nbsp;that's<br>
-friendly&nbsp;for&nbsp;the&nbsp;user&nbsp;to&nbsp;access&nbsp;via&nbsp;dot&nbsp;notation&nbsp;or&nbsp;dict-like&nbsp;notation&nbsp;in&nbsp;a<br>
-Document&nbsp;<a href="__builtin__.html#object">object</a>.&nbsp;(i.e.&nbsp;standard&nbsp;form)&nbsp;(example:&nbsp;string&nbsp;to&nbsp;unicode&nbsp;etc.)<br>
-&nbsp;<br>
-This&nbsp;method&nbsp;will&nbsp;be&nbsp;called&nbsp;on&nbsp;__setattr__.<br>
-&nbsp;<br>
-Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
-&nbsp;<br>
-Args:<br>
-&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted.<br>
-&nbsp;<br>
-Throws:<br>
-&nbsp;&nbsp;TypeError:&nbsp;if&nbsp;type&nbsp;is&nbsp;not&nbsp;what's&nbsp;expected.</tt></dd></dl>
-
-<hr>
-Data descriptors inherited from <a href="riakkit.types.html#BaseProperty">BaseProperty</a>:<br>
-<dl><dt><strong>__dict__</strong></dt>
-<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
-</dl>
-<dl><dt><strong>__weakref__</strong></dt>
-<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
-</dl>
-</td></tr></table> <p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#ffc8d8">
-<td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#000000" face="helvetica, arial"><a name="ListProperty">class <strong>ListProperty</strong></a>(<a href="riakkit.types.html#BaseProperty">BaseProperty</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
@@ -1179,7 +1069,7 @@ the&nbsp;reference_class&nbsp;like&nbsp;GAE's&nbsp;<a href="#ReferenceProperty">
 is&nbsp;a&nbsp;list.<br>
 &nbsp;<br>
 Args:<br>
-&nbsp;&nbsp;reference_class:&nbsp;The&nbsp;classes&nbsp;that&nbsp;should&nbsp;be&nbsp;added&nbsp;to&nbsp;this&nbsp;<a href="#LinkedDocuments">LinkedDocuments</a>.<br>
+&nbsp;&nbsp;reference_class:&nbsp;The&nbsp;classes&nbsp;that&nbsp;should&nbsp;be&nbsp;added&nbsp;to&nbsp;this&nbsp;LinkedDocuments.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i.e.&nbsp;Documents&nbsp;have&nbsp;to&nbsp;be&nbsp;objects&nbsp;of&nbsp;that&nbsp;class&nbsp;to&nbsp;pass<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validation.&nbsp;None&nbsp;if&nbsp;you&nbsp;wish&nbsp;to&nbsp;allow&nbsp;any&nbsp;Document&nbsp;class.<br>
 &nbsp;&nbsp;collection_name:&nbsp;The&nbsp;collection&nbsp;name&nbsp;for&nbsp;the&nbsp;reference_class.&nbsp;Works&nbsp;the<br>
@@ -1218,7 +1108,7 @@ the&nbsp;reference_class&nbsp;like&nbsp;GAE's&nbsp;<a href="#ReferenceProperty">
 is&nbsp;a&nbsp;list.<br>
 &nbsp;<br>
 Args:<br>
-&nbsp;&nbsp;reference_class:&nbsp;The&nbsp;classes&nbsp;that&nbsp;should&nbsp;be&nbsp;added&nbsp;to&nbsp;this&nbsp;<a href="#LinkedDocuments">LinkedDocuments</a>.<br>
+&nbsp;&nbsp;reference_class:&nbsp;The&nbsp;classes&nbsp;that&nbsp;should&nbsp;be&nbsp;added&nbsp;to&nbsp;this&nbsp;LinkedDocuments.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i.e.&nbsp;Documents&nbsp;have&nbsp;to&nbsp;be&nbsp;objects&nbsp;of&nbsp;that&nbsp;class&nbsp;to&nbsp;pass<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validation.&nbsp;None&nbsp;if&nbsp;you&nbsp;wish&nbsp;to&nbsp;allow&nbsp;any&nbsp;Document&nbsp;class.<br>
 &nbsp;&nbsp;collection_name:&nbsp;The&nbsp;collection&nbsp;name&nbsp;for&nbsp;the&nbsp;reference_class.&nbsp;Works&nbsp;the<br>
@@ -1314,7 +1204,7 @@ the&nbsp;reference_class&nbsp;like&nbsp;GAE's&nbsp;<a href="#ReferenceProperty">
 is&nbsp;a&nbsp;list.<br>
 &nbsp;<br>
 Args:<br>
-&nbsp;&nbsp;reference_class:&nbsp;The&nbsp;classes&nbsp;that&nbsp;should&nbsp;be&nbsp;added&nbsp;to&nbsp;this&nbsp;<a href="#LinkedDocuments">LinkedDocuments</a>.<br>
+&nbsp;&nbsp;reference_class:&nbsp;The&nbsp;classes&nbsp;that&nbsp;should&nbsp;be&nbsp;added&nbsp;to&nbsp;this&nbsp;LinkedDocuments.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i.e.&nbsp;Documents&nbsp;have&nbsp;to&nbsp;be&nbsp;objects&nbsp;of&nbsp;that&nbsp;class&nbsp;to&nbsp;pass<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validation.&nbsp;None&nbsp;if&nbsp;you&nbsp;wish&nbsp;to&nbsp;allow&nbsp;any&nbsp;Document&nbsp;class.<br>
 &nbsp;&nbsp;collection_name:&nbsp;The&nbsp;collection&nbsp;name&nbsp;for&nbsp;the&nbsp;reference_class.&nbsp;Works&nbsp;the<br>
