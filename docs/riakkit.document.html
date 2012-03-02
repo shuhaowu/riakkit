@@ -30,8 +30,10 @@
 <font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
     
 <tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="json.html">json</a><br>
-</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="datetime.html">datetime</a><br>
+</td><td width="25%" valign=top><a href="json.html">json</a><br>
+</td><td width="25%" valign=top><a href="time.html">time</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ee77aa">
 <td colspan=3 valign=bottom>&nbsp;<br>
@@ -73,7 +75,9 @@ document.<br>&nbsp;</tt></td></tr>
 <dl><dt><a name="Document-__delattr__"><strong>__delattr__</strong></a>(self, name)</dt><dd><tt>Deletes&nbsp;an&nbsp;attribute.<br>
 &nbsp;<br>
 Args:<br>
-&nbsp;&nbsp;name:&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;field.</tt></dd></dl>
+&nbsp;&nbsp;name:&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;field.<br>
+Raises:<br>
+&nbsp;&nbsp;KeyError:&nbsp;if&nbsp;name&nbsp;is&nbsp;not&nbsp;found&nbsp;in&nbsp;the&nbsp;data&nbsp;set</tt></dd></dl>
 
 <dl><dt><a name="Document-__delitem__"><strong>__delitem__</strong></a> = <a href="#Document-__delattr__">__delattr__</a>(self, name)</dt></dl>
 
@@ -126,7 +130,12 @@ Args:<br>
 &nbsp;&nbsp;field:&nbsp;The&nbsp;index&nbsp;field<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;index&nbsp;value</tt></dd></dl>
 
-<dl><dt><a name="Document-delete"><strong>delete</strong></a>(self, rw<font color="#909090">=None</font>)</dt></dl>
+<dl><dt><a name="Document-addLink"><strong>addLink</strong></a>(self, doc, tag<font color="#909090">=None</font>)</dt></dl>
+
+<dl><dt><a name="Document-delete"><strong>delete</strong></a>(self, rw<font color="#909090">=None</font>)</dt><dd><tt>Deletes&nbsp;this&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;from&nbsp;the&nbsp;database.&nbsp;Same&nbsp;interface&nbsp;as&nbsp;riak-python.<br>
+&nbsp;<br>
+However,&nbsp;this&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;can&nbsp;still&nbsp;be&nbsp;resaved.&nbsp;Not&nbsp;sure&nbsp;what&nbsp;you&nbsp;would&nbsp;do<br>
+with&nbsp;it,&nbsp;though.</tt></dd></dl>
 
 <dl><dt><a name="Document-getIndexes"><strong>getIndexes</strong></a>(self, field<font color="#909090">=None</font>)</dt><dd><tt>Gets&nbsp;the&nbsp;indexes.<br>
 &nbsp;<br>
@@ -140,6 +149,8 @@ Returns:<br>
 &nbsp;<br>
 Raises:<br>
 &nbsp;&nbsp;KeyError:&nbsp;if&nbsp;field&nbsp;doesn't&nbsp;exists</tt></dd></dl>
+
+<dl><dt><a name="Document-getLinks"><strong>getLinks</strong></a>(self, tag<font color="#909090">=None</font>)</dt></dl>
 
 <dl><dt><a name="Document-mergeData"><strong>mergeData</strong></a>(self, data)</dt><dd><tt>Merges&nbsp;data.&nbsp;This&nbsp;will&nbsp;trigger&nbsp;the&nbsp;standard&nbsp;processors.<br>
 &nbsp;<br>
@@ -169,6 +180,8 @@ Args:<br>
 Raises:<br>
 &nbsp;&nbsp;ValueError:&nbsp;If&nbsp;field,&nbsp;value&nbsp;is&nbsp;not&nbsp;found..</tt></dd></dl>
 
+<dl><dt><a name="Document-removeLink"><strong>removeLink</strong></a>(self)</dt></dl>
+
 <dl><dt><a name="Document-save"><strong>save</strong></a>(self, w<font color="#909090">=None</font>, dw<font color="#909090">=None</font>)</dt><dd><tt>Saves&nbsp;the&nbsp;document&nbsp;into&nbsp;the&nbsp;database.<br>
 &nbsp;<br>
 This&nbsp;will&nbsp;save&nbsp;the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;to&nbsp;the&nbsp;database.&nbsp;All&nbsp;linked&nbsp;objects&nbsp;will&nbsp;be&nbsp;saved<br>
@@ -189,23 +202,9 @@ are&nbsp;modified.&nbsp;Example.&nbsp;list.append&nbsp;will&nbsp;not&nbsp;make&n
 Returns:<br>
 &nbsp;&nbsp;True&nbsp;if&nbsp;saved,&nbsp;False&nbsp;if&nbsp;not.</tt></dd></dl>
 
-<dl><dt><a name="Document-updateLinks"><strong>updateLinks</strong></a>(self, links)</dt><dd><tt>Take&nbsp;a&nbsp;list&nbsp;of&nbsp;RiakLink&nbsp;objects&nbsp;and&nbsp;outputs&nbsp;tag&nbsp;:&nbsp;[<a href="#Document">Document</a>]<br>
-&nbsp;<br>
-You&nbsp;probably&nbsp;won't&nbsp;need&nbsp;this&nbsp;function&nbsp;as&nbsp;it's&nbsp;used&nbsp;internally&nbsp;and&nbsp;marked<br>
-public&nbsp;in&nbsp;case&nbsp;something&nbsp;is&nbsp;required.<br>
-&nbsp;<br>
-However,&nbsp;this&nbsp;function&nbsp;does&nbsp;not&nbsp;convert&nbsp;those&nbsp;reference&nbsp;properties.<br>
-&nbsp;<br>
-Args:<br>
-&nbsp;&nbsp;links:&nbsp;A&nbsp;list&nbsp;of&nbsp;RiakLink&nbsp;objects<br>
-&nbsp;<br>
-Returns:<br>
-&nbsp;&nbsp;This&nbsp;returns&nbsp;a&nbsp;dict&nbsp;that&nbsp;has&nbsp;the&nbsp;tags&nbsp;of&nbsp;the&nbsp;links&nbsp;as&nbsp;keys&nbsp;and&nbsp;a&nbsp;list<br>
-&nbsp;&nbsp;of&nbsp;documents&nbsp;as&nbsp;values.&nbsp;The&nbsp;documents&nbsp;are&nbsp;constructed&nbsp;using&nbsp;the&nbsp;classes<br>
-&nbsp;&nbsp;that&nbsp;is&nbsp;associated&nbsp;with&nbsp;the&nbsp;link's&nbsp;bucket.&nbsp;It's&nbsp;probably&nbsp;not&nbsp;a&nbsp;good&nbsp;idea<br>
-&nbsp;&nbsp;to&nbsp;mix&nbsp;this&nbsp;with&nbsp;links&nbsp;that&nbsp;doesn't&nbsp;have&nbsp;a&nbsp;<a href="#Document">Document</a>&nbsp;subclass&nbsp;associated&nbsp;to<br>
-&nbsp;&nbsp;it.&nbsp;Example:<br>
-&nbsp;&nbsp;{tag&nbsp;:&nbsp;[<a href="#Document">Document</a>,&nbsp;<a href="#Document">Document</a>]}</tt></dd></dl>
+<dl><dt><a name="Document-setIndexes"><strong>setIndexes</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Document-setLinks"><strong>setLinks</strong></a>(self)</dt></dl>
 
 <hr>
 Class methods defined here:<br>
@@ -228,19 +227,25 @@ Some&nbsp;potential&nbsp;uses:&nbsp;since&nbsp;a&nbsp;lot&nbsp;of&nbsp;objects&n
 could&nbsp;be&nbsp;used&nbsp;there.<br>
 &nbsp;<br>
 However,&nbsp;Riakkit&nbsp;is&nbsp;not&nbsp;very&nbsp;optimized&nbsp;as&nbsp;of&nbsp;right&nbsp;now..&nbsp;perhaps&nbsp;in&nbsp;the<br>
-future&nbsp;it&nbsp;will&nbsp;be.<br>
+future&nbsp;it&nbsp;will&nbsp;be.&nbsp;This&nbsp;means,&nbsp;Riakkit&nbsp;needs&nbsp;a&nbsp;more&nbsp;awesome&nbsp;caching&nbsp;backend.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;k:&nbsp;A&nbsp;key&nbsp;or&nbsp;a&nbsp;<a href="#Document">Document</a>&nbsp;instance.&nbsp;If&nbsp;None,&nbsp;it&nbsp;will&nbsp;flush&nbsp;the&nbsp;entire&nbsp;cache<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;this&nbsp;class.&nbsp;Default:&nbsp;None</tt></dd></dl>
 
-<dl><dt><a name="Document-getWithKey"><strong>getWithKey</strong></a>(cls, key, r<font color="#909090">=None</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Get&nbsp;an&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;a&nbsp;given&nbsp;key.<br>
+<dl><dt><a name="Document-get"><strong>get</strong></a>(cls, key, r<font color="#909090">=None</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Get&nbsp;an&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;a&nbsp;given&nbsp;key.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;key:&nbsp;The&nbsp;key&nbsp;value.<br>
 &nbsp;&nbsp;r:&nbsp;The&nbsp;r&nbsp;value,&nbsp;defaults&nbsp;to&nbsp;None.</tt></dd></dl>
 
-<dl><dt><a name="Document-get_with_key"><strong>get_with_key</strong></a> = getWithKey(cls, key, r<font color="#909090">=None</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Get&nbsp;an&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;a&nbsp;given&nbsp;key.<br>
+<dl><dt><a name="Document-getWithKey"><strong>getWithKey</strong></a> = get(cls, key, r<font color="#909090">=None</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Get&nbsp;an&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;a&nbsp;given&nbsp;key.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;key:&nbsp;The&nbsp;key&nbsp;value.<br>
+&nbsp;&nbsp;r:&nbsp;The&nbsp;r&nbsp;value,&nbsp;defaults&nbsp;to&nbsp;None.</tt></dd></dl>
+
+<dl><dt><a name="Document-get_with_key"><strong>get_with_key</strong></a> = get(cls, key, r<font color="#909090">=None</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Get&nbsp;an&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;a&nbsp;given&nbsp;key.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;key:&nbsp;The&nbsp;key&nbsp;value.<br>
@@ -319,12 +324,5 @@ Args:<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;Returns&nbsp;the&nbsp;bucket&nbsp;name.</tt></dd></dl>
-</td></tr></table><p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#55aa55">
-<td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
-    
-<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>MD_INDEX</strong> = 'index'</td></tr></table>
+</td></tr></table>
 </body></html>

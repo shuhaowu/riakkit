@@ -1,0 +1,53 @@
+/* Foundation v2.2 http://foundation.zurb.com */
+/* Artfully masterminded by ZURB  */
+
+body{
+  padding: 10px 0;
+}
+
+h1 {font-size: 24px; margin-bottom: 10px;}
+h2 {font-size: 18px; margin-bottom: 8px; }
+h3 {font-size: 16px; margin-bottom: 6px; }
+h4 {font-size: 14px; margin-bottom: 4px; }
+
+span.code {
+  display: inline;
+  font-family: monospace;
+  background-color: #EEE;
+}
+
+h1.bigtitle{ font-size: 38px; }
+
+.navbar{
+  line-height: 50px;
+  text-align: right;
+}
+
+.navbar a {
+  border-bottom: 1px dashed #00F;
+}
+
+footer{
+  text-align: center;
+  color: #999;
+}
+
+.center{
+  text-align: center;
+}
+
+code{
+  font-family: monospace;
+  background-color: #EEE;
+  margin-left: 2px;
+}
+
+pre{
+  display: block;
+  font-family: monospace;
+  background-color: #EEE;
+  border: 1px solid #CCC;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 3px;
+}
