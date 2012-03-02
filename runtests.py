@@ -46,7 +46,7 @@ class UniqueTest(CustomDocument):
 
   attr = StringProperty(unique=True)
 
-class OtherTests(unittest.TestCase):
+class All(unittest.TestCase):
   def test_referenceModifiedOnSave(self):
     a = A(l=["1", "2", "3"], em={"a" : {"name" : ["1", "2", "3"]}})
     a.save()
@@ -92,6 +92,35 @@ class OtherTests(unittest.TestCase):
     page.delete()
     user = SomeUser.get(u.key)
     self.assertEqual(user.page, None)
+
+  def test_addLinks(self):
+    page1 = ClassPage(name="Page1")
+    page2 = ClassPage(name="Page2")
+    page1.addLink(page2)
+    page2.save()
+    page1.save()
+
+    self.assertEqual(1, len(page1.getLinks()))
+    self.assertEqual(1, len(page1._obj.get_links()))
+    self.assertEqual(page2.key, page1._obj.get_links()[0].get_key())
+
+    page1.reload()
+
+    self.assertEqual(1, len(page1.getLinks()))
+    self.assertEqual(1, len(page1._obj.get_links()))
+    self.assertEqual(page2.key, page1._obj.get_links()[0].get_key())
+
+  def test_removeLinks(self):
+    page1 = ClassPage(name="Page1")
+    page2 = ClassPage(name="Page2")
+    page1.addLink(page2)
+    page2.save()
+    page1.save()
+
+    page1.reload()
+
+    page1.removeLink(page2)
+
 
 if __name__ == "__main__":
   try:

@@ -26,6 +26,20 @@ from uuid import uuid1
 
 _document_classes = {}
 
+def getClassGivenBucketName(bucket_name):
+  """Gets the class associated with a bucket name.
+
+  Args:
+    bucket_name: The bucket name. String
+
+  Returns:
+    A document subclass associated with that bucket name
+
+  Raises:
+    KeyError if bucket_name is not used.
+  """
+  return _document_classes[bucket_name]
+
 def getUniqueListBucketName(class_name, property_name):
   """Gets the bucket name that enforces the uniqueness of a certain property.
 
@@ -183,7 +197,15 @@ class Document(object):
 
   @classmethod
   def _getLinksFromObj(cls, obj):
-    return {}
+    obj_links = obj.get_links()
+    links = {}
+    for link in obj_links:
+      tag = link.get_tag()
+      l = links.get(tag, [])
+      c = getClassGivenBucketName(link.get_bucket())
+      l.append(c.load(link.get(), True))
+      links[tag] = l
+    return links
 
   @classmethod
   def _cleanupDataFromDatabase(cls, data):
@@ -235,11 +257,15 @@ class Document(object):
     Args:
       field: The index field
       value: The index value
+
+    Returns:
+      self
     """
 
     l = self._indexes.get(field, [])
     l.append(value)
     self._indexes[field] = l
+    return self
 
   def removeIndex(self, field, value):
     """Removes an index from the document
@@ -250,6 +276,9 @@ class Document(object):
 
     Raises:
       ValueError: If field, value is not found..
+
+    Returns:
+      self
     """
     l = self._indexes.get(field, [])
     try:
@@ -258,6 +287,7 @@ class Document(object):
       raise ValueError("%s: %s index not found!" % (field, value))
     else:
       self._indexes[field] = l
+    return self
 
   def getIndexes(self, field=None):
     """Gets the indexes.
@@ -272,6 +302,9 @@ class Document(object):
 
     Raises:
       KeyError: if field doesn't exists
+
+    Returns:
+      self
     """
     if field is None:
       return deepcopy(self._indexes)
@@ -280,19 +313,40 @@ class Document(object):
         return copy(self._indexes[field])
       except KeyError:
         raise KeyError("Index field %s doesn't exist!" % field)
+    return self
 
   def setIndexes(self):
     pass
 
   def addLink(self, doc, tag=None):
+    """Adds a link to the document via Riak Link.
+
+    Args:
+      doc: The Document instance.
+      tag: The tag. Defaults to None.
+
+    Returns:
+      self
+    """
     l = self._links.get(tag, [])
     l.append(doc)
     self._links[tag] = l
+    return self
 
   def removeLink(self):
+    """Removes a link from the document."""
     pass
 
   def getLinks(self, tag=None):
+    """Gets the Riak Links.
+
+    Args:
+      tag: If tag is specified, return a list of documents associated with that tag.
+           Otherwise, return a list of 2 item tuple that has (document, tag)
+
+    Returns:
+      The links either in a list of (document, tag) or just document
+    """
     if tag is None:
       links = []
       for tag in self._links:
