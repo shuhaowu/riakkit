@@ -21,7 +21,7 @@ from riakkit.exceptions import *
 from riakkit.utils import *
 
 from copy import copy, deepcopy
-import json
+from weakref import WeakValueDictionary
 from uuid import uuid1
 
 _document_classes = {}
@@ -92,7 +92,7 @@ class DocumentMetaclass(type):
     attrs["_meta"] = meta
     attrs["_uniques"] = uniques
     attrs["SEARCHABLE"] = getProperty("SEARCHABLE", attrs, parents)
-    attrs["instances"] = {}
+    attrs["instances"] = WeakValueDictionary()
 
     new_class = type.__new__(cls, clsname, parents, attrs)
 

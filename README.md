@@ -301,7 +301,8 @@ Google Python styling guide.
 
 To add an index, simply do
 
-    >>> cake.addIndex("field1_bin", "val1")
+    >>> cake.addIndex("field1_bin", "val1") # doctest: +ELLIPSIS
+    <...>
     >>> cake.save()
 
 To get the indexes:
@@ -326,7 +327,9 @@ After v0.5.0b, Riakkit dropped `LinkedDocuments` and moved on to
 To add a link:
 
     >>> user = User(name="John")
-    >>> user.addLink(cake) # cake is the previous chocolate cake we had.
+    >>> # cake is the previous chocolate cake we had.
+    >>> user.addLink(cake) # doctest: +ELLIPSIS
+    <...>
     >>> user.save()
 
 Fetching them is also as easy:
