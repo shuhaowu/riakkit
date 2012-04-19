@@ -315,8 +315,13 @@ class Document(object):
         raise KeyError("Index field %s doesn't exist!" % field)
     return self
 
-  def setIndexes(self):
-    pass
+  def setIndexes(self, indexes):
+    """Sets the entire indexes.
+
+    Args:
+      indexes: Indexes in dictionary form of {field : [value1, value2]}
+    """
+    self._indexes = deepcopy(indexes)
 
   def addLink(self, doc, tag=None):
     """Adds a link to the document via Riak Link.
@@ -333,9 +338,12 @@ class Document(object):
     self._links[tag] = l
     return self
 
-  def removeLink(self):
-    """Removes a link from the document."""
-    pass
+  def removeLink(self, doc, tag=None):
+    """Removes a link from the document.
+
+    Args:
+      doc: """
+    raise NotImplementedError
 
   def getLinks(self, tag=None):
     """Gets the Riak Links.
