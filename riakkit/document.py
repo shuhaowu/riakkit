@@ -342,8 +342,20 @@ class Document(object):
     """Removes a link from the document.
 
     Args:
-      doc: """
-    raise NotImplementedError
+      doc: The document to be removed
+      tag: The tag to be removed
+    """
+
+    if tag is None:
+      tags = self._links.keys()
+    else:
+      tags = [tag]
+
+    for tag in tags:
+      try:
+        self._links[tag].remove(doc)
+      except ValueError:
+        continue
 
   def getLinks(self, tag=None):
     """Gets the Riak Links.
@@ -353,7 +365,7 @@ class Document(object):
            Otherwise, return a list of 2 item tuple that has (document, tag)
 
     Returns:
-      The links either in a list of (document, tag) or just document
+      The links either in a list of (document, tag) or just a list of documents
     """
     if tag is None:
       links = []
@@ -364,8 +376,8 @@ class Document(object):
     else:
       return self._links.get(tag, [])
 
-  def setLinks(self):
-    pass
+  def setLinks(self, links):
+    self._links = deepcopy(links)
 
   @classmethod
   def load(cls, riak_obj, cached=False):

@@ -121,6 +121,13 @@ class All(unittest.TestCase):
 
     page1.removeLink(page2)
 
+    self.assertEqual(0, len(page1.getLinks()))
+
+    page1.save()
+    page1.reload()
+
+    self.assertEqual(0, len(page1.getLinks()))
+
 
 if __name__ == "__main__":
   try:
