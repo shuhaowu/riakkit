@@ -360,7 +360,7 @@ class DynamicProperty(BaseProperty):
 
 
 class ReferenceBaseProperty(BaseProperty):
-  def __init__(self, reference_class=None, collection_name=None, required=False):
+  def __init__(self, reference_class, collection_name=None, required=False):
     """Initializes a Reference Property
 
     You can set it up so that riakkit automatically link back from
