@@ -13,6 +13,10 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with RiakKit.  If not, see <http://www.gnu.org/licenses/>.
 
+from uuid import uuid1
+
+uuid1Key = lambda kwargs: uuid1().hex
+
 def walkParents(parents, bases=("Document", "type", "object")):
   """Walks through the parents and return each parent class object uptil the
   name of the classes specified in bases.

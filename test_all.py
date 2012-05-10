@@ -39,7 +39,7 @@ class TestModel(BaseDocument):
   datetimeprop = DateTimeProperty()
   floatprocessorprop = FloatProperty(forwardprocessors=lambda x: None if x is None else x + 1)
 
-class SimpleTestModel(BaseDocument):
+class SimpleTestModel(SimpleDocument):
   someprop = StringProperty()
 
 class ReferenceTestModel(BaseDocument):
@@ -134,7 +134,7 @@ class RiakkitSimpleTests(unittest.TestCase):
     self.simpleobj.clear()
     self.simpleobj.someprop = "moo"
     dictionary = refobj.serialize()
-    self.assertEqual(dictionary["ref"])
+    self.assertEqual(dictionary["ref"], self.simpleobj.key)
 
 
 if __name__ == "__main__":

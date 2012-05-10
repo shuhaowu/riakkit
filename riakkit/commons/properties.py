@@ -361,7 +361,7 @@ class DynamicProperty(BaseProperty):
 
 
 class ReferenceBaseProperty(BaseProperty):
-  def __init__(self, reference_class=None, collection_name=None, required=False):
+  def __init__(self, reference_class, collection_name=None, required=False):
     """Initializes a Reference Property
 
     You can set it up so that riakkit automatically link back from
@@ -378,6 +378,9 @@ class ReferenceBaseProperty(BaseProperty):
                        for detailed tutorial.
     """
     BaseProperty.__init__(self, required=required)
+    if not reference_class._isRealObject:
+      raise TypeError("Reference property cannot be constructed with class '%s'" % reference_class.__name__)
+
     self.reference_class = reference_class
     self.collection_name = collection_name
     self.is_reference_back = False

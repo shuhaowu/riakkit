@@ -15,10 +15,10 @@
 
 from copy import copy, deepcopy
 from weakref import WeakValueDictionary
-from uuid import uuid1
 
 from riakkit.simple.basedocument import BaseDocumentMetaclass, BaseDocument
 from riakkit.commons.properties import BaseProperty
+from riakkit.commons import uuid1Key
 
 _document_classes = {}
 
@@ -123,8 +123,9 @@ class Document(BaseDocument):
   """
 
   __metaclass__ = DocumentMetaclass
+  _isRealObject = True
 
-  def __init__(self, key=lambda kwargs: uuid1().hex, saved=True, **kwargs):
+  def __init__(self, key=uuid1Key, saved=True, **kwargs):
     if callable(key):
       key = key(kwargs)
 

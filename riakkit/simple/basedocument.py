@@ -13,15 +13,16 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with RiakKit.  If not, see <http://www.gnu.org/licenses/>.
 
-from riakkit.commons import walkParents
+from riakkit.commons import walkParents, uuid1Key
 from riakkit.commons.properties import BaseProperty
 from riakkit.commons.exceptions import ValidationError
 
+from copy import copy
 import json
 
 class BaseDocumentMetaclass(type):
   def __new__(cls, clsname, parents, attrs):
-    if clsname == "BaseDocument":
+    if clsname in ("BaseDocument", "SimpleDocument"):
       return type.__new__(cls, clsname, parents, attrs)
 
     meta = {}
@@ -29,7 +30,7 @@ class BaseDocumentMetaclass(type):
       if isinstance(attrs[name], BaseProperty):
         meta[name] = attrs.pop(name)
 
-    all_parents = reversed(walkParents(parents, ("BaseDocument", "object", "type")))
+    all_parents = reversed(walkParents(parents, ("BaseDocument", "SimpleDocument", "object", "type")))
 
     for p_cls in all_parents:
       meta.update(copy(p_cls._meta))
@@ -42,6 +43,13 @@ DEFAULT_CONVERTER = lambda x: x
 
 class BaseDocument(object):
   __metaclass__ = BaseDocumentMetaclass
+
+  # This is not a real object. Objects created with this class will not have key
+  # Either embedded document or otherwise.
+  # TODO: Make this better. Potentially using some sort of detection system.
+  # Or make a subclass of this that will be used as people abandon the overhead
+  # of the RAD and use the core for efficiency.
+  _isRealObject = False
 
   def __init__(self, **kwargs):
     self.mergeData(kwargs)
@@ -176,3 +184,16 @@ class BaseDocument(object):
   __getitem__ = __getattr__
   __delitem__ = __delattr__
 
+
+class SimpleDocument(BaseDocument):
+  _isRealObject = True
+
+  def __init__(self, key=uuid1Key, **kwargs):
+    if callable(key):
+      key = key(kwargs)
+
+    self.__dict__["key"] = key
+    BaseDocument.__init__(self, **kwargs)
+
+  def save(self, **kwargs):
+    raise NotImplementedError("Remember the good old day when we played with Documents? Well as an adult now, you don't save SimpleDocuments anymore.")
