@@ -31,9 +31,8 @@
     
 <tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="datetime.html">datetime</a><br>
-</td><td width="25%" valign=top><a href="json.html">json</a><br>
 </td><td width="25%" valign=top><a href="time.html">time</a><br>
-</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ee77aa">
 <td colspan=3 valign=bottom>&nbsp;<br>
@@ -128,9 +127,19 @@ eleveldb&nbsp;must&nbsp;be&nbsp;enabled&nbsp;instead&nbsp;of&nbsp;bitcask<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;field:&nbsp;The&nbsp;index&nbsp;field<br>
-&nbsp;&nbsp;value:&nbsp;The&nbsp;index&nbsp;value</tt></dd></dl>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;index&nbsp;value<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;self</tt></dd></dl>
 
-<dl><dt><a name="Document-addLink"><strong>addLink</strong></a>(self, doc, tag<font color="#909090">=None</font>)</dt></dl>
+<dl><dt><a name="Document-addLink"><strong>addLink</strong></a>(self, doc, tag<font color="#909090">=None</font>)</dt><dd><tt>Adds&nbsp;a&nbsp;link&nbsp;to&nbsp;the&nbsp;document&nbsp;via&nbsp;Riak&nbsp;Link.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;doc:&nbsp;The&nbsp;<a href="#Document">Document</a>&nbsp;instance.<br>
+&nbsp;&nbsp;tag:&nbsp;The&nbsp;tag.&nbsp;Defaults&nbsp;to&nbsp;None.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;self</tt></dd></dl>
 
 <dl><dt><a name="Document-delete"><strong>delete</strong></a>(self, rw<font color="#909090">=None</font>)</dt><dd><tt>Deletes&nbsp;this&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;from&nbsp;the&nbsp;database.&nbsp;Same&nbsp;interface&nbsp;as&nbsp;riak-python.<br>
 &nbsp;<br>
@@ -148,9 +157,19 @@ Returns:<br>
 &nbsp;&nbsp;Otherwise&nbsp;it&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;[value,&nbsp;value]<br>
 &nbsp;<br>
 Raises:<br>
-&nbsp;&nbsp;KeyError:&nbsp;if&nbsp;field&nbsp;doesn't&nbsp;exists</tt></dd></dl>
+&nbsp;&nbsp;KeyError:&nbsp;if&nbsp;field&nbsp;doesn't&nbsp;exists<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;self</tt></dd></dl>
 
-<dl><dt><a name="Document-getLinks"><strong>getLinks</strong></a>(self, tag<font color="#909090">=None</font>)</dt></dl>
+<dl><dt><a name="Document-getLinks"><strong>getLinks</strong></a>(self, tag<font color="#909090">=None</font>)</dt><dd><tt>Gets&nbsp;the&nbsp;Riak&nbsp;Links.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;tag:&nbsp;If&nbsp;tag&nbsp;is&nbsp;specified,&nbsp;return&nbsp;a&nbsp;list&nbsp;of&nbsp;documents&nbsp;associated&nbsp;with&nbsp;that&nbsp;tag.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Otherwise,&nbsp;return&nbsp;a&nbsp;list&nbsp;of&nbsp;2&nbsp;item&nbsp;tuple&nbsp;that&nbsp;has&nbsp;(document,&nbsp;tag)<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;links&nbsp;either&nbsp;in&nbsp;a&nbsp;list&nbsp;of&nbsp;(document,&nbsp;tag)&nbsp;or&nbsp;just&nbsp;a&nbsp;list&nbsp;of&nbsp;documents</tt></dd></dl>
 
 <dl><dt><a name="Document-mergeData"><strong>mergeData</strong></a>(self, data)</dt><dd><tt>Merges&nbsp;data.&nbsp;This&nbsp;will&nbsp;trigger&nbsp;the&nbsp;standard&nbsp;processors.<br>
 &nbsp;<br>
@@ -178,9 +197,16 @@ Args:<br>
 &nbsp;&nbsp;value:&nbsp;The&nbsp;value<br>
 &nbsp;<br>
 Raises:<br>
-&nbsp;&nbsp;ValueError:&nbsp;If&nbsp;field,&nbsp;value&nbsp;is&nbsp;not&nbsp;found..</tt></dd></dl>
+&nbsp;&nbsp;ValueError:&nbsp;If&nbsp;field,&nbsp;value&nbsp;is&nbsp;not&nbsp;found..<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;self</tt></dd></dl>
 
-<dl><dt><a name="Document-removeLink"><strong>removeLink</strong></a>(self)</dt></dl>
+<dl><dt><a name="Document-removeLink"><strong>removeLink</strong></a>(self, doc, tag<font color="#909090">=None</font>)</dt><dd><tt>Removes&nbsp;a&nbsp;link&nbsp;from&nbsp;the&nbsp;document.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;doc:&nbsp;The&nbsp;document&nbsp;to&nbsp;be&nbsp;removed<br>
+&nbsp;&nbsp;tag:&nbsp;The&nbsp;tag&nbsp;to&nbsp;be&nbsp;removed</tt></dd></dl>
 
 <dl><dt><a name="Document-save"><strong>save</strong></a>(self, w<font color="#909090">=None</font>, dw<font color="#909090">=None</font>)</dt><dd><tt>Saves&nbsp;the&nbsp;document&nbsp;into&nbsp;the&nbsp;database.<br>
 &nbsp;<br>
@@ -202,9 +228,12 @@ are&nbsp;modified.&nbsp;Example.&nbsp;list.append&nbsp;will&nbsp;not&nbsp;make&n
 Returns:<br>
 &nbsp;&nbsp;True&nbsp;if&nbsp;saved,&nbsp;False&nbsp;if&nbsp;not.</tt></dd></dl>
 
-<dl><dt><a name="Document-setIndexes"><strong>setIndexes</strong></a>(self)</dt></dl>
+<dl><dt><a name="Document-setIndexes"><strong>setIndexes</strong></a>(self, indexes)</dt><dd><tt>Sets&nbsp;the&nbsp;entire&nbsp;indexes.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;indexes:&nbsp;Indexes&nbsp;in&nbsp;dictionary&nbsp;form&nbsp;of&nbsp;{field&nbsp;:&nbsp;[value1,&nbsp;value2]}</tt></dd></dl>
 
-<dl><dt><a name="Document-setLinks"><strong>setLinks</strong></a>(self)</dt></dl>
+<dl><dt><a name="Document-setLinks"><strong>setLinks</strong></a>(self, links)</dt></dl>
 
 <hr>
 Class methods defined here:<br>
@@ -316,7 +345,17 @@ Checks&nbsp;for&nbsp;bucket_name&nbsp;in&nbsp;each&nbsp;class,&nbsp;as&nbsp;thos
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-getUniqueListBucketName"><strong>getUniqueListBucketName</strong></a>(class_name, property_name)</dt><dd><tt>Gets&nbsp;the&nbsp;bucket&nbsp;name&nbsp;that&nbsp;enforces&nbsp;the&nbsp;uniqueness&nbsp;of&nbsp;a&nbsp;certain&nbsp;property.<br>
+<td width="100%"><dl><dt><a name="-getClassGivenBucketName"><strong>getClassGivenBucketName</strong></a>(bucket_name)</dt><dd><tt>Gets&nbsp;the&nbsp;class&nbsp;associated&nbsp;with&nbsp;a&nbsp;bucket&nbsp;name.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;bucket_name:&nbsp;The&nbsp;bucket&nbsp;name.&nbsp;String<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;document&nbsp;subclass&nbsp;associated&nbsp;with&nbsp;that&nbsp;bucket&nbsp;name<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;KeyError&nbsp;if&nbsp;bucket_name&nbsp;is&nbsp;not&nbsp;used.</tt></dd></dl>
+ <dl><dt><a name="-getUniqueListBucketName"><strong>getUniqueListBucketName</strong></a>(class_name, property_name)</dt><dd><tt>Gets&nbsp;the&nbsp;bucket&nbsp;name&nbsp;that&nbsp;enforces&nbsp;the&nbsp;uniqueness&nbsp;of&nbsp;a&nbsp;certain&nbsp;property.<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;class_name:&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;class<br>
