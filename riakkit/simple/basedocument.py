@@ -19,6 +19,7 @@ from riakkit.commons.exceptions import ValidationError
 
 from copy import copy
 import json
+from riak.mapreduce import RiakLink
 
 class BaseDocumentMetaclass(type):
   def __new__(cls, clsname, parents, attrs):
@@ -234,6 +235,9 @@ class SimpleDocument(BaseDocument):
 
   This class provides nearly all operations that Document provides, except
   the ones that's interacts directly with Riak.
+
+  unique no longer has any meanings here as it's SimpleDocument's job to enforce
+  this rule. That's your problem.
   """
   _isRealObject = True
 
@@ -291,10 +295,12 @@ class SimpleDocument(BaseDocument):
       self for OOP purposes
     """
     if value is None:
-      self._indexes.pop(field, False)
+      self._indexes.pop(field)
     else:
       if field in self._indexes:
         self._indexes[field].discard(value)
+        if len(self._indexes[field]) == 0:
+          self._indexes.pop(field)
 
     return self
 
@@ -340,7 +346,7 @@ class SimpleDocument(BaseDocument):
 
     Returns:
       self for OOP purposes"""
-    self._links.add((document, None))
+    self._links.add((document, tag))
     return self
 
   def removeLink(self, document, tag=None):
@@ -366,15 +372,15 @@ class SimpleDocument(BaseDocument):
       links: Format should be set((document, tag), (document, tag))"""
     self._links = links
 
-  def links(self, riakLink=False):
+  def links(self, bucket=None):
     """Gets all the links.
 
     Args:
-      riakLink: Defaults to False. If True, this will return a list of RiakLinks instead of (document, tag) in a set
+      bucket: Defaults to None. If it is a RiakBucket, this will return a list of RiakLinks instead of (document, tag) in a set
 
     Returns:
       A set of (document, tag) or [RiakLink, RiakLink]"""
-    if riakLink:
+    if bucket is not None:
       return [RiakLink(bucket.get_name(), d.key, t) for d, t in self._links]
     return copy(self._links)
 
@@ -391,5 +397,5 @@ class SimpleDocument(BaseDocument):
     """
     obj = bucket.new(self.key, self.serialize())
     obj.set_indexes(self.indexes())
-    obj.set_links(self.links(True), True)
+    obj.set_links(self.links(bucket), True)
     return obj

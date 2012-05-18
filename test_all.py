@@ -20,6 +20,8 @@ from riakkit.simple import *
 from riakkit.commons.properties import *
 from riakkit.commons.exceptions import *
 
+import riak
+
 def integerkeys(d):
   if d is None:
     return None
@@ -47,15 +49,21 @@ class ReferenceTestModel(BaseDocument):
   multirefs = MultiReferenceProperty(reference_class=SimpleTestModel)
   refsdict = DictReferenceProperty(reference_class=SimpleTestModel)
 
-class RiakkitSimpleTests(unittest.TestCase):
+class RiakkitBaseTest(unittest.TestCase):
+  # Mainly to test the BaseDocument and Properties.
+  # However, uses SimpleDocument to test some very basics.
   def setUp(self):
     self.testobj = TestModel()
     self.simpleobj = SimpleTestModel()
 
-  def test_simpleObj(self):
-    self.assertTrue(hasattr(self.simpleobj, "key"))
-    self.assertTrue(isinstance(self.simpleobj.key, basestring))
-    self.assertRaises(NotImplementedError, self.simpleobj.save)
+  def test_mergeDataFromInit(self):
+    obj = TestModel(booleanprop=True)
+    self.assertEquals(True, obj.booleanprop)
+    self.assertTrue(10 <= obj.intprop <= 20)
+
+    # Interesting case here. As what if the default value conflicts with the
+    # validator (esp. the builtin defaults)
+    self.assertRaises(ValidationError, lambda: TestModel(listprop=[]))
 
   def test_emptySerialization(self):
     self.simpleobj.someprop = "lol"
@@ -116,7 +124,7 @@ class RiakkitSimpleTests(unittest.TestCase):
     testobj.floatprocessorprop = 1.0
 
     # remember that listprop is initialized using defaultValue, and via clear()
-    # clear() doesn't perform validation checks.
+    # clear() doesn"t perform validation checks.
 
     self.assertRaises(ValidationError, testobj.serialize)
 
@@ -141,6 +149,108 @@ class RiakkitSimpleTests(unittest.TestCase):
     dictionary = refobj.serialize()
     self.assertEqual(dictionary["ref"], self.simpleobj.key)
 
+###############################################################################
+###############################################################################
+###############################################################################
+
+class SimpleModel(SimpleDocument):
+  intprop = IntegerProperty()
+  listprop = ListProperty()
+  booleanprop = BooleanProperty(default=True)
+
+class RiakkitSimpleTest(unittest.TestCase):
+  def test_keySetup(self):
+    key1 = "somekey"
+    obj = SimpleModel(key1)
+    self.assertEquals(key1, obj.key)
+
+    key2 = lambda kwargs: str(1 + 1)
+    obj = SimpleModel(key2)
+    self.assertEquals("2", obj.key)
+
+  def test_simpleObj(self):
+    obj = SimpleModel()
+    self.assertTrue(hasattr(obj, "key"))
+    self.assertTrue(isinstance(obj.key, basestring))
+    self.assertRaises(NotImplementedError, obj.save)
+    self.assertRaises(NotImplementedError, obj.reload)
+
+  def test_objIndexes(self):
+    obj = SimpleModel()
+    self.assertEquals([], obj.indexes())
+    self.assertEquals(obj, obj.addIndex("field_bin", "test")) # test OOP
+    self.assertEquals([("field_bin", "test")], obj.indexes())
+    obj.addIndex("field2_int", 42)
+    self.assertEquals([("field2_int", 42), ("field_bin", "test")], sorted(obj.indexes()))
+
+    self.assertEquals({42}, obj.index("field2_int"))
+    self.assertEquals({"test"}, obj.index("field_bin"))
+
+    obj.removeIndex("field2_int")
+    self.assertEquals([("field_bin", "test")], obj.indexes())
+
+    obj.addIndex("field_bin", "test2")
+    self.assertEquals({"test", "test2"}, obj.indexes("field_bin"))
+    obj.removeIndex("field_bin", "test")
+    self.assertEquals({"test2"}, obj.index("field_bin"))
+    obj.removeIndex("field_bin", "test2")
+
+    self.assertRaises(KeyError, lambda: obj.index("field_bin"))
+
+    obj.setIndexes({"field1_bin" : {"test1"}})
+    self.assertEquals([("field1_bin", "test1")], obj.indexes())
+
+  def test_objLinks(self):
+    obj = SimpleModel("o1")
+    obj2 = SimpleModel("o2")
+    obj3 = SimpleModel("o3")
+
+    self.assertEquals(set(), obj.links())
+
+    obj.addLink(obj2)
+    self.assertEquals({(obj2, None)}, obj.links())
+
+    obj.addLink(obj3, "tag")
+    self.assertEquals({(obj2, None), (obj3, "tag")}, obj.links())
+
+    obj.addLink(obj3, "tag2")
+    self.assertEquals({(obj2, None), (obj3, "tag"), (obj3, "tag2")}, obj.links())
+
+    obj.removeLink(obj2)
+    self.assertEquals({(obj3, "tag"), (obj3, "tag2")}, obj.links())
+
+    obj.removeLink(obj3, "tag2")
+    self.assertEquals({(obj3, "tag")}, obj.links())
+
+    obj.removeLink(obj3, "tag")
+    self.assertEquals(set(), obj.links())
+
+    obj.setLinks({(obj2, "lol"), (obj3, None)})
+    self.assertEquals({(obj2, "lol"), (obj3, None)}, obj.links())
+
+    c = riak.RiakClient()
+    b = c.bucket("test")
+
+    links = sorted(obj.links(b), key=lambda x: x.get_key())
+    self.assertEquals("o2", links[0].get_key())
+    self.assertEquals("o3", links[1].get_key())
+
+  def test_toRiakObject(self):
+    obj = SimpleModel(intprop=5)
+    obj2 = SimpleModel()
+    obj.addLink(obj2, None)
+    obj.addIndex("field_bin", "testvalue")
+
+    c = riak.RiakClient()
+    b = c.bucket("test")
+    ro = obj.toRiakObject(b)
+
+    self.assertEquals(ro.get_key(), obj.key)
+    self.assertEquals({u"listprop": [], u"booleanprop": True, u"intprop": 5}, ro.get_data())
+    self.assertEquals(1, len(ro.get_indexes()))
+    self.assertEquals(["testvalue"], ro.get_indexes("field_bin"))
+    self.assertEquals(1, len(ro.get_links()))
+    self.assertEquals(obj2.key, ro.get_links()[0].get_key())
 
 if __name__ == "__main__":
   unittest.main()
