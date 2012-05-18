@@ -52,6 +52,11 @@ class RiakkitSimpleTests(unittest.TestCase):
     self.testobj = TestModel()
     self.simpleobj = SimpleTestModel()
 
+  def test_simpleObj(self):
+    self.assertTrue(hasattr(self.simpleobj, "key"))
+    self.assertTrue(isinstance(self.simpleobj.key, basestring))
+    self.assertRaises(NotImplementedError, self.simpleobj.save)
+
   def test_emptySerialization(self):
     self.simpleobj.someprop = "lol"
     self.simpleobj.clear()

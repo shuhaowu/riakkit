@@ -16,9 +16,9 @@
 from copy import copy, deepcopy
 from weakref import WeakValueDictionary
 
-from riakkit.simple.basedocument import BaseDocumentMetaclass, BaseDocument
+from riakkit.simple.basedocument import BaseDocumentMetaclass, BaseDocument, SimpleDocument
 from riakkit.commons.properties import BaseProperty
-from riakkit.commons import uuid1Key
+from riakkit.commons import uuid1Key, getUniqueListGivenClassName
 
 _document_classes = {}
 
@@ -35,18 +35,6 @@ def getClassGivenBucketName(bucket_name):
     KeyError if bucket_name is not used.
   """
   return _document_classes[bucket_name]
-
-def getUniqueListBucketName(class_name, property_name):
-  """Gets the bucket name that enforces the uniqueness of a certain property.
-
-  Args:
-    class_name: The name of the class
-    property_name: The property name
-
-  Returns:
-    Returns the bucket name.
-  """
-  return "_%s_ul_%s" % (class_name, property_name)
 
 
 class DocumentMetaclass(BaseDocumentMetaclass):
@@ -71,6 +59,9 @@ class DocumentMetaclass(BaseDocumentMetaclass):
     for name in attrs.keys():
       if isinstance(attrs[name], BaseProperty):
         meta[name] = prop = attrs.pop(name)
+        if not isinstance(prop.reference_class, Document):
+          raise TypeError("ReferenceProperties for Document must be another Document!")
+
         colname = getattr(prop, "collection_name", False)
         if colname:
           if colname in prop.reference_class._meta:
@@ -78,10 +69,9 @@ class DocumentMetaclass(BaseDocumentMetaclass):
           references_col_classes.append((colname, prop.reference_class, name))
           references.append(name)
         elif prop.unique: # Unique is not allowed with anything that has backref
-          prop.unique_bucket = client.bucket(getUniqueListBucketName(clsname, name))
+          prop.unique_bucket = client.bucket(getUniqueListGivenClassName(clsname, name))
           uniques.append(name)
 
-    # TODO: DUPLICATE WORK WITH getProperty
     all_parents = reversed(walkParents(parents))
     for p_cls in all_parents:
       meta.update(p_cls._meta)
@@ -110,7 +100,7 @@ class DocumentMetaclass(BaseDocumentMetaclass):
 
     return new_class
 
-class Document(BaseDocument):
+class Document(SimpleDocument):
   """The base Document class for other classes to extend from.
 
   There are a couple of class variables that needs to be filled out. First is
@@ -151,6 +141,7 @@ class Document(BaseDocument):
     uniquesToBeDeleted = []
     othersToBeSaved = []
 
+    # Process uniques
     for name in self._uniques:
       if self._data.get(name, None) is None:
         if self._obj: # TODO: could be somehow refactored, as this condition is always true?
@@ -170,6 +161,7 @@ class Document(BaseDocument):
         if changed and self._meta[name].unique_bucket.get(dataToBeSaved[name]).exists():
           raise ValueError("'%s' already exists for '%s'!" % (self._data[name], name))
 
+    # Process references
     for name in self._references:
       if self._obj:
         originalValues = self._obj.get_data().get(name, None)
@@ -258,3 +250,39 @@ class Document(BaseDocument):
 
     for doc in othersToBeSaved:
       doc.save(w, dw)
+
+  def reload(self, r=None, vtag=None):
+    """Reloads the object from the database.
+
+    This grabs the most recent version of the object from the database and
+    updates the document accordingly. The data will change if the object
+    from the database has been changed at one point.
+
+    This only works if the object has been saved at least once before.
+
+    Returns:
+      self for OOP.
+
+    Raises:
+      NotFoundError: if the object hasn't been saved before.
+    """
+    if self._obj:
+      self._obj.reload(r=r, vtag=vtag)
+      self.deserialize(deepcopy(self._obj.get_data()))
+      # Handle 2i, Links
+      self._saved = True
+    else:
+      raise NotFoundError("Object not saved!")
+
+  @classmethod
+  def exists(cls, key, r=None):
+    """Check if a key exists.
+
+    Args:
+      key: The key to check if exists or not.
+      r: The R value
+
+    Returns:
+      True if the key exists, false otherwise.
+    """
+    return cls.bucket.get(key, r).exists()

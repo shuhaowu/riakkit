@@ -17,6 +17,18 @@ from uuid import uuid1
 
 uuid1Key = lambda kwargs: uuid1().hex
 
+def getUniqueListGivenClassName(class_name, property_name):
+  """Gets the bucket name that enforces the uniqueness of a certain property.
+
+  Args:
+    class_name: The name of the class
+    property_name: The property name
+
+  Returns:
+    Returns the bucket name.
+  """
+  return "_%s_ul_%s" % (class_name, property_name)
+
 def walkParents(parents, bases=("Document", "type", "object")):
   """Walks through the parents and return each parent class object uptil the
   name of the classes specified in bases.
@@ -48,3 +60,64 @@ def walkParents(parents, bases=("Document", "type", "object")):
     next = []
 
   return all_parents
+
+def getProperty(name, attrs, parents):
+  """Used in __new__ while getting attributes of class objects that's about to
+  be created.
+
+  This also looks up the ladder of the parents of this class object.
+
+  Args:
+    name: Name of the attribute
+    attrs: The attributes from the __new__ methods.
+    parents: The class objects that's the parent of this class from the __new__.
+
+  Returns:
+    None if the attributes is not found from the attrs nor the parents.
+    Otherwise the first one that's found, from attrs to BFS'ed parents.
+  """
+  parents = walkParents(parents)
+  value = attrs.get(name, None)
+  i = 0
+  length = len(parents)
+  while value is None:
+    if i == length:
+      return None
+    value = getattr(parents[i], name, None)
+    i += 1
+
+  return value
+
+def getKeys(*args, **kwargs):
+  """Gets the keys of all of the dictionaries and returns it in a list.
+
+  Removing any references to 'key' (if specified)
+
+  Args:
+    discard_key: Boolean that determine whether or not to discard the 'key' attr
+  """
+  discard_key = kwargs.get("discard_key", True)
+  keys = set()
+  for d in args:
+    keys.update(d.keys())
+
+  if discard_key:
+    keys.discard("key")
+
+  return keys
+
+def mediocreCopy(obj):
+  """It's kind of like a deep copy, but it only make copies of lists, tuples,
+  and dictionaries (and other primitive types). Other complex object such as
+  ones you created are kept as references.
+
+  Arg:
+    obj: Any object.
+  """
+  if isinstance(obj, list): # TODO: Sets
+    return [mediocreCopy(i) for i in obj]
+  if isinstance(obj, tuple):
+    return tuple(mediocreCopy(i) for i in obj)
+  if isinstance(obj, dict):
+    return dict(mediocreCopy(i) for i in obj.iteritems())
+  return obj

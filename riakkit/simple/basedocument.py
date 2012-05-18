@@ -42,6 +42,16 @@ DEFAULT_VALIDATOR = lambda x: True
 DEFAULT_CONVERTER = lambda x: x
 
 class BaseDocument(object):
+  """The BaseDocument class is the lowest level of abstraction ther is. This
+  is essentially what dictshield has, probably even simpler (having never used
+  dictshield in the first place).
+
+  It's recommended that this is not used as SimpleDocument and Document is
+  prefered.
+
+  EmDocument is currently defined as EmDocument = BaseDocument. However, this
+  behaviour may change in the future.
+  """
   __metaclass__ = BaseDocumentMetaclass
 
   # This is not a real object. Objects created with this class will not have key
@@ -52,6 +62,11 @@ class BaseDocument(object):
   _isRealObject = False
 
   def __init__(self, **kwargs):
+    """Initialize a new BaseDocument.
+
+    Args:
+      kwargs: The keyword arguments to merge into the object.
+    """
     self.mergeData(kwargs)
 
   def _attrError(self, name):
@@ -62,6 +77,16 @@ class BaseDocument(object):
     raise ValidationError("%s doesn't pass validation for property '%s'" % (value, name))
 
   def serialize(self, dictionary=True):
+    """Serializes the data to database friendly version.
+
+    This *only* returns the dictionary of values.
+
+    Args:
+      dictionary: If True, this function will return a dictionary passed back
+                  to riak-python-client. Otherwise it will return a JSON.
+    Returns:
+      A dictionary or a string. Depending on the value of dictionary.
+    """
     d = {}
     for name, value in self._data.iteritems():
       self._processOneValue(d, name, value)
@@ -85,6 +110,11 @@ class BaseDocument(object):
     d[unicode(name)] = value
 
   def valid(self):
+    """Validate all the values.
+
+    Returns:
+      True if validation passes, False otherwise
+    """
     for name, prop in self._meta.iteritems():
       if not self.validate(name):
         return False
@@ -92,6 +122,15 @@ class BaseDocument(object):
     return True
 
   def validate(self, name):
+    """Validate a specific property.
+
+    Args:
+      name: The name of the property. If it's not defined in the schema, this
+            method will always return None
+
+    Returns:
+      True if valid, False otherwise.
+    """
     if name in self._meta:
       prop = self._meta[name]
       value = self._data[name]
@@ -99,19 +138,22 @@ class BaseDocument(object):
         return False
       else:
         return prop.validate(value)
+    return None
 
   @classmethod
   def constructObject(cls, data, dictionary=True):
+    """Construct an object given some data."""
     return cls().deserialize(data, dictionary)
 
   def deserialize(self, data, dictionary=True):
-    def action(name, value):
+    def action(name, value): # This is different from __setattr__ as __setattr__ uses standardizer
       prop = self._meta.get(name, None)
-      validator = DEFAULT_VALIDATOR
-      converter = DEFAULT_CONVERTER
       if prop is not None:
         validator = prop.validate
         converter = prop.convertFromDb
+      else:
+        validator = DEFAULT_VALIDATOR
+        converter = DEFAULT_CONVERTER
 
       if not validator(value):
         self._valiError(value, name)
@@ -119,6 +161,7 @@ class BaseDocument(object):
       value = converter(value)
       self._data[name] = value
 
+    self.clear()
     return self._doMerge(action, data, dictionary)
 
   def mergeData(self, data, dictionary=True):
@@ -186,14 +229,167 @@ class BaseDocument(object):
 
 
 class SimpleDocument(BaseDocument):
+  """This is a low level abstract of how objects that would be directly saved
+  into Riak (ones associated with a key, not an embedded document).
+
+  This class provides nearly all operations that Document provides, except
+  the ones that's interacts directly with Riak.
+  """
   _isRealObject = True
 
   def __init__(self, key=uuid1Key, **kwargs):
+    """Creates a SimpleDocument object.
+
+    Args:
+      key: A key string or a callable. Defaults to generating uuid1
+      **kwargs: Any data that you want to be merged into the document
+    """
     if callable(key):
       key = key(kwargs)
 
     self.__dict__["key"] = key
+
+    self._indexes = {}
+    self._links = set()
+
     BaseDocument.__init__(self, **kwargs)
 
   def save(self, **kwargs):
+    """Not available in SimpleDocument.
+
+    raises:
+      NotImplementedError
+    """
     raise NotImplementedError("Remember the good old day when we played with Documents? Well as an adult now, you don't save SimpleDocuments anymore.")
+
+  reload = save
+
+  def addIndex(self, field, value):
+    """Adds an index field : value
+
+    Args:
+      field: The field name. Remember that fieldnames have to end with the
+             correct types, and currently it's _bin and _int.
+      value: The value for this field.
+
+    Returns:
+      self for OOP purposes.
+    """
+    l = self._indexes.get(field, set())
+    l.add(value)
+    self._indexes[field] = l
+    return self
+
+  def removeIndex(self, field, value=None):
+    """Removes an index field : value
+
+    Args:
+      field: The field name.
+      value: The value, defaults to None. If value is none, the whole field gets
+             removed, otherwise only that specific pair will get removed.
+    Returns:
+      self for OOP purposes
+    """
+    if value is None:
+      self._indexes.pop(field, False)
+    else:
+      if field in self._indexes:
+        self._indexes[field].discard(value)
+
+    return self
+
+  def setIndexes(self, indexes):
+    """Sets the indexes. Overwrites the previous indexes
+
+    Args:
+      indexes: Format should be {"fieldname" : set("fieldvalue"), "fieldname2" : set("fieldvalue")}.
+
+    Returns:
+      self for OOP purposes.
+    """
+    self._indexes = indexes
+    return self
+
+  def indexes(self, field=None):
+    """Retrives the whole index or a specific list of indexes for a field.
+
+    Args:
+      field: the field name. Defaults to None. If it is None, the all the indexes will be returned.
+
+    Returns:
+      The set of field values or a list of (field, value) pairs friendly for set_indexes
+    """
+    if field is not None:
+      return copy(self._indexes[field])
+
+    i = []
+    for field, l in self._indexes.iteritems():
+      for value in l:
+        i.append((field, value))
+
+    return i
+
+  index = indexes # Done so that index(fieldname) is grammatically correct
+
+  def addLink(self, document, tag=None):
+    """Adds a link for the document.
+
+    Args:
+      document: A SimpleDocument object or its child. Checking will not be done.
+      tag: A tag. Defaults to None
+
+    Returns:
+      self for OOP purposes"""
+    self._links.add((document, None))
+    return self
+
+  def removeLink(self, document, tag=None):
+    """Removes a link from the document
+
+    Args:
+      document: A SimpleDocument object or its child.
+      tag: A tag value.
+
+    Returns:
+      self for OOP purposes"""
+    l = set()
+    for d, t in self._links:
+      if d.key != document.key or tag != t: # TODO: Best way to do this?
+        l.add((d, t))
+    self._links = l
+    return self
+
+  def setLinks(self, links):
+    """Sets the links. Overwrites the current links collection.
+
+    Args:
+      links: Format should be set((document, tag), (document, tag))"""
+    self._links = links
+
+  def links(self, riakLink=False):
+    """Gets all the links.
+
+    Args:
+      riakLink: Defaults to False. If True, this will return a list of RiakLinks instead of (document, tag) in a set
+
+    Returns:
+      A set of (document, tag) or [RiakLink, RiakLink]"""
+    if riakLink:
+      return [RiakLink(bucket.get_name(), d.key, t) for d, t in self._links]
+    return copy(self._links)
+
+  def toRiakObject(self, bucket):
+    """Converts the SimpleDocument into a RiakObject. Does not touch references,
+    unlike Document.save(). Nor does this actually save anything.
+
+    Args:
+      bucket: A RiakBucket object
+
+    Returns:
+      A RiakObject with data, indexes, and links set according to this
+      SimpleDocument
+    """
+    obj = bucket.new(self.key, self.serialize())
+    obj.set_indexes(self.indexes())
+    obj.set_links(self.links(True), True)
+    return obj
