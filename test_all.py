@@ -158,6 +158,8 @@ class SimpleModel(SimpleDocument):
   listprop = ListProperty()
   booleanprop = BooleanProperty(default=True)
 
+class SimpleReferenceModel(SimpleDocument):
+  ref = ReferenceProperty(SimpleModel)
 
 
 class RiakkitSimpleTest(unittest.TestCase):
@@ -264,6 +266,18 @@ class RiakkitSimpleTest(unittest.TestCase):
     self.assertEquals(1, doc.intprop)
     self.assertEquals(1, len(doc.indexes()))
     self.assertEquals({"str"}, doc.index("field_bin"))
+
+  def test_simpleReferences(self):
+    c = riak.RiakClient()
+    b = c.bucket("test")
+    doc = SimpleModel()
+    refdoc = SimpleReferenceModel()
+    refdoc.ref = doc
+    o = refdoc.toRiakObject(b)
+    self.assertEquals(doc.key, o.get_data()[u"ref"])
+
+    refdoc = SimpleReferenceModel.load(o)
+    self.assertEquals(doc.key, refdoc.ref)
 
 ###############################################################################
 ###############################################################################

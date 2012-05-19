@@ -417,7 +417,7 @@ class ReferenceProperty(ReferenceBaseProperty):
 
   def convertFromDb(self, value):
     if value is not None:
-      value = self.attempLoad(value)
+      value = self.attemptLoad(value)
     return BaseProperty.convertFromDb(self, value)
 
   def standardize(self, value):
