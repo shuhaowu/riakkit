@@ -298,11 +298,79 @@ class Document(SimpleDocument):
       raise NotFoundError("Object not saved!")
 
   def delete(self, rw=None):
-    pass
+    """Deletes this object from the database. Same interface as riak-python.
 
-  @classmethod
-  def get(cls, key, r=None):
-    pass
+    However, this object can still be resaved. Not sure what you would do
+    with it, though.
+    """
+    def deleteBackRef(col_name, docs):
+      docs_to_be_saved = []
+      for doc in docs:
+        current_list = doc._data.get(col_name, [])
+        modified = False
+
+        if isinstance(current_list, Document): # For collection_name referencing back
+          doc._data[col_name] = None
+          modified = True
+        else:
+          for i, linkback in enumerate(current_list): # TODO: Need a better search & destroy algorithm
+            if linkback.key == self.key:
+              modified = True
+              current_list.pop(i) # This is a reference, which should modify the original list.
+
+        if modified:
+          docs_to_be_saved.append(doc)
+
+      return docs_to_be_saved
+
+    if self._obj is not None:
+      docs_to_be_saved = []
+      for k in self._meta:
+        # is_reference_back is for deleting the document that has the collection_name
+        # collection_name is the document that gives out collection_name
+        col_name = getattr(self._meta[k], "is_reference_back", False) or getattr(self._meta[k], "collection_name", False)
+
+        if col_name:
+          docs = self._data.get(k, [])
+          if isinstance(docs, Document):
+            docs = [docs]
+          docs_to_be_saved.extend(deleteBackRef(col_name, docs))
+
+      self.__class__.instances.pop(self.key, False)
+
+      self._obj.delete(rw=rw)
+
+      for name in self._uniques:
+        obj = self._meta[name].unique_bucket.get(self._data[name])
+        obj.delete()
+
+      self._obj = None
+      self._saved = False
+
+      for doc in docs_to_be_saved:
+        doc.save()
+
+  def links(self, riakLinks=False):
+    """Gets all the links.
+
+    Args:
+      riakLinks: Defaults to False. If True, it will return a list of RiakLinks
+
+    Returns:
+      A set of (document, tag) or [RiakLink, RiakLink]"""
+    if riakLinks:
+      return [RiakLink(self.bucket_name, d.key, t) for d, t in self._links]
+    return copy(self._links)
+
+  @staticmethod
+  def _getLinksFromRiakObj(robj):
+    objLinks = obj.get_links()
+    links = set()
+    for link in objLinks:
+      tag = link.get_tag()
+      c = getClassGivenBucketName(link.get_bucket())
+      links.add((c.load(link.get(), True), tag))
+    return links
 
   @classmethod
   def load(cls, robj, cached=False, r=None):
@@ -324,17 +392,31 @@ class Document(SimpleDocument):
     try:
       doc = cls.instances[key]
     except KeyError:
-      robj = cls.bucket.get(key)
+      robj = cls.bucket.get(key, r)
       if not robj.exists():
         raise NotFoundError("%s not found!" % key)
-      # This is done before so that _cleanupDataFromDatabase won't recurse
+
+      # This is done before so that deserialize won't recurse
       # infinitely with collection_name. This wouldn't cause an problem as
-      # _cleanupDataFromDatabase calls for the loading of the referenced document
+      # deserialize calls for the loading of the referenced document
       # from cache, which load this document from cache, and it see that it
       # exists, finish loading the referenced document, then come back and finish
       # loading this document.
+
       doc = cls(key, saved=True)
       cls.instances[key] = doc
+
+      doc.deserialize(robj.get_data())
+      doc.setIndexes(cls._getIndexesFromRiakObj(robj))
+      doc.setLinks(cls._getLinksFromRiakObj(robj))
+      doc._obj = robj
+    else:
+      if not cached:
+        doc.reload()
+
+    return doc
+
+  get = load
 
   @classmethod
   def exists(cls, key, r=None):
