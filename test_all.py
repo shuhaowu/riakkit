@@ -236,7 +236,7 @@ class RiakkitSimpleTest(unittest.TestCase):
     self.assertEquals("o3", links[1].get_key())
 
   def test_toRiakObject(self):
-    obj = SimpleModel(intprop=5)
+    obj = SimpleModel(intprop=5, someprop="lol")
     obj2 = SimpleModel()
     obj.addLink(obj2, None)
     obj.addIndex("field_bin", "testvalue")
@@ -246,11 +246,23 @@ class RiakkitSimpleTest(unittest.TestCase):
     ro = obj.toRiakObject(b)
 
     self.assertEquals(ro.get_key(), obj.key)
-    self.assertEquals({u"listprop": [], u"booleanprop": True, u"intprop": 5}, ro.get_data())
+    self.assertEquals({u"listprop": [], u"booleanprop": True, u"intprop": 5, u"someprop": u"lol"}, ro.get_data())
     self.assertEquals(1, len(ro.get_indexes()))
     self.assertEquals(["testvalue"], ro.get_indexes("field_bin"))
     self.assertEquals(1, len(ro.get_links()))
     self.assertEquals(obj2.key, ro.get_links()[0].get_key())
+
+  def test_fromRiakObject(self):
+    c = riak.RiakClient()
+    b = c.bucket("test")
+    o = b.new("o1")
+    o.set_data({"intprop" : 1})
+    o.add_index("field_bin", "str")
+    doc = SimpleModel.load(o)
+    self.assertEquals(1, doc.intprop)
+    self.assertEquals(1, len(doc.indexes()))
+    self.assertEquals({"str"}, doc.index("field_bin"))
+
 
 if __name__ == "__main__":
   unittest.main()

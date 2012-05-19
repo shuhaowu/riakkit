@@ -17,7 +17,7 @@ from riakkit.commons import walkParents, uuid1Key
 from riakkit.commons.properties import BaseProperty
 from riakkit.commons.exceptions import ValidationError
 
-from copy import copy
+from copy import copy, deepcopy
 import json
 from riak.mapreduce import RiakLink
 
@@ -127,7 +127,7 @@ class BaseDocument(object):
 
     Args:
       name: The name of the property. If it's not defined in the schema, this
-            method will always return None
+            method will always return True
 
     Returns:
       True if valid, False otherwise.
@@ -139,7 +139,7 @@ class BaseDocument(object):
         return False
       else:
         return prop.validate(value)
-    return None
+    return True
 
   @classmethod
   def constructObject(cls, data, dictionary=True):
@@ -267,6 +267,7 @@ class SimpleDocument(BaseDocument):
     raise NotImplementedError("Remember the good old day when we played with Documents? Well as an adult now, you don't save SimpleDocuments anymore.")
 
   reload = save
+  delete = save
 
   def addIndex(self, field, value):
     """Adds an index field : value
@@ -308,12 +309,13 @@ class SimpleDocument(BaseDocument):
     """Sets the indexes. Overwrites the previous indexes
 
     Args:
-      indexes: Format should be {"fieldname" : set("fieldvalue"), "fieldname2" : set("fieldvalue")}.
+      indexes: Format should be {"fieldname" : {"fieldvalue"}, "fieldname2" : {"fieldvalue"}}.
+               A deep copy is made here.
 
     Returns:
       self for OOP purposes.
     """
-    self._indexes = indexes
+    self._indexes = deepcopy(indexes)
     return self
 
   def indexes(self, field=None):
@@ -369,8 +371,13 @@ class SimpleDocument(BaseDocument):
     """Sets the links. Overwrites the current links collection.
 
     Args:
-      links: Format should be set((document, tag), (document, tag))"""
-    self._links = links
+      links: Format should be set((document, tag), (document, tag)).
+             A shallow copy is made here.
+
+    Returns:
+      self for OOP purposes"""
+    self._links = copy(links)
+    return self
 
   def links(self, bucket=None):
     """Gets all the links.
@@ -399,3 +406,35 @@ class SimpleDocument(BaseDocument):
     obj.set_indexes(self.indexes())
     obj.set_links(self.links(bucket), True)
     return obj
+
+  @staticmethod
+  def _getIndexesFromRiakObj(robj):
+    objIndexes = robj.get_indexes()
+    indexes = {}
+    for indexEntry in objIndexes:
+      field = indexEntry.get_field()
+      value = indexEntry.get_value()
+      l = indexes.get(field, set())
+      l.add(value)
+      indexes[field] = l
+    return indexes
+
+  @classmethod
+  def load(cls, robj):
+    """Construct a SimpleDocument from a RiakObject. Similar to Document.load,
+    but doesn't support links, nor does it load from the database via a key
+    instead of a robj, nor does it do caching.
+
+    Note that this function does not get the links as SimpleDocument can't do
+    this due to technical reason (one way only).
+
+    Args:
+      robj: A RiakObject
+
+    Returns:
+      A SimpleDocument
+    """
+    doc = cls(robj.get_key())
+    doc.deserialize(robj.get_data())
+    doc.setIndexes(cls._getIndexesFromRiakObj(robj))
+    return doc
