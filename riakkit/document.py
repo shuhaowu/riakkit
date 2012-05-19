@@ -19,6 +19,9 @@ from weakref import WeakValueDictionary
 from riakkit.simple.basedocument import BaseDocumentMetaclass, BaseDocument, SimpleDocument
 from riakkit.commons.properties import BaseProperty
 from riakkit.commons import uuid1Key, getUniqueListGivenClassName
+from riakkit.queries import *
+
+from riak import RiakObject
 
 _document_classes = {}
 
@@ -113,17 +116,28 @@ class Document(SimpleDocument):
   """
 
   __metaclass__ = DocumentMetaclass
-  _isRealObject = True
+  _clsType = 2
 
   def __init__(self, key=uuid1Key, saved=True, **kwargs):
+    """Creates a new document from a bunch of keyword arguments.
+
+    Args:
+      key: A string/unicode key or a function that returns a string/unicode key.
+           The function takes in 1 argument, and that argument is the kwargs
+           that's passed in. Defaults to a lambda function that returns
+           uuid1().hex
+
+      saved: Is this object already saved? True or False
+      kwargs: Keyword arguments that will fill up the object with data.
+    """
     if callable(key):
       key = key(kwargs)
 
     if not isinstance(key, basestring):
-      raise RiakkitError("%s is not a proper key!" % key)
+      raise KeyError("%s is not a proper key!" % key)
 
     if key in self.__class__.instances:
-      raise RiakkitError("%s already exists! Use get instead!" % key)
+      raise KeyError("%s already exists! Use get instead!" % key)
 
     self.__dict__["key"] = key
 
@@ -137,6 +151,15 @@ class Document(SimpleDocument):
     self.__class__.instances[self.key] = self
 
   def save(self, w=None, dw=None):
+    """Saves the document into the database.
+
+    This will save the object to the database. All linked objects will be saved
+    as well.
+
+    Args:
+      w: W value
+      dw: DW value
+    """
     dataToBeSaved = self.serialize()
     uniquesToBeDeleted = []
     othersToBeSaved = []
@@ -274,6 +297,45 @@ class Document(SimpleDocument):
     else:
       raise NotFoundError("Object not saved!")
 
+  def delete(self, rw=None):
+    pass
+
+  @classmethod
+  def get(cls, key, r=None):
+    pass
+
+  @classmethod
+  def load(cls, robj, cached=False, r=None):
+    """Construct a Document based object given a RiakObject.
+
+    Args:
+      riak_obj: The RiakObject that the document is suppose to build from.
+      cached: Reload the object or not if it's found in the pool of objects.
+
+    Returns:
+      A Document object (whichever subclass this was called from).
+    """
+
+    if isinstance(robj, RiakObject):
+      key = robj.get_key()
+    else:
+      key = robj
+
+    try:
+      doc = cls.instances[key]
+    except KeyError:
+      robj = cls.bucket.get(key)
+      if not robj.exists():
+        raise NotFoundError("%s not found!" % key)
+      # This is done before so that _cleanupDataFromDatabase won't recurse
+      # infinitely with collection_name. This wouldn't cause an problem as
+      # _cleanupDataFromDatabase calls for the loading of the referenced document
+      # from cache, which load this document from cache, and it see that it
+      # exists, finish loading the referenced document, then come back and finish
+      # loading this document.
+      doc = cls(key, saved=True)
+      cls.instances[key] = doc
+
   @classmethod
   def exists(cls, key, r=None):
     """Check if a key exists.
@@ -286,3 +348,53 @@ class Document(SimpleDocument):
       True if the key exists, false otherwise.
     """
     return cls.bucket.get(key, r).exists()
+
+  @classmethod
+  def search(cls, querytext):
+    """Searches through the bucket with some query text.
+
+    The bucket must have search installed via search-cmd install BUCKETNAME. The
+    class must have been marked to be SEARCHABLE with cls.SEARCHABLE = True.
+
+    Args:
+      querytext: The query text as outlined in the python-riak documentations.
+
+    Returns:
+      A MapReduceQuery object. Similar to the RiakMapReduce object.
+
+    Raises:
+      NotImplementedError: if the class is not marked SEARCHABLE.
+    """
+    if not cls.SEARCHABLE:
+      raise NotImplementedError("Searchable is disabled, this is therefore not implemented.")
+    query_obj = cls.client.search(cls.bucket_name, querytext)
+    return MapReduceQuery(cls, query_obj)
+
+  @classmethod
+  def solrSearch(cls, querytext, **kwargs):
+    if not cls.SEARCHABLE:
+      raise NotImplementedError("Searchable is disabled, this is therefore not implemented.")
+    return SolrQuery(cls, cls.client.solr().search(cls.bucket_name, querytext, **kwargs))
+
+  @classmethod
+  def indexLookup(cls, index, startkey, endkey=None):
+    """Short hand for creating a new mapreduce index
+
+    Args:
+      index: The index field
+      startkey: The starting key
+      endkey: The ending key. If not none, search a range. Default: None
+
+    Returns:
+      A RiakMapReduce object
+    """
+    return MapReduceQuery(cls, cls.client.index(cls.bucket_name, index, startkey, endkey))
+
+  @classmethod
+  def mapreduce(cls):
+    """Shorthand for creating a query object for map reduce.
+
+    Returns:
+      A RiakMapReduce object.
+    """
+    return cls.client.add(cls.bucket_name)

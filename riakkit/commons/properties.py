@@ -18,7 +18,6 @@ import time
 from riakkit.commons.exceptions import RiakkitError
 
 NONE_TYPE = type(None)
-
 _valueOrList = lambda value: [] if value is None else value
 
 class BaseProperty(object):
@@ -359,7 +358,6 @@ class DynamicProperty(BaseProperty):
   Python json module...
   """
 
-
 class ReferenceBaseProperty(BaseProperty):
   def __init__(self, reference_class, collection_name=None, required=False):
     """Initializes a Reference Property
@@ -378,9 +376,10 @@ class ReferenceBaseProperty(BaseProperty):
                        for detailed tutorial.
     """
     BaseProperty.__init__(self, required=required)
-    if not reference_class._isRealObject:
+    if not reference_class._clsType:
       raise TypeError("Reference property cannot be constructed with class '%s'" % reference_class.__name__)
 
+    self.clstype = reference_class._clsType
     self.reference_class = reference_class
     self.collection_name = collection_name
     self.is_reference_back = False
@@ -401,6 +400,12 @@ class ReferenceBaseProperty(BaseProperty):
     else:
       return isinstance(l, (rc, NONE_TYPE))
 
+  def attemptLoad(self, key): # TODO: Is this a hack?...
+    if self.clstype == 1: # SimpleDocument
+      return key
+    else: # Document
+      return self.reference_class.load(key, True)
+
   def validate(self, value):
     check = self._checkForReferenceClass(value)
     return BaseProperty.validate(self, value) and check
@@ -412,13 +417,13 @@ class ReferenceProperty(ReferenceBaseProperty):
 
   def convertFromDb(self, value):
     if value is not None:
-      value = self.reference_class.load(value, True)
+      value = self.attempLoad(value)
     return BaseProperty.convertFromDb(self, value)
 
   def standardize(self, value):
     value = BaseProperty.standardize(self, value)
     if isinstance(value, (str, unicode)):
-      return self.reference_class.load(value, True)
+      return self.attempLoad(value)
     else:
       return value
 
@@ -429,12 +434,12 @@ class MultiReferenceProperty(ReferenceBaseProperty):
 
   def convertFromDb(self, value):
     if value is not None:
-      value = [self.reference_class.load(v, True) for v in value]
+      value = [self.attemptLoad(v) for v in value]
     return BaseProperty.convertFromDb(self, value)
 
   def standardize(self, value):
     value = BaseProperty.standardize(self, value)
-    return [self.reference_class.load(v, True) if isinstance(v, (str, unicode)) else v for v in value]
+    return [self.attempLoad(v) if isinstance(v, (str, unicode)) else v for v in value]
 
   def defaultValue(self):
     return []
@@ -464,7 +469,7 @@ class DictReferenceProperty(ReferenceBaseProperty):
   def convertFromDb(self, value):
     if value is not None:
       for key in value:
-        value[key] = self.reference_class.load(value[key], True)
+        value[key] = self.attempLoad(value[key])
     else:
       value = {}
     return BaseProperty.convertFromDb(self, value)
@@ -473,7 +478,7 @@ class DictReferenceProperty(ReferenceBaseProperty):
     value = BaseProperty.standardize(self, value)
     new_values = {}
     for key in value:
-      new_values[key] = self.reference_class.load(value[key]) if isinstance(value[key], (str, unicode)) else value[key]
+      new_values[key] = self.attemptLoad(value[key]) if isinstance(value[key], (str, unicode)) else value[key]
     return new_values
 
   def defaultValue(self):

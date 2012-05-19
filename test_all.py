@@ -158,6 +158,8 @@ class SimpleModel(SimpleDocument):
   listprop = ListProperty()
   booleanprop = BooleanProperty(default=True)
 
+
+
 class RiakkitSimpleTest(unittest.TestCase):
   def test_keySetup(self):
     key1 = "somekey"
@@ -263,6 +265,12 @@ class RiakkitSimpleTest(unittest.TestCase):
     self.assertEquals(1, len(doc.indexes()))
     self.assertEquals({"str"}, doc.index("field_bin"))
 
+###############################################################################
+###############################################################################
+###############################################################################
+
+class RiakkitDocumentTests(unittest.TestCase):
+  pass
 
 if __name__ == "__main__":
-  unittest.main()
+  unittest.main(verbosity=2)

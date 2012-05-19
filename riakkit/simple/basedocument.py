@@ -60,7 +60,7 @@ class BaseDocument(object):
   # TODO: Make this better. Potentially using some sort of detection system.
   # Or make a subclass of this that will be used as people abandon the overhead
   # of the RAD and use the core for efficiency.
-  _isRealObject = False
+  _clsType = 0
 
   def __init__(self, **kwargs):
     """Initialize a new BaseDocument.
@@ -150,14 +150,9 @@ class BaseDocument(object):
     def action(name, value): # This is different from __setattr__ as __setattr__ uses standardizer
       prop = self._meta.get(name, None)
       if prop is not None:
-        validator = prop.validate
         converter = prop.convertFromDb
       else:
-        validator = DEFAULT_VALIDATOR
         converter = DEFAULT_CONVERTER
-
-      if not validator(value):
-        self._valiError(value, name)
 
       value = converter(value)
       self._data[name] = value
@@ -239,7 +234,7 @@ class SimpleDocument(BaseDocument):
   unique no longer has any meanings here as it's SimpleDocument's job to enforce
   this rule. That's your problem.
   """
-  _isRealObject = True
+  _clsType = 1
 
   def __init__(self, key=uuid1Key, **kwargs):
     """Creates a SimpleDocument object.
@@ -420,7 +415,7 @@ class SimpleDocument(BaseDocument):
     return indexes
 
   @classmethod
-  def load(cls, robj):
+  def load(cls, robj, cached=False):
     """Construct a SimpleDocument from a RiakObject. Similar to Document.load,
     but doesn't support links, nor does it load from the database via a key
     instead of a robj, nor does it do caching.

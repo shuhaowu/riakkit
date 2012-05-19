@@ -15,3 +15,5 @@
 
 from simple import BaseDocument as EmDocument
 from document import Document
+from commons.properties import *
+from commons.exceptions import *
