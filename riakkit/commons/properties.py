@@ -64,6 +64,7 @@ class BaseProperty(object):
     self.forwardprocessors = _valueOrList(forwardprocessors)
     self.backwardprocessors = _valueOrList(backwardprocessors)
     self.standardprocessors = _valueOrList(standardprocessors)
+    self.name = None
 
   def _processValue(self, value, processors):
     if callable(processors):
@@ -413,6 +414,9 @@ class ReferenceBaseProperty(BaseProperty):
     check = self._checkForReferenceClass(value)
     return BaseProperty.validate(self, value) and check
 
+  def deleteReference(self, doc, ref):
+    return False
+
 class ReferenceProperty(ReferenceBaseProperty):
   def convertToDb(self, value):
     value = BaseProperty.convertToDb(self, value)
@@ -430,6 +434,13 @@ class ReferenceProperty(ReferenceBaseProperty):
     else:
       return value
 
+  def deleteReference(self, doc, ref):
+    if doc._data[self.name] is None:
+      return False
+
+    doc._data[self.name] = None
+    return True
+
 class MultiReferenceProperty(ReferenceBaseProperty):
   def convertToDb(self, value):
     value = BaseProperty.convertToDb(self, value)
@@ -446,6 +457,15 @@ class MultiReferenceProperty(ReferenceBaseProperty):
 
   def defaultValue(self):
     return []
+
+  def deleteReference(self, doc, ref):
+    currentList = doc._data.get(self.name)
+    for i, r in enumerate(currentList): # TODO: Need a better search & destroy algorithm
+      if r.key == ref.key:
+        currentList.pop(i) # This is a reference, which should modify the original list.
+        return True
+
+    return False
 
 class DictReferenceProperty(ReferenceBaseProperty):
   """Dictionary based reference property.
@@ -486,6 +506,14 @@ class DictReferenceProperty(ReferenceBaseProperty):
 
   def defaultValue(self):
     return {}
+
+  def deleteReference(self, doc, ref):
+    current = doc._data.get(self.name)
+    for k, r in current.iteritems():
+      if r.key == ref.key:
+        current.pop(k)
+        return True
+    return False
 
 class EmDocumentProperty(BaseProperty):
   """The EmDocument property"""

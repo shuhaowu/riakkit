@@ -64,6 +64,7 @@ class DocumentMetaclass(BaseDocumentMetaclass):
       if isinstance(attrs[name], BaseProperty):
         meta[name] = prop = attrs.pop(name)
         refcls = getattr(prop, "reference_class", False)
+        prop.name = name
         if refcls and not issubclass(refcls, Document):
           raise TypeError("ReferenceProperties for Document must be another Document!")
 
@@ -101,6 +102,7 @@ class DocumentMetaclass(BaseDocumentMetaclass):
 
     for colname, rcls, back_name in references_col_classes:
       rcls._meta[colname] = MultiReferenceProperty(reference_class=new_class)
+      rcls._meta[colname].name = colname
       rcls._meta[colname].is_reference_back = back_name
 
     return new_class
@@ -300,19 +302,7 @@ class Document(SimpleDocument):
     def deleteBackRef(col_name, docs):
       docs_to_be_saved = []
       for doc in docs:
-        current_list = doc._data.get(col_name, [])
-        modified = False
-
-        if isinstance(current_list, Document): # For collection_name referencing back
-          doc._data[col_name] = None
-          modified = True
-        else:
-          for i, linkback in enumerate(current_list): # TODO: Need a better search & destroy algorithm
-            if linkback.key == self.key:
-              modified = True
-              current_list.pop(i) # This is a reference, which should modify the original list.
-
-        if modified:
+        if doc._meta[col_name].deleteReference(doc, self):
           docs_to_be_saved.append(doc)
 
       return docs_to_be_saved
