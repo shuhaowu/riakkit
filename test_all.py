@@ -21,6 +21,7 @@ from riakkit import Document
 from riakkit.helpers import emailValidator, checkPassword
 from riakkit.commons.properties import *
 from riakkit.commons.exceptions import *
+from riakkit.commons import getUniqueListGivenClassName
 
 import riak
 
@@ -302,6 +303,82 @@ class Comment(BaseDocumentModel):
   content = StringProperty()
 
 class RiakkitDocumentTests(unittest.TestCase):
+  def _getRidOfPreviousUniqueUsername(self, username):
+    c = riak.RiakClient()
+    ub = c.bucket(getUniqueListGivenClassName("User", "username"))
+    uo = ub.get(username)
+    uo.delete()
+
+  def test_save(self):
+
+    user1 = User(username="foo_save", password="123")
+    user1.someprop = 1
+    user1.save()
+
+    c = riak.RiakClient()
+    b = c.bucket("test_users")
+    o = b.get(user1.key)
+    self.assertTrue(o.exists())
+    d = o.get_data()
+    self.assertEquals(user1.username, d["username"])
+    self.assertEquals(user1.password.hash, d["password"]["hash"])
+    self.assertEquals(user1.password.salt, d["password"]["salt"])
+    self.assertEquals(user1.someprop, d["someprop"])
+    self.assertEquals(None, d["email"]) # Should be none
+    self.assertEquals(user1.email, d["email"])
+
+    o.delete()
+
+    ub = c.bucket(getUniqueListGivenClassName("User", "username"))
+    uo = ub.get("foo_save")
+    self.assertTrue(uo.exists())
+    uo.delete()
+
+  def test_cachingDelete(self):
+    user1 = User(username="foo", password="123")
+    key = user1.key
+    self.assertTrue(key in User.instances)
+    del user1
+    self.assertFalse(key in User.instances)
+
+  def test_reload(self):
+    user1 = User(username="foo_reload", password="123")
+    user1.save()
+    key = user1.key
+
+    # Modify data
+    c = riak.RiakClient()
+    b = c.bucket("test_users")
+    o = b.get(key)
+    d = o.get_data()
+    d["lol"] = "moo"
+    d["email"] = "test@test.com"
+    o.set_data(d)
+    o.store()
+
+    user1.reload()
+    self.assertEquals("foo_reload", user1.username)
+    self.assertEquals(key, user1.key)
+    self.assertEquals("moo", user1.lol)
+    self.assertEquals("test@test.com", user1.email)
+
+    user1.delete()
+
+  def test_load(self):
+    user1 = User(username="foo_load", password="123")
+    user1.save()
+    key = user1.key
+
+    user1Copy = User.load(key)
+    self.assertTrue(user1 is user1Copy)
+    del user1
+    del user1Copy
+    user1 = User.load(key)
+    self.assertEquals("foo_load", user1.username)
+    self.assertTrue(checkPassword("123", user1.password))
+    self.assertEquals(None, user1.email)
+    user1.delete()
+
   def test_uniques(self):
     user1 = User()
     user1.username = "foo"
@@ -329,4 +406,17 @@ class RiakkitDocumentTests(unittest.TestCase):
     self.assertNotEquals(hsh, user.password.hash)
 
 if __name__ == "__main__":
-  unittest.main(verbosity=2)
+  base = unittest.TestSuite()
+  base.addTest(unittest.makeSuite(RiakkitBaseTest))
+
+  simple = unittest.TestSuite()
+  simple.addTest(unittest.makeSuite(RiakkitSimpleTest))
+
+  document = unittest.TestSuite()
+  document.addTest(unittest.makeSuite(RiakkitDocumentTests))
+
+  alltests = unittest.TestSuite([base, simple, document])
+
+  import sys
+  suite = eval(sys.argv[1]) if len(sys.argv) > 1 else alltests
+  unittest.TextTestRunner(verbosity=2).run(suite)

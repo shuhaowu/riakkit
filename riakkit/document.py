@@ -360,7 +360,7 @@ class Document(SimpleDocument):
 
   @staticmethod
   def _getLinksFromRiakObj(robj):
-    objLinks = obj.get_links()
+    objLinks = robj.get_links()
     links = set()
     for link in objLinks:
       tag = link.get_tag()

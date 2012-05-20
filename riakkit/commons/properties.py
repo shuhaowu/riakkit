@@ -175,11 +175,11 @@ class DictProperty(BaseProperty):
   class DotDict(dict):
     """A dictionary but allows dot notation to access the attributes
     (strings at least)
-
     """
+
     __getattr__ = dict.__getitem__
-    __setattr__ = dict.__setattr__
-    __delattr__ = dict.__delattr__
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
 
   # These will never have None, as the default value is always {}
 
@@ -708,3 +708,6 @@ class PasswordProperty(BaseProperty):
     password.salt = salt
     password.hash = hashPassword(value, salt)
     return password
+
+  def convertFromDb(self, value):
+    return DictProperty.DotDict(value)
