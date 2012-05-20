@@ -175,8 +175,8 @@ class DictProperty(BaseProperty):
 
     """
     __getattr__ = dict.__getitem__
-    __setattr__ = dict.__setattr__
-    __delattr__ = dict.__delattr__
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
 
   # These will never have None, as the default value is always {}
 
