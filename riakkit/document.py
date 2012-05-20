@@ -18,11 +18,12 @@ from weakref import WeakValueDictionary
 
 from riakkit.simple.basedocument import BaseDocumentMetaclass, BaseDocument, SimpleDocument
 from riakkit.commons.properties import BaseProperty, MultiReferenceProperty, ReferenceProperty
-from riakkit.commons import uuid1Key, getUniqueListGivenClassName, getProperty, walkParents
+from riakkit.commons import uuid1Key, getUniqueListGivenBucketName, getProperty, walkParents
 from riakkit.queries import *
 from riakkit.commons.exceptions import *
 
 from riak import RiakObject
+from riak.mapreduce import RiakLink
 
 _document_classes = {}
 
@@ -75,7 +76,7 @@ class DocumentMetaclass(BaseDocumentMetaclass):
           references_col_classes.append((colname, prop.reference_class, name))
           references.append(name)
         elif prop.unique: # Unique is not allowed with anything that has backref
-          prop.unique_bucket = client.bucket(getUniqueListGivenClassName(clsname, name))
+          prop.unique_bucket = client.bucket(getUniqueListGivenBucketName(attrs["bucket_name"], name))
           uniques.append(name)
 
     all_parents = reversed(walkParents(parents))
@@ -113,7 +114,7 @@ class Document(SimpleDocument):
   There are a couple of class variables that needs to be filled out. First is
   client. client is an instance of a RiakClient. The other is bucket_name. This
   is the name of the bucket to be stored in Riak. It must not be shared with
-  another Document subclass. Lastly, you may set the SEARCHABLE to True or False
+  another Document subclass. Lastly, you may set the  to True or False
 
   Class variables that's an instance of the BaseType will be the schema of the
   document.
@@ -180,7 +181,7 @@ class Document(SimpleDocument):
         if self._obj:
           originalValue = self._obj.get_data().get(name, None)
           if self._data[name] != originalValue and originalValue is not None:
-            uniquesToBeDeleted.append(self._meta[name].unique_bucket, originalValue)
+            uniquesToBeDeleted.append((self._meta[name].unique_bucket, originalValue))
             changed = True
         else:
           changed = True
@@ -422,7 +423,7 @@ class Document(SimpleDocument):
     """Searches through the bucket with some query text.
 
     The bucket must have search installed via search-cmd install BUCKETNAME. The
-    class must have been marked to be SEARCHABLE with cls.SEARCHABLE = True.
+    class must have been marked to be  with cls. = True.
 
     Args:
       querytext: The query text as outlined in the python-riak documentations.
@@ -431,17 +432,13 @@ class Document(SimpleDocument):
       A MapReduceQuery object. Similar to the RiakMapReduce object.
 
     Raises:
-      NotImplementedError: if the class is not marked SEARCHABLE.
+      NotImplementedError: if the class is not marked .
     """
-    if not cls.SEARCHABLE:
-      raise NotImplementedError("Searchable is disabled, this is therefore not implemented.")
     query_obj = cls.client.search(cls.bucket_name, querytext)
     return MapReduceQuery(cls, query_obj)
 
   @classmethod
   def solrSearch(cls, querytext, **kwargs):
-    if not cls.SEARCHABLE:
-      raise NotImplementedError("Searchable is disabled, this is therefore not implemented.")
     return SolrQuery(cls, cls.client.solr().search(cls.bucket_name, querytext, **kwargs))
 
   @classmethod

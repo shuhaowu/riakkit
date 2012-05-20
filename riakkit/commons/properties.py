@@ -549,7 +549,7 @@ class EmDocumentProperty(BaseProperty):
 
   def convertFromDb(self, value):
     if value is not None:
-      value = self.emdocument_class(self.emdocument_class.constructObject(value))
+      value = self.emdocument_class.constructObject(value)
     return BaseProperty.convertFromDb(self, value)
 
 class EmDocumentsDictProperty(BaseProperty):

@@ -17,17 +17,17 @@ from uuid import uuid1
 
 uuid1Key = lambda kwargs: uuid1().hex
 
-def getUniqueListGivenClassName(class_name, property_name):
+def getUniqueListGivenBucketName(bucketName, propertyName):
   """Gets the bucket name that enforces the uniqueness of a certain property.
 
   Args:
-    class_name: The name of the class
-    property_name: The property name
+    bucketName: The name of the bucket of the class
+    propertyName: The property name
 
   Returns:
     Returns the bucket name.
   """
-  return "_%s_ul_%s" % (class_name, property_name)
+  return "_%s_ul_%s" % (bucketName, propertyName)
 
 def walkParents(parents, bases=("Document", "type", "object")):
   """Walks through the parents and return each parent class object uptil the

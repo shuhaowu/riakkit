@@ -18,3 +18,5 @@ EmDocument = SimpleDocument
 from document import Document
 from commons.properties import *
 from commons.exceptions import *
+
+VERSION = "0.6.0a"

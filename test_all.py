@@ -18,7 +18,7 @@ import random
 
 from riakkit import *
 from riakkit.helpers import emailValidator, checkPassword
-from riakkit.commons import getUniqueListGivenClassName
+from riakkit.commons import getUniqueListGivenBucketName
 
 import riak
 
@@ -149,6 +149,9 @@ class RiakkitBaseTest(unittest.TestCase):
     dictionary = refobj.serialize()
     self.assertEqual(dictionary["ref"], self.simpleobj.key)
 
+  def test_getattr(self):
+    self.assertRaises(AttributeError, lambda: self.testobj.none_exist)
+
 ###############################################################################
 ###############################################################################
 ###############################################################################
@@ -160,6 +163,14 @@ class SimpleModel(SimpleDocument):
 
 class SimpleReferenceModel(SimpleDocument):
   ref = ReferenceProperty(SimpleModel)
+
+class TestEmDocument(EmDocument):
+  email = StringProperty(required=True, validators=emailValidator)
+  listprop = ListProperty()
+  intprop = IntegerProperty(default=lambda: random.choice([1, 2]))
+
+class SimpleEmDocumentModel(SimpleDocument):
+  ed = EmDocumentProperty(TestEmDocument)
 
 
 class RiakkitSimpleTest(unittest.TestCase):
@@ -279,6 +290,25 @@ class RiakkitSimpleTest(unittest.TestCase):
     refdoc = SimpleReferenceModel.load(o)
     self.assertEquals(doc.key, refdoc.ref)
 
+  def test_emdocument(self):
+    e = TestEmDocument()
+    d = SimpleEmDocumentModel()
+    d.ed = e
+    c = riak.RiakClient()
+    b = c.bucket("test")
+    self.assertRaises(ValidationError, lambda: d.toRiakObject(b))
+    e.email = "test@test.com"
+    o = d.toRiakObject(b)
+    data = o.get_data()
+    self.assertTrue(isinstance(data[u"ed"], dict))
+    self.assertEquals(data[u"ed"][u"email"], u"test@test.com")
+    self.assertTrue(1 <= data[u"ed"][u"intprop"] <= 2)
+
+    d = SimpleEmDocumentModel.load(o)
+    self.assertTrue(isinstance(d.ed, TestEmDocument))
+    self.assertEquals(u"test@test.com", d.ed.email)
+    self.assertTrue(1 <= d.ed.intprop <= 2)
+
 ###############################################################################
 ###############################################################################
 ###############################################################################
@@ -293,6 +323,11 @@ class User(BaseDocumentModel):
   password = PasswordProperty(required=True)
   email = StringProperty(validators=emailValidator, unique=True)
 
+class SearchableModel(BaseDocumentModel):
+  bucket_name = "test_search"
+
+  intprop = IntegerProperty()
+
 class Comment(BaseDocumentModel):
   bucket_name = "test_comments"
 
@@ -302,7 +337,7 @@ class Comment(BaseDocumentModel):
 class RiakkitDocumentTests(unittest.TestCase):
   def _getRidOfPreviousUniqueUsername(self, username):
     c = riak.RiakClient()
-    ub = c.bucket(getUniqueListGivenClassName("User", "username"))
+    ub = c.bucket(getUniqueListGivenBucketName("test_users", "username"))
     uo = ub.get(username)
     uo.delete()
 
@@ -326,7 +361,7 @@ class RiakkitDocumentTests(unittest.TestCase):
 
     o.delete()
 
-    ub = c.bucket(getUniqueListGivenClassName("User", "username"))
+    ub = c.bucket(getUniqueListGivenBucketName("test_users", "username"))
     uo = ub.get("foo_save")
     self.assertTrue(uo.exists())
     uo.delete()
@@ -481,18 +516,70 @@ class RiakkitDocumentTests(unittest.TestCase):
     user.password = "123456"
     self.assertNotEquals(hsh, user.password.hash)
 
+  def test_search(self):
+    m1 = SearchableModel(intprop=2).save()
+    m2 = SearchableModel(intprop=3).save()
+    m3 = SearchableModel(intprop=4).save()
+
+    q = SearchableModel.search("intprop:2")
+    self.assertEquals(1, q.length())
+    for m in q.run():
+      self.assertEquals(m1.key, m.key)
+
+    q = SearchableModel.solrSearch("intprop:[2 TO 3]", sort="intprop")
+    self.assertEquals(2, q.length())
+    targetm = m1
+    for m in q.run():
+      self.assertEquals(targetm.key, m.key)
+      targetm = m2
+
+    m1.delete()
+    m2.delete()
+    m3.delete()
+
+###############################################################################
+###############################################################################
+###############################################################################
+
+class RiakkitPropertyTests(unittest.TestCase):
+  pass
+
+def deleteAllKeys(client, bucketname):
+  bucket = client.bucket(bucketname)
+  keys = bucket.get_keys()
+  for key in keys:
+    bucket.get(key).delete()
+
 if __name__ == "__main__":
-  base = unittest.TestSuite()
-  base.addTest(unittest.makeSuite(RiakkitBaseTest))
-
-  simple = unittest.TestSuite()
-  simple.addTest(unittest.makeSuite(RiakkitSimpleTest))
-
-  document = unittest.TestSuite()
-  document.addTest(unittest.makeSuite(RiakkitDocumentTests))
-
-  alltests = unittest.TestSuite([base, simple, document])
-
   import sys
-  suite = eval(sys.argv[1]) if len(sys.argv) > 1 else alltests
-  unittest.TextTestRunner(verbosity=2).run(suite)
+  arg = sys.argv[1] if len(sys.argv) > 1 else "alltests"
+  if arg == "doctest":
+    import doctest
+    print "Running doctests from README.md ..."
+    failures, attempts = doctest.testfile("README.markdown")
+    print "Ran through %d tests with %d failures." % (attempts, failures)
+    print
+    buckets_to_be_cleaned = ("test_blog", "doctest_users", "doctest_comments", "demos",
+        "test_website", "coolusers", "_coolusers_ul_username", "testdoc",
+        "test_person", "test_cake", "some_extended_bucket", "test_A", "test_B",
+        "test_unique", "_test_unique_ul_attr", "test_class", "test_someuser")
+
+    for bucket in buckets_to_be_cleaned:
+      deleteAllKeys(riak.RiakClient(), bucket)
+  else:
+    base = unittest.TestSuite()
+    base.addTest(unittest.makeSuite(RiakkitBaseTest))
+
+    simple = unittest.TestSuite()
+    simple.addTest(unittest.makeSuite(RiakkitSimpleTest))
+
+    document = unittest.TestSuite()
+    document.addTest(unittest.makeSuite(RiakkitDocumentTests))
+
+    properties = unittest.TestSuite()
+    properties.addTest(unittest.makeSuite(RiakkitPropertyTests))
+
+    alltests = unittest.TestSuite([base, simple, document, properties])
+
+    suite = eval(arg)
+    unittest.TextTestRunner(verbosity=2).run(suite)
