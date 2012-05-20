@@ -17,9 +17,10 @@ from copy import copy, deepcopy
 from weakref import WeakValueDictionary
 
 from riakkit.simple.basedocument import BaseDocumentMetaclass, BaseDocument, SimpleDocument
-from riakkit.commons.properties import BaseProperty, MultiReferenceProperty
+from riakkit.commons.properties import BaseProperty, MultiReferenceProperty, ReferenceProperty
 from riakkit.commons import uuid1Key, getUniqueListGivenClassName, getProperty, walkParents
 from riakkit.queries import *
+from riakkit.commons.exceptions import *
 
 from riak import RiakObject
 
@@ -175,8 +176,6 @@ class Document(SimpleDocument):
       else:
         changed = False
         if self._obj:
-          import pdb
-          pdb.set_trace()
           originalValue = self._obj.get_data().get(name, None)
           if self._data[name] != originalValue and originalValue is not None:
             uniquesToBeDeleted.append(self._meta[name].unique_bucket, originalValue)
@@ -223,7 +222,7 @@ class Document(SimpleDocument):
           doc._data[colname] = currentList
           othersToBeSaved.append(doc)
 
-      for dockey in originals:
+      for dockey in originalValues:
         if dockey is None:
           continue
 
@@ -327,9 +326,10 @@ class Document(SimpleDocument):
 
         if col_name:
           docs = self._data.get(k, [])
-          if isinstance(docs, Document):
-            docs = [docs]
-          docs_to_be_saved.extend(deleteBackRef(col_name, docs))
+          if docs is not None:
+            if isinstance(docs, Document):
+              docs = [docs]
+            docs_to_be_saved.extend(deleteBackRef(col_name, docs))
 
       self.__class__.instances.pop(self.key, False)
 

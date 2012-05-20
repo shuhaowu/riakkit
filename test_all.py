@@ -379,6 +379,85 @@ class RiakkitDocumentTests(unittest.TestCase):
     self.assertEquals(None, user1.email)
     user1.delete()
 
+  def test_2i(self):
+    user1 = User(username="foo_2i", password="123")
+    user1.addIndex("field_bin", "lol")
+    user1.save()
+    key = user1.key
+    del user1
+    user1 = User.load(key)
+    self.assertEquals({"lol"}, user1.indexes("field_bin"))
+
+    q = User.indexLookup("field_bin", "lol")
+    self.assertEquals(1, q.length())
+    for u in q.run():
+      self.assertEquals(key, u.key)
+      self.assertEquals("foo_2i", u.username)
+      self.assertEquals({"lol"}, user1.indexes("field_bin"))
+
+    user1.delete()
+
+  def test_exists(self):
+    user1 = User(username="foo_exists", password="123")
+    user1.save()
+    self.assertTrue(User.exists(user1.key))
+    user1.delete()
+
+  def test_referencesSimple(self):
+    user1 = User(username="foo_refsimp", password="123")
+    comment1 = Comment(author=user1, content="Hello World!")
+    comment1.save() # should save user1. user1.save won't save comment1 because comment1 is not finalized yet and it is the origin
+
+    self.assertTrue(comment1 in user1.comments)
+    user1key = user1.key
+    comment1key = comment1.key
+
+    del user1
+    del comment1
+
+    user1 = User.load(user1key)
+    self.assertEquals(1, len(user1.comments))
+    self.assertEquals(comment1key, user1.comments[0].key)
+    self.assertEquals(user1, user1.comments[0].author)
+    self.assertEquals("Hello World!", user1.comments[0].content)
+
+    comment2 = Comment(author=user1, content="Hello World 2!")
+    comment2.save()
+    user1.reload()
+
+    self.assertEquals(2, len(user1.comments))
+    user1.comments.sort(key=lambda x: x.content)
+    self.assertEquals(comment2.key, user1.comments[0].key)
+    self.assertEquals(comment1key, user1.comments[1].key)
+
+    user1.comments[0].delete()
+    user1.comments[0].delete()
+    user1.delete()
+
+  def test_referencesDeleteTarget(self): # deletes user, as Comment is the origin
+    user1 = User(username="refdeltarget", password="123")
+    comment1 = Comment(author=user1, content="Hello World!")
+    comment1.save()
+
+    user1.delete()
+    self.assertEquals(None, comment1.author)
+    comment1.reload()
+    self.assertEquals(None, comment1.author)
+    comment1.delete()
+
+  def test_referencesDeleteOrigin(self): # deletes the comment and watches the response of the user1
+    user1 = User(username="refdelorigin", password="123")
+    comment1 = Comment(author=user1, content="Hello World!")
+    comment1.save()
+
+    user1.reload()
+    self.assertEquals(1, len(user1.comments))
+    comment1.delete()
+    self.assertEquals(0, len(user1.comments))
+    user1.reload()
+    self.assertEquals(0, len(user1.comments))
+    user1.delete()
+
   def test_uniques(self):
     user1 = User()
     user1.username = "foo"

@@ -15,3 +15,4 @@
 
 class RiakkitError(Exception): pass
 class ValidationError(RiakkitError): pass
+class NotFoundError(RiakkitError): pass
