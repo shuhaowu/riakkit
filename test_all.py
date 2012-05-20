@@ -17,6 +17,8 @@ import unittest
 import random
 
 from riakkit.simple import *
+from riakkit import Document
+from riakkit.helpers import emailValidator, checkPassword
 from riakkit.commons.properties import *
 from riakkit.commons.exceptions import *
 
@@ -283,8 +285,48 @@ class RiakkitSimpleTest(unittest.TestCase):
 ###############################################################################
 ###############################################################################
 
+class BaseDocumentModel(Document):
+  client = riak.RiakClient()
+
+class User(BaseDocumentModel):
+  bucket_name = "test_users"
+
+  username = StringProperty(unique=True, required=True)
+  password = PasswordProperty(required=True)
+  email = StringProperty(validators=emailValidator, unique=True)
+
+class Comment(BaseDocumentModel):
+  bucket_name = "test_comments"
+
+  author = ReferenceProperty(User, collection_name="comments")
+  content = StringProperty()
+
 class RiakkitDocumentTests(unittest.TestCase):
-  pass
+  def test_uniques(self):
+    user1 = User()
+    user1.username = "foo"
+    user1.password = "123"
+    user1.save()
+
+    user2 = User(username="foo", password="123")
+    self.assertRaises(ValueError, user2.save)
+
+    self.assertTrue(User._meta["username"].unique_bucket.get("foo").exists())
+    user1.delete()
+    c = riak.RiakClient()
+    self.assertFalse(User._meta["username"].unique_bucket.get("foo").exists())
+
+  def test_passwordProperty(self):
+    user = User()
+    def t():
+      user.password = 123
+
+    self.assertRaises(TypeError, t)
+    user.password = "123456"
+    self.assertTrue(checkPassword("123456", user.password))
+    hsh = user.password.hash
+    user.password = "123456"
+    self.assertNotEquals(hsh, user.password.hash)
 
 if __name__ == "__main__":
   unittest.main(verbosity=2)

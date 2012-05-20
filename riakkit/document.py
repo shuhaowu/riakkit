@@ -17,8 +17,8 @@ from copy import copy, deepcopy
 from weakref import WeakValueDictionary
 
 from riakkit.simple.basedocument import BaseDocumentMetaclass, BaseDocument, SimpleDocument
-from riakkit.commons.properties import BaseProperty
-from riakkit.commons import uuid1Key, getUniqueListGivenClassName
+from riakkit.commons.properties import BaseProperty, MultiReferenceProperty
+from riakkit.commons import uuid1Key, getUniqueListGivenClassName, getProperty, walkParents
 from riakkit.queries import *
 
 from riak import RiakObject
@@ -62,7 +62,8 @@ class DocumentMetaclass(BaseDocumentMetaclass):
     for name in attrs.keys():
       if isinstance(attrs[name], BaseProperty):
         meta[name] = prop = attrs.pop(name)
-        if not isinstance(prop.reference_class, Document):
+        refcls = getattr(prop, "reference_class", False)
+        if refcls and not issubclass(refcls, Document):
           raise TypeError("ReferenceProperties for Document must be another Document!")
 
         colname = getattr(prop, "collection_name", False)
@@ -78,7 +79,7 @@ class DocumentMetaclass(BaseDocumentMetaclass):
     all_parents = reversed(walkParents(parents))
     for p_cls in all_parents:
       meta.update(p_cls._meta)
-      uniques.extend(p_cls._unique)
+      uniques.extend(p_cls._uniques)
 
     attrs["_meta"] = meta
     attrs["_uniques"] = uniques
@@ -118,7 +119,7 @@ class Document(SimpleDocument):
   __metaclass__ = DocumentMetaclass
   _clsType = 2
 
-  def __init__(self, key=uuid1Key, saved=True, **kwargs):
+  def __init__(self, key=uuid1Key, saved=False, **kwargs):
     """Creates a new document from a bunch of keyword arguments.
 
     Args:
@@ -174,6 +175,8 @@ class Document(SimpleDocument):
       else:
         changed = False
         if self._obj:
+          import pdb
+          pdb.set_trace()
           originalValue = self._obj.get_data().get(name, None)
           if self._data[name] != originalValue and originalValue is not None:
             uniquesToBeDeleted.append(self._meta[name].unique_bucket, originalValue)
@@ -246,20 +249,10 @@ class Document(SimpleDocument):
     if self._obj:
       self._obj.set_data(dataToBeSaved)
     else:
-      self._obj = bucket.new(self.key, dataToBeSaved)
+      self._obj = self.bucket.new(self.key, dataToBeSaved)
 
-    links = []
-    for doc, tag in self._links:
-      links.append(RiakLink(self.bucket_name, doc.key, tag))
-
-    self._obj.set_links(links, True)
-
-    indexes = []
-    for field, l in self._index.iteritems():
-      for value in l:
-        indexes.append((field, value))
-
-    self._obj.set_indexes(indexes)
+    self._obj.set_links(self.links(True), True)
+    self._obj.set_indexes(self.indexes())
 
     self._obj.store(w=w, dw=dw)
     for name in self._uniques:
@@ -273,6 +266,8 @@ class Document(SimpleDocument):
 
     for doc in othersToBeSaved:
       doc.save(w, dw)
+
+    return self
 
   def reload(self, r=None, vtag=None):
     """Reloads the object from the database.
@@ -341,8 +336,9 @@ class Document(SimpleDocument):
       self._obj.delete(rw=rw)
 
       for name in self._uniques:
-        obj = self._meta[name].unique_bucket.get(self._data[name])
-        obj.delete()
+        if self._data[name] is not None:
+          obj = self._meta[name].unique_bucket.get(self._data[name])
+          obj.delete()
 
       self._obj = None
       self._saved = False

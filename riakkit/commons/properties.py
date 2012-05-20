@@ -16,6 +16,9 @@
 import datetime
 import time
 from riakkit.commons.exceptions import RiakkitError
+from riakkit.helpers import generateSalt, hashPassword, checkPassword
+from uuid import uuid1
+from hashlib import sha256
 
 NONE_TYPE = type(None)
 _valueOrList = lambda value: [] if value is None else value
@@ -693,3 +696,15 @@ class EmDocumentsListProperty(BaseProperty):
 
   def defaultValue(self):
     return EmDocumentsListProperty.EmDocumentsList(self.emdocument_class)
+
+## Value Added Pack Starts Here
+
+class PasswordProperty(BaseProperty):
+  def standardize(self, value):
+    if not isinstance(value, basestring): # Feel like i'm doing too much of this. Isn't python all about ducttyping?
+      raise TypeError("Password must be a string!")
+    password = DictProperty.DotDict()
+    salt = generateSalt()
+    password.salt = salt
+    password.hash = hashPassword(value, salt)
+    return password
