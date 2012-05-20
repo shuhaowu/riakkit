@@ -16,11 +16,8 @@
 import unittest
 import random
 
-from riakkit.simple import *
-from riakkit import Document
+from riakkit import *
 from riakkit.helpers import emailValidator, checkPassword
-from riakkit.commons.properties import *
-from riakkit.commons.exceptions import *
 from riakkit.commons import getUniqueListGivenClassName
 
 import riak

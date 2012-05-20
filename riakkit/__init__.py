@@ -13,7 +13,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with RiakKit.  If not, see <http://www.gnu.org/licenses/>.
 
-from simple import BaseDocument as EmDocument
+from simple import SimpleDocument, BaseDocument
+EmDocument = SimpleDocument
 from document import Document
 from commons.properties import *
 from commons.exceptions import *
