@@ -429,16 +429,20 @@ class Document(SimpleDocument):
       querytext: The query text as outlined in the python-riak documentations.
 
     Returns:
-      A MapReduceQuery object. Similar to the RiakMapReduce object.
-
-    Raises:
-      NotImplementedError: if the class is not marked .
-    """
+      A MapReduceQuery object. Similar to the RiakMapReduce object."""
     query_obj = cls.client.search(cls.bucket_name, querytext)
     return MapReduceQuery(cls, query_obj)
 
   @classmethod
   def solrSearch(cls, querytext, **kwargs):
+    """Searches through using the SOLR.
+
+    Args:
+      querytext: The query text
+      kwargs: Any other keyword arguments for SOLR.
+
+    Returns:
+      A SolrQuery object. Similart to a MapReduceQuery"""
     return SolrQuery(cls, cls.client.solr().search(cls.bucket_name, querytext, **kwargs))
 
   @classmethod
@@ -456,7 +460,7 @@ class Document(SimpleDocument):
     return MapReduceQuery(cls, cls.client.index(cls.bucket_name, index, startkey, endkey))
 
   @classmethod
-  def mapreduce(cls):
+  def mapreduce(cls): # TODO: Make a better interface
     """Shorthand for creating a query object for map reduce.
 
     Returns:

@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # This file is part of RiakKit.
 #
 # RiakKit is free software: you can redistribute it and/or modify
@@ -13,17 +14,25 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with RiakKit.  If not, see <http://www.gnu.org/licenses/>.
 
-"""This is the top level riakkit module. It provides a shortcut to the package
-contents in a convinient fashion.
+# A VERY LAZY SOLUTION
+# A VERY UNIX SOLUTION, TOO!
+# But then Riak is unix only...
 
-It imports everything from under commons.properties as well as commons.exceptions
-It also import SimpleDocument, BaseDocument, and Document. This also sets up
-EmDocument"""
+import os
+if __name__ == "__main__":
+  modules = ["riakkit"]
+  for root, dirs, files in os.walk(os.getcwd() + "/riakkit/"):
+    module = root.split("/riakkit/", 1)[1]
+    if module:
+      modules.append("riakkit." + module)
+      module += "."
+    if "__init__.py" not in files:
+      continue
+    for f in files:
+      if not f.startswith("_") and f.endswith(".py"):
+        modules.append("riakkit." + module + f[:-3])
 
-from simple import SimpleDocument, BaseDocument
-EmDocument = SimpleDocument
-from document import Document
-from commons.properties import *
-from commons.exceptions import *
-
-VERSION = "0.6.0a"
+  os.system("pydoc -w %s" % " ".join(modules))
+  for module in modules:
+    module += ".html"
+    os.system("mv %s docs/%s" % (module, module))

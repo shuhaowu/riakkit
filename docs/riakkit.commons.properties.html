@@ -1,0 +1,1435 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module riakkit.commons.properties</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="riakkit.html"><font color="#ffffff">riakkit</font></a>.<a href="riakkit.commons.html"><font color="#ffffff">commons</font></a>.properties</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/shuhao/Dropbox/RandomProjects/riakkitrewrite/riakkit/commons/properties.py">/home/shuhao/Dropbox/RandomProjects/riakkitrewrite/riakkit/commons/properties.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;This&nbsp;file&nbsp;is&nbsp;part&nbsp;of&nbsp;RiakKit.<br>
+#<br>
+#&nbsp;RiakKit&nbsp;is&nbsp;free&nbsp;software:&nbsp;you&nbsp;can&nbsp;redistribute&nbsp;it&nbsp;and/or&nbsp;modify<br>
+#&nbsp;it&nbsp;under&nbsp;the&nbsp;terms&nbsp;of&nbsp;the&nbsp;GNU&nbsp;Lesser&nbsp;General&nbsp;Public&nbsp;License&nbsp;as&nbsp;published&nbsp;by<br>
+#&nbsp;the&nbsp;Free&nbsp;Software&nbsp;Foundation,&nbsp;either&nbsp;version&nbsp;3&nbsp;of&nbsp;the&nbsp;License,&nbsp;or<br>
+#&nbsp;(at&nbsp;your&nbsp;option)&nbsp;any&nbsp;later&nbsp;version.<br>
+#<br>
+#&nbsp;RiakKit&nbsp;is&nbsp;distributed&nbsp;in&nbsp;the&nbsp;hope&nbsp;that&nbsp;it&nbsp;will&nbsp;be&nbsp;useful,<br>
+#&nbsp;but&nbsp;WITHOUT&nbsp;ANY&nbsp;WARRANTY;&nbsp;without&nbsp;even&nbsp;the&nbsp;implied&nbsp;warranty&nbsp;of<br>
+#&nbsp;MERCHANTABILITY&nbsp;or&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE.&nbsp;&nbsp;See&nbsp;the<br>
+#&nbsp;GNU&nbsp;Lesser&nbsp;General&nbsp;Public&nbsp;License&nbsp;for&nbsp;more&nbsp;details.<br>
+#<br>
+#&nbsp;You&nbsp;should&nbsp;have&nbsp;received&nbsp;a&nbsp;copy&nbsp;of&nbsp;the&nbsp;GNU&nbsp;Lesser&nbsp;General&nbsp;Public&nbsp;License<br>
+#&nbsp;along&nbsp;with&nbsp;RiakKit.&nbsp;&nbsp;If&nbsp;not,&nbsp;see&nbsp;&lt;<a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="datetime.html">datetime</a><br>
+</td><td width="25%" valign=top><a href="time.html">time</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="__builtin__.html#object">__builtin__.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#BooleanProperty">BooleanProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#DateTimeProperty">DateTimeProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#DictProperty">DictProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#DynamicProperty">DynamicProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#EmDocumentProperty">EmDocumentProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#EmDocumentsDictProperty">EmDocumentsDictProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#EmDocumentsListProperty">EmDocumentsListProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#EnumProperty">EnumProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#FloatProperty">FloatProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#IntegerProperty">IntegerProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#ListProperty">ListProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#PasswordProperty">PasswordProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#ReferenceBaseProperty">ReferenceBaseProperty</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#DictReferenceProperty">DictReferenceProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#MultiReferenceProperty">MultiReferenceProperty</a>
+</font></dt><dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#ReferenceProperty">ReferenceProperty</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="riakkit.commons.properties.html#StringProperty">StringProperty</a>
+</font></dt></dl>
+</dd>
+</dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="BaseProperty">class <strong>BaseProperty</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Base&nbsp;property&nbsp;type<br>
+&nbsp;<br>
+All&nbsp;property&nbsp;types&nbsp;are&nbsp;required&nbsp;to&nbsp;be&nbsp;extended&nbsp;from&nbsp;this&nbsp;class.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;required:&nbsp;Enforce&nbsp;this&nbsp;property&nbsp;to&nbsp;be&nbsp;required.&nbsp;(Boolean)<br>
+&nbsp;&nbsp;unique:&nbsp;Enforce&nbsp;this&nbsp;property&nbsp;to&nbsp;be&nbsp;unique.&nbsp;(Boolean)<br>
+&nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;given.&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;boolean.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="BaseProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#BaseProperty-convertToDb">convertToDb</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#BaseProperty-convertFromDb">convertFromDb</a>()<br>
+&nbsp;<br>
+&nbsp;&nbsp;standardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="BaseProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
+value&nbsp;that&nbsp;<a href="#BaseProperty-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
+(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
+value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
+the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
+
+<dl><dt><a name="BaseProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
+&nbsp;<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
+
+<dl><dt><a name="BaseProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#BaseProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
+
+<dl><dt><a name="BaseProperty-standardize"><strong>standardize</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;any&nbsp;form&nbsp;(input&nbsp;form,&nbsp;db&nbsp;form)&nbsp;into&nbsp;a&nbsp;form&nbsp;that's<br>
+friendly&nbsp;for&nbsp;the&nbsp;user&nbsp;to&nbsp;access&nbsp;via&nbsp;dot&nbsp;notation&nbsp;or&nbsp;dict-like&nbsp;notation&nbsp;in&nbsp;a<br>
+Document&nbsp;<a href="__builtin__.html#object">object</a>.&nbsp;(i.e.&nbsp;standard&nbsp;form)&nbsp;(example:&nbsp;string&nbsp;to&nbsp;unicode&nbsp;etc.)<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;will&nbsp;be&nbsp;called&nbsp;on&nbsp;__setattr__.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted.<br>
+&nbsp;<br>
+Throws:<br>
+&nbsp;&nbsp;TypeError:&nbsp;if&nbsp;type&nbsp;is&nbsp;not&nbsp;what's&nbsp;expected.</tt></dd></dl>
+
+<dl><dt><a name="BaseProperty-validate"><strong>validate</strong></a>(self, value)</dt><dd><tt>The&nbsp;default&nbsp;validation&nbsp;function.<br>
+&nbsp;<br>
+This&nbsp;validation&nbsp;function&nbsp;goes&nbsp;through&nbsp;the&nbsp;validators&nbsp;and&nbsp;checks&nbsp;each&nbsp;one.<br>
+Any&nbsp;subclass&nbsp;should&nbsp;do:<br>
+&nbsp;<br>
+return&nbsp;<a href="#BaseProperty">BaseProperty</a>.<a href="#BaseProperty-validate">validate</a>(self,&nbsp;value)&nbsp;and&nbsp;your_result<br>
+&nbsp;<br>
+where&nbsp;your_result&nbsp;is&nbsp;your&nbsp;validation&nbsp;result.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;validated<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;True&nbsp;if&nbsp;validation&nbsp;pass,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="BooleanProperty">class <strong>BooleanProperty</strong></a>(<a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Boolean&nbsp;property.&nbsp;Pretty&nbsp;self&nbsp;explanatory.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.commons.properties.html#BooleanProperty">BooleanProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="BooleanProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><a name="BooleanProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#BooleanProperty-convertToDb">convertToDb</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#BooleanProperty-convertFromDb">convertFromDb</a>()<br>
+&nbsp;<br>
+&nbsp;&nbsp;standardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="BooleanProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
+value&nbsp;that&nbsp;<a href="#BooleanProperty-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
+(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
+value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
+the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
+
+<dl><dt><a name="BooleanProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
+&nbsp;<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
+
+<dl><dt><a name="BooleanProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#BooleanProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
+
+<dl><dt><a name="BooleanProperty-validate"><strong>validate</strong></a>(self, value)</dt><dd><tt>The&nbsp;default&nbsp;validation&nbsp;function.<br>
+&nbsp;<br>
+This&nbsp;validation&nbsp;function&nbsp;goes&nbsp;through&nbsp;the&nbsp;validators&nbsp;and&nbsp;checks&nbsp;each&nbsp;one.<br>
+Any&nbsp;subclass&nbsp;should&nbsp;do:<br>
+&nbsp;<br>
+return&nbsp;<a href="#BaseProperty">BaseProperty</a>.<a href="#BooleanProperty-validate">validate</a>(self,&nbsp;value)&nbsp;and&nbsp;your_result<br>
+&nbsp;<br>
+where&nbsp;your_result&nbsp;is&nbsp;your&nbsp;validation&nbsp;result.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;validated<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;True&nbsp;if&nbsp;validation&nbsp;pass,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="DateTimeProperty">class <strong>DateTimeProperty</strong></a>(<a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;datetime&nbsp;property.<br>
+&nbsp;<br>
+Stores&nbsp;the&nbsp;time&nbsp;as&nbsp;a&nbsp;float&nbsp;in&nbsp;the&nbsp;database.&nbsp;Maps&nbsp;to&nbsp;the&nbsp;python&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;of<br>
+datetime.datetime&nbsp;or&nbsp;the&nbsp;utc&nbsp;timestamp.<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;this&nbsp;is&nbsp;your&nbsp;timezone's&nbsp;time.&nbsp;Time&nbsp;is&nbsp;handled&nbsp;with&nbsp;your&nbsp;time&nbsp;only.<br>
+&nbsp;<br>
+TODO:&nbsp;utc&nbsp;only&nbsp;feature&nbsp;later.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.commons.properties.html#DateTimeProperty">DateTimeProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="DateTimeProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="DateTimeProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="DateTimeProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>Returns&nbsp;the&nbsp;default&nbsp;specified&nbsp;or&nbsp;now.</tt></dd></dl>
+
+<dl><dt><a name="DateTimeProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="DateTimeProperty-validate"><strong>validate</strong></a>(self, value)</dt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><a name="DateTimeProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#DateTimeProperty-convertToDb">convertToDb</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#DateTimeProperty-convertFromDb">convertFromDb</a>()<br>
+&nbsp;<br>
+&nbsp;&nbsp;standardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="DictProperty">class <strong>DictProperty</strong></a>(<a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Dictionary&nbsp;property,&nbsp;{}<br>
+&nbsp;<br>
+This&nbsp;property&nbsp;is&nbsp;somewhat&nbsp;special.&nbsp;After&nbsp;passing&nbsp;a&nbsp;dictionary&nbsp;to&nbsp;the&nbsp;field,<br>
+you&nbsp;can&nbsp;use&nbsp;dot&nbsp;notation&nbsp;as&nbsp;well&nbsp;as&nbsp;dictionary&nbsp;notation.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.commons.properties.html#DictProperty">DictProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="DictProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="DictProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="DictProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>Default&nbsp;value&nbsp;for&nbsp;dictionary<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;{}</tt></dd></dl>
+
+<dl><dt><a name="DictProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="DictProperty-validate"><strong>validate</strong></a>(self, value)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>DotDict</strong> = &lt;class 'riakkit.commons.properties.DotDict'&gt;<dd><tt>A&nbsp;dictionary&nbsp;but&nbsp;allows&nbsp;dot&nbsp;notation&nbsp;to&nbsp;access&nbsp;the&nbsp;attributes<br>
+(strings&nbsp;at&nbsp;least)</tt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><a name="DictProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#DictProperty-convertToDb">convertToDb</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#DictProperty-convertFromDb">convertFromDb</a>()<br>
+&nbsp;<br>
+&nbsp;&nbsp;standardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="DictReferenceProperty">class <strong>DictReferenceProperty</strong></a>(<a href="riakkit.commons.properties.html#ReferenceBaseProperty">ReferenceBaseProperty</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Dictionary&nbsp;based&nbsp;reference&nbsp;property.<br>
+&nbsp;<br>
+This&nbsp;doesn't&nbsp;allow&nbsp;collection_name.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.commons.properties.html#DictReferenceProperty">DictReferenceProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#ReferenceBaseProperty">ReferenceBaseProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="DictReferenceProperty-__init__"><strong>__init__</strong></a>(self, *args, **kwargs)</dt></dl>
+
+<dl><dt><a name="DictReferenceProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="DictReferenceProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="DictReferenceProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="DictReferenceProperty-deleteReference"><strong>deleteReference</strong></a>(self, doc, ref)</dt></dl>
+
+<dl><dt><a name="DictReferenceProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#ReferenceBaseProperty">ReferenceBaseProperty</a>:<br>
+<dl><dt><a name="DictReferenceProperty-attemptLoad"><strong>attemptLoad</strong></a>(self, key)</dt></dl>
+
+<dl><dt><a name="DictReferenceProperty-validate"><strong>validate</strong></a>(self, value)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="DynamicProperty">class <strong>DynamicProperty</strong></a>(<a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Allows&nbsp;any&nbsp;type&nbsp;of&nbsp;property...&nbsp;Probably&nbsp;a&nbsp;bad&nbsp;idea,&nbsp;but&nbsp;sometimes&nbsp;useful.<br>
+&nbsp;<br>
+The&nbsp;implementation&nbsp;of&nbsp;this&nbsp;is&nbsp;exactly&nbsp;identical&nbsp;as&nbsp;<a href="#BaseProperty">BaseProperty</a>.&nbsp;It&nbsp;doesn't<br>
+do&nbsp;anything&nbsp;at&nbsp;all..&nbsp;(except&nbsp;using&nbsp;your&nbsp;own&nbsp;validators).<br>
+&nbsp;<br>
+Warning:&nbsp;You&nbsp;may&nbsp;experience&nbsp;problems&nbsp;if&nbsp;your&nbsp;types&nbsp;doesn't&nbsp;play&nbsp;nice&nbsp;with<br>
+Python&nbsp;json&nbsp;module...<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.commons.properties.html#DynamicProperty">DynamicProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><a name="DynamicProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#DynamicProperty-convertToDb">convertToDb</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#DynamicProperty-convertFromDb">convertFromDb</a>()<br>
+&nbsp;<br>
+&nbsp;&nbsp;standardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="DynamicProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
+value&nbsp;that&nbsp;<a href="#DynamicProperty-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
+(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
+value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
+the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
+
+<dl><dt><a name="DynamicProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
+&nbsp;<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
+
+<dl><dt><a name="DynamicProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#DynamicProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
+
+<dl><dt><a name="DynamicProperty-standardize"><strong>standardize</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;any&nbsp;form&nbsp;(input&nbsp;form,&nbsp;db&nbsp;form)&nbsp;into&nbsp;a&nbsp;form&nbsp;that's<br>
+friendly&nbsp;for&nbsp;the&nbsp;user&nbsp;to&nbsp;access&nbsp;via&nbsp;dot&nbsp;notation&nbsp;or&nbsp;dict-like&nbsp;notation&nbsp;in&nbsp;a<br>
+Document&nbsp;<a href="__builtin__.html#object">object</a>.&nbsp;(i.e.&nbsp;standard&nbsp;form)&nbsp;(example:&nbsp;string&nbsp;to&nbsp;unicode&nbsp;etc.)<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;will&nbsp;be&nbsp;called&nbsp;on&nbsp;__setattr__.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted.<br>
+&nbsp;<br>
+Throws:<br>
+&nbsp;&nbsp;TypeError:&nbsp;if&nbsp;type&nbsp;is&nbsp;not&nbsp;what's&nbsp;expected.</tt></dd></dl>
+
+<dl><dt><a name="DynamicProperty-validate"><strong>validate</strong></a>(self, value)</dt><dd><tt>The&nbsp;default&nbsp;validation&nbsp;function.<br>
+&nbsp;<br>
+This&nbsp;validation&nbsp;function&nbsp;goes&nbsp;through&nbsp;the&nbsp;validators&nbsp;and&nbsp;checks&nbsp;each&nbsp;one.<br>
+Any&nbsp;subclass&nbsp;should&nbsp;do:<br>
+&nbsp;<br>
+return&nbsp;<a href="#BaseProperty">BaseProperty</a>.<a href="#DynamicProperty-validate">validate</a>(self,&nbsp;value)&nbsp;and&nbsp;your_result<br>
+&nbsp;<br>
+where&nbsp;your_result&nbsp;is&nbsp;your&nbsp;validation&nbsp;result.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;validated<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;True&nbsp;if&nbsp;validation&nbsp;pass,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="EmDocumentProperty">class <strong>EmDocumentProperty</strong></a>(<a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;EmDocument&nbsp;property<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.commons.properties.html#EmDocumentProperty">EmDocumentProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="EmDocumentProperty-__init__"><strong>__init__</strong></a>(self, emdocument_class, required<font color="#909090">=False</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;<a href="#EmDocumentProperty">EmDocumentProperty</a>&nbsp;class<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;emdocument_class:&nbsp;The&nbsp;EmDocument&nbsp;class&nbsp;to&nbsp;be&nbsp;used.</tt></dd></dl>
+
+<dl><dt><a name="EmDocumentProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="EmDocumentProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="EmDocumentProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="EmDocumentProperty-validate"><strong>validate</strong></a>(self, value)</dt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><a name="EmDocumentProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#EmDocumentProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="EmDocumentsDictProperty">class <strong>EmDocumentsDictProperty</strong></a>(<a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Property&nbsp;for&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;EmDocuments.<br>
+&nbsp;<br>
+It&nbsp;would&nbsp;be&nbsp;like&nbsp;it's&nbsp;own&nbsp;key&nbsp;:&nbsp;EmDocuments.&nbsp;Example:<br>
+{"yourkey"&nbsp;:&nbsp;EmDocument,&nbsp;"another_key"&nbsp;:&nbsp;EmDocument}<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;for&nbsp;efficiency,&nbsp;as&nbsp;sometimes&nbsp;you&nbsp;want&nbsp;to&nbsp;grab&nbsp;a&nbsp;document&nbsp;given&nbsp;some<br>
+property.<br>
+&nbsp;<br>
+However,&nbsp;no&nbsp;convinient&nbsp;dot&nbsp;access&nbsp;for&nbsp;this..&nbsp;unless&nbsp;demanded.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.commons.properties.html#EmDocumentsDictProperty">EmDocumentsDictProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="EmDocumentsDictProperty-__init__"><strong>__init__</strong></a>(self, emdocument_class, required<font color="#909090">=False</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;<a href="#EmDocumentsDictProperty">EmDocumentsDictProperty</a>&nbsp;class<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;emdocument_class:&nbsp;The&nbsp;EmDocument&nbsp;class&nbsp;to&nbsp;be&nbsp;used.</tt></dd></dl>
+
+<dl><dt><a name="EmDocumentsDictProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="EmDocumentsDictProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="EmDocumentsDictProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="EmDocumentsDictProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>EmDocumentsDict</strong> = &lt;class 'riakkit.commons.properties.EmDocumentsDict'&gt;<dd><tt>A&nbsp;special&nbsp;dict&nbsp;that&nbsp;converts&nbsp;values&nbsp;like&nbsp;<a href="#EmDocumentProperty">EmDocumentProperty</a>&nbsp;and<br>
+<a href="#EmDocumentsListProperty">EmDocumentsListProperty</a>.</tt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><a name="EmDocumentsDictProperty-validate"><strong>validate</strong></a>(self, value)</dt><dd><tt>The&nbsp;default&nbsp;validation&nbsp;function.<br>
+&nbsp;<br>
+This&nbsp;validation&nbsp;function&nbsp;goes&nbsp;through&nbsp;the&nbsp;validators&nbsp;and&nbsp;checks&nbsp;each&nbsp;one.<br>
+Any&nbsp;subclass&nbsp;should&nbsp;do:<br>
+&nbsp;<br>
+return&nbsp;<a href="#BaseProperty">BaseProperty</a>.<a href="#EmDocumentsDictProperty-validate">validate</a>(self,&nbsp;value)&nbsp;and&nbsp;your_result<br>
+&nbsp;<br>
+where&nbsp;your_result&nbsp;is&nbsp;your&nbsp;validation&nbsp;result.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;validated<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;True&nbsp;if&nbsp;validation&nbsp;pass,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="EmDocumentsListProperty">class <strong>EmDocumentsListProperty</strong></a>(<a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Property&nbsp;for&nbsp;a&nbsp;list&nbsp;of&nbsp;EmDocuments<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.commons.properties.html#EmDocumentsListProperty">EmDocumentsListProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="EmDocumentsListProperty-__init__"><strong>__init__</strong></a>(self, emdocument_class, required<font color="#909090">=False</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;<a href="#EmDocumentsListProperty">EmDocumentsListProperty</a>&nbsp;class<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;emdocument_class:&nbsp;The&nbsp;EmDocument&nbsp;class&nbsp;to&nbsp;be&nbsp;used.</tt></dd></dl>
+
+<dl><dt><a name="EmDocumentsListProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="EmDocumentsListProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="EmDocumentsListProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="EmDocumentsListProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>EmDocumentsList</strong> = &lt;class 'riakkit.commons.properties.EmDocumentsList'&gt;<dd><tt>A&nbsp;special&nbsp;list&nbsp;that's&nbsp;a&nbsp;child&nbsp;of&nbsp;the&nbsp;built&nbsp;in&nbsp;list.&nbsp;Upon&nbsp;append&nbsp;it<br>
+converts&nbsp;values&nbsp;like&nbsp;<a href="#EmDocumentProperty">EmDocumentProperty</a>.&nbsp;All&nbsp;interfaces&nbsp;except&nbsp;init&nbsp;stays<br>
+the&nbsp;same.&nbsp;__init__&nbsp;takes&nbsp;in&nbsp;a&nbsp;mandatory&nbsp;emdocument_class</tt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><a name="EmDocumentsListProperty-validate"><strong>validate</strong></a>(self, value)</dt><dd><tt>The&nbsp;default&nbsp;validation&nbsp;function.<br>
+&nbsp;<br>
+This&nbsp;validation&nbsp;function&nbsp;goes&nbsp;through&nbsp;the&nbsp;validators&nbsp;and&nbsp;checks&nbsp;each&nbsp;one.<br>
+Any&nbsp;subclass&nbsp;should&nbsp;do:<br>
+&nbsp;<br>
+return&nbsp;<a href="#BaseProperty">BaseProperty</a>.<a href="#EmDocumentsListProperty-validate">validate</a>(self,&nbsp;value)&nbsp;and&nbsp;your_result<br>
+&nbsp;<br>
+where&nbsp;your_result&nbsp;is&nbsp;your&nbsp;validation&nbsp;result.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;validated<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;True&nbsp;if&nbsp;validation&nbsp;pass,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="EnumProperty">class <strong>EnumProperty</strong></a>(<a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Not&nbsp;sure&nbsp;if&nbsp;enum&nbsp;is&nbsp;the&nbsp;best&nbsp;name,&nbsp;but&nbsp;this&nbsp;only&nbsp;allows&nbsp;some&nbsp;properties.<br>
+&nbsp;<br>
+This&nbsp;also&nbsp;only&nbsp;stores&nbsp;integers&nbsp;into&nbsp;database,&nbsp;making&nbsp;it&nbsp;efficient.<br>
+The&nbsp;values&nbsp;you&nbsp;supply&nbsp;it&nbsp;initially&nbsp;will&nbsp;be&nbsp;the&nbsp;ones&nbsp;you&nbsp;get&nbsp;back&nbsp;(references<br>
+will&nbsp;be&nbsp;kept&nbsp;if&nbsp;they&nbsp;are&nbsp;objects,&nbsp;so&nbsp;try&nbsp;to&nbsp;use&nbsp;basic&nbsp;types).<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.commons.properties.html#EnumProperty">EnumProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="EnumProperty-__init__"><strong>__init__</strong></a>(self, possible_values, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initialize&nbsp;the&nbsp;Enum&nbsp;Property.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;possible_values:&nbsp;Possible&nbsp;values&nbsp;to&nbsp;be&nbsp;taken.<br>
+&nbsp;<br>
+Everything&nbsp;else&nbsp;is&nbsp;inheritted&nbsp;from&nbsp;<a href="#BaseProperty">BaseProperty</a>.<br>
+Note:&nbsp;Probably&nbsp;a&nbsp;bad&nbsp;idea&nbsp;using&nbsp;unique&nbsp;on&nbsp;this,&nbsp;but&nbsp;no&nbsp;one&nbsp;is&nbsp;preventing&nbsp;you</tt></dd></dl>
+
+<dl><dt><a name="EnumProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="EnumProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="EnumProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="EnumProperty-validate"><strong>validate</strong></a>(self, value)</dt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><a name="EnumProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#EnumProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="FloatProperty">class <strong>FloatProperty</strong></a>(<a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Floating&nbsp;point&nbsp;property<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.commons.properties.html#FloatProperty">FloatProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="FloatProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="FloatProperty-validate"><strong>validate</strong></a>(self, value)</dt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><a name="FloatProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#FloatProperty-convertToDb">convertToDb</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#FloatProperty-convertFromDb">convertFromDb</a>()<br>
+&nbsp;<br>
+&nbsp;&nbsp;standardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="FloatProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
+value&nbsp;that&nbsp;<a href="#FloatProperty-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
+(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
+value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
+the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
+
+<dl><dt><a name="FloatProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
+&nbsp;<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
+
+<dl><dt><a name="FloatProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#FloatProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="IntegerProperty">class <strong>IntegerProperty</strong></a>(<a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Integer&nbsp;property.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.commons.properties.html#IntegerProperty">IntegerProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="IntegerProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="IntegerProperty-validate"><strong>validate</strong></a>(self, value)</dt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><a name="IntegerProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#IntegerProperty-convertToDb">convertToDb</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#IntegerProperty-convertFromDb">convertFromDb</a>()<br>
+&nbsp;<br>
+&nbsp;&nbsp;standardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="IntegerProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
+value&nbsp;that&nbsp;<a href="#IntegerProperty-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
+(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
+value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
+the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
+
+<dl><dt><a name="IntegerProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
+&nbsp;<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
+
+<dl><dt><a name="IntegerProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#IntegerProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ListProperty">class <strong>ListProperty</strong></a>(<a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>List&nbsp;property,&nbsp;[]<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.commons.properties.html#ListProperty">ListProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="ListProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>Default&nbsp;value&nbsp;for&nbsp;list<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;[]</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><a name="ListProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#ListProperty-convertToDb">convertToDb</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ListProperty-convertFromDb">convertFromDb</a>()<br>
+&nbsp;<br>
+&nbsp;&nbsp;standardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="ListProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
+value&nbsp;that&nbsp;<a href="#ListProperty-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
+(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
+value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
+the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
+
+<dl><dt><a name="ListProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
+&nbsp;<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
+
+<dl><dt><a name="ListProperty-standardize"><strong>standardize</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;any&nbsp;form&nbsp;(input&nbsp;form,&nbsp;db&nbsp;form)&nbsp;into&nbsp;a&nbsp;form&nbsp;that's<br>
+friendly&nbsp;for&nbsp;the&nbsp;user&nbsp;to&nbsp;access&nbsp;via&nbsp;dot&nbsp;notation&nbsp;or&nbsp;dict-like&nbsp;notation&nbsp;in&nbsp;a<br>
+Document&nbsp;<a href="__builtin__.html#object">object</a>.&nbsp;(i.e.&nbsp;standard&nbsp;form)&nbsp;(example:&nbsp;string&nbsp;to&nbsp;unicode&nbsp;etc.)<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;will&nbsp;be&nbsp;called&nbsp;on&nbsp;__setattr__.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted.<br>
+&nbsp;<br>
+Throws:<br>
+&nbsp;&nbsp;TypeError:&nbsp;if&nbsp;type&nbsp;is&nbsp;not&nbsp;what's&nbsp;expected.</tt></dd></dl>
+
+<dl><dt><a name="ListProperty-validate"><strong>validate</strong></a>(self, value)</dt><dd><tt>The&nbsp;default&nbsp;validation&nbsp;function.<br>
+&nbsp;<br>
+This&nbsp;validation&nbsp;function&nbsp;goes&nbsp;through&nbsp;the&nbsp;validators&nbsp;and&nbsp;checks&nbsp;each&nbsp;one.<br>
+Any&nbsp;subclass&nbsp;should&nbsp;do:<br>
+&nbsp;<br>
+return&nbsp;<a href="#BaseProperty">BaseProperty</a>.<a href="#ListProperty-validate">validate</a>(self,&nbsp;value)&nbsp;and&nbsp;your_result<br>
+&nbsp;<br>
+where&nbsp;your_result&nbsp;is&nbsp;your&nbsp;validation&nbsp;result.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;validated<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;True&nbsp;if&nbsp;validation&nbsp;pass,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="MultiReferenceProperty">class <strong>MultiReferenceProperty</strong></a>(<a href="riakkit.commons.properties.html#ReferenceBaseProperty">ReferenceBaseProperty</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.commons.properties.html#MultiReferenceProperty">MultiReferenceProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#ReferenceBaseProperty">ReferenceBaseProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="MultiReferenceProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="MultiReferenceProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="MultiReferenceProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="MultiReferenceProperty-deleteReference"><strong>deleteReference</strong></a>(self, doc, ref)</dt></dl>
+
+<dl><dt><a name="MultiReferenceProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#ReferenceBaseProperty">ReferenceBaseProperty</a>:<br>
+<dl><dt><a name="MultiReferenceProperty-__init__"><strong>__init__</strong></a>(self, reference_class, collection_name<font color="#909090">=None</font>, required<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;Reference&nbsp;Property<br>
+&nbsp;<br>
+You&nbsp;can&nbsp;set&nbsp;it&nbsp;up&nbsp;so&nbsp;that&nbsp;riakkit&nbsp;automatically&nbsp;link&nbsp;back&nbsp;from<br>
+the&nbsp;reference_class&nbsp;like&nbsp;GAE's&nbsp;<a href="#ReferenceProperty">ReferenceProperty</a>.&nbsp;Except&nbsp;everything&nbsp;here<br>
+is&nbsp;a&nbsp;list.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;reference_class:&nbsp;The&nbsp;classes&nbsp;that&nbsp;should&nbsp;be&nbsp;added&nbsp;to&nbsp;this&nbsp;LinkedDocuments.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i.e.&nbsp;Documents&nbsp;have&nbsp;to&nbsp;be&nbsp;objects&nbsp;of&nbsp;that&nbsp;class&nbsp;to&nbsp;pass<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validation.&nbsp;None&nbsp;if&nbsp;you&nbsp;wish&nbsp;to&nbsp;allow&nbsp;any&nbsp;Document&nbsp;class.<br>
+&nbsp;&nbsp;collection_name:&nbsp;The&nbsp;collection&nbsp;name&nbsp;for&nbsp;the&nbsp;reference_class.&nbsp;Works&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;same&nbsp;way&nbsp;as&nbsp;GAE's&nbsp;collection_name&nbsp;for&nbsp;their<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ReferenceProperty">ReferenceProperty</a>.&nbsp;See&nbsp;the&nbsp;README&nbsp;file&nbsp;at&nbsp;the&nbsp;repository<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;detailed&nbsp;tutorial.</tt></dd></dl>
+
+<dl><dt><a name="MultiReferenceProperty-attemptLoad"><strong>attemptLoad</strong></a>(self, key)</dt></dl>
+
+<dl><dt><a name="MultiReferenceProperty-validate"><strong>validate</strong></a>(self, value)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="PasswordProperty">class <strong>PasswordProperty</strong></a>(<a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.commons.properties.html#PasswordProperty">PasswordProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="PasswordProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="PasswordProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><a name="PasswordProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#PasswordProperty-convertToDb">convertToDb</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#PasswordProperty-convertFromDb">convertFromDb</a>()<br>
+&nbsp;<br>
+&nbsp;&nbsp;standardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="PasswordProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
+&nbsp;<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
+
+<dl><dt><a name="PasswordProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#PasswordProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
+
+<dl><dt><a name="PasswordProperty-validate"><strong>validate</strong></a>(self, value)</dt><dd><tt>The&nbsp;default&nbsp;validation&nbsp;function.<br>
+&nbsp;<br>
+This&nbsp;validation&nbsp;function&nbsp;goes&nbsp;through&nbsp;the&nbsp;validators&nbsp;and&nbsp;checks&nbsp;each&nbsp;one.<br>
+Any&nbsp;subclass&nbsp;should&nbsp;do:<br>
+&nbsp;<br>
+return&nbsp;<a href="#BaseProperty">BaseProperty</a>.<a href="#PasswordProperty-validate">validate</a>(self,&nbsp;value)&nbsp;and&nbsp;your_result<br>
+&nbsp;<br>
+where&nbsp;your_result&nbsp;is&nbsp;your&nbsp;validation&nbsp;result.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;validated<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;True&nbsp;if&nbsp;validation&nbsp;pass,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ReferenceBaseProperty">class <strong>ReferenceBaseProperty</strong></a>(<a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.commons.properties.html#ReferenceBaseProperty">ReferenceBaseProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="ReferenceBaseProperty-__init__"><strong>__init__</strong></a>(self, reference_class, collection_name<font color="#909090">=None</font>, required<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;Reference&nbsp;Property<br>
+&nbsp;<br>
+You&nbsp;can&nbsp;set&nbsp;it&nbsp;up&nbsp;so&nbsp;that&nbsp;riakkit&nbsp;automatically&nbsp;link&nbsp;back&nbsp;from<br>
+the&nbsp;reference_class&nbsp;like&nbsp;GAE's&nbsp;<a href="#ReferenceProperty">ReferenceProperty</a>.&nbsp;Except&nbsp;everything&nbsp;here<br>
+is&nbsp;a&nbsp;list.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;reference_class:&nbsp;The&nbsp;classes&nbsp;that&nbsp;should&nbsp;be&nbsp;added&nbsp;to&nbsp;this&nbsp;LinkedDocuments.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i.e.&nbsp;Documents&nbsp;have&nbsp;to&nbsp;be&nbsp;objects&nbsp;of&nbsp;that&nbsp;class&nbsp;to&nbsp;pass<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validation.&nbsp;None&nbsp;if&nbsp;you&nbsp;wish&nbsp;to&nbsp;allow&nbsp;any&nbsp;Document&nbsp;class.<br>
+&nbsp;&nbsp;collection_name:&nbsp;The&nbsp;collection&nbsp;name&nbsp;for&nbsp;the&nbsp;reference_class.&nbsp;Works&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;same&nbsp;way&nbsp;as&nbsp;GAE's&nbsp;collection_name&nbsp;for&nbsp;their<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ReferenceProperty">ReferenceProperty</a>.&nbsp;See&nbsp;the&nbsp;README&nbsp;file&nbsp;at&nbsp;the&nbsp;repository<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;detailed&nbsp;tutorial.</tt></dd></dl>
+
+<dl><dt><a name="ReferenceBaseProperty-attemptLoad"><strong>attemptLoad</strong></a>(self, key)</dt></dl>
+
+<dl><dt><a name="ReferenceBaseProperty-deleteReference"><strong>deleteReference</strong></a>(self, doc, ref)</dt></dl>
+
+<dl><dt><a name="ReferenceBaseProperty-validate"><strong>validate</strong></a>(self, value)</dt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><a name="ReferenceBaseProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
+value&nbsp;that&nbsp;<a href="#ReferenceBaseProperty-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
+(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
+value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
+the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
+
+<dl><dt><a name="ReferenceBaseProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
+&nbsp;<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
+
+<dl><dt><a name="ReferenceBaseProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#ReferenceBaseProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
+
+<dl><dt><a name="ReferenceBaseProperty-standardize"><strong>standardize</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;any&nbsp;form&nbsp;(input&nbsp;form,&nbsp;db&nbsp;form)&nbsp;into&nbsp;a&nbsp;form&nbsp;that's<br>
+friendly&nbsp;for&nbsp;the&nbsp;user&nbsp;to&nbsp;access&nbsp;via&nbsp;dot&nbsp;notation&nbsp;or&nbsp;dict-like&nbsp;notation&nbsp;in&nbsp;a<br>
+Document&nbsp;<a href="__builtin__.html#object">object</a>.&nbsp;(i.e.&nbsp;standard&nbsp;form)&nbsp;(example:&nbsp;string&nbsp;to&nbsp;unicode&nbsp;etc.)<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;will&nbsp;be&nbsp;called&nbsp;on&nbsp;__setattr__.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted.<br>
+&nbsp;<br>
+Throws:<br>
+&nbsp;&nbsp;TypeError:&nbsp;if&nbsp;type&nbsp;is&nbsp;not&nbsp;what's&nbsp;expected.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ReferenceProperty">class <strong>ReferenceProperty</strong></a>(<a href="riakkit.commons.properties.html#ReferenceBaseProperty">ReferenceBaseProperty</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.commons.properties.html#ReferenceProperty">ReferenceProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#ReferenceBaseProperty">ReferenceBaseProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="ReferenceProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="ReferenceProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt></dl>
+
+<dl><dt><a name="ReferenceProperty-deleteReference"><strong>deleteReference</strong></a>(self, doc, ref)</dt></dl>
+
+<dl><dt><a name="ReferenceProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#ReferenceBaseProperty">ReferenceBaseProperty</a>:<br>
+<dl><dt><a name="ReferenceProperty-__init__"><strong>__init__</strong></a>(self, reference_class, collection_name<font color="#909090">=None</font>, required<font color="#909090">=False</font>)</dt><dd><tt>Initializes&nbsp;a&nbsp;Reference&nbsp;Property<br>
+&nbsp;<br>
+You&nbsp;can&nbsp;set&nbsp;it&nbsp;up&nbsp;so&nbsp;that&nbsp;riakkit&nbsp;automatically&nbsp;link&nbsp;back&nbsp;from<br>
+the&nbsp;reference_class&nbsp;like&nbsp;GAE's&nbsp;<a href="#ReferenceProperty">ReferenceProperty</a>.&nbsp;Except&nbsp;everything&nbsp;here<br>
+is&nbsp;a&nbsp;list.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;reference_class:&nbsp;The&nbsp;classes&nbsp;that&nbsp;should&nbsp;be&nbsp;added&nbsp;to&nbsp;this&nbsp;LinkedDocuments.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i.e.&nbsp;Documents&nbsp;have&nbsp;to&nbsp;be&nbsp;objects&nbsp;of&nbsp;that&nbsp;class&nbsp;to&nbsp;pass<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validation.&nbsp;None&nbsp;if&nbsp;you&nbsp;wish&nbsp;to&nbsp;allow&nbsp;any&nbsp;Document&nbsp;class.<br>
+&nbsp;&nbsp;collection_name:&nbsp;The&nbsp;collection&nbsp;name&nbsp;for&nbsp;the&nbsp;reference_class.&nbsp;Works&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;same&nbsp;way&nbsp;as&nbsp;GAE's&nbsp;collection_name&nbsp;for&nbsp;their<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ReferenceProperty">ReferenceProperty</a>.&nbsp;See&nbsp;the&nbsp;README&nbsp;file&nbsp;at&nbsp;the&nbsp;repository<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;detailed&nbsp;tutorial.</tt></dd></dl>
+
+<dl><dt><a name="ReferenceProperty-attemptLoad"><strong>attemptLoad</strong></a>(self, key)</dt></dl>
+
+<dl><dt><a name="ReferenceProperty-validate"><strong>validate</strong></a>(self, value)</dt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><a name="ReferenceProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#ReferenceProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="StringProperty">class <strong>StringProperty</strong></a>(<a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>String&nbsp;property.&nbsp;By&nbsp;default&nbsp;this&nbsp;converts&nbsp;strings&nbsp;to&nbsp;unicode.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.commons.properties.html#StringProperty">StringProperty</a></dd>
+<dd><a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="StringProperty-standardize"><strong>standardize</strong></a>(self, value)</dt></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><a name="StringProperty-__init__"><strong>__init__</strong></a>(self, required<font color="#909090">=False</font>, unique<font color="#909090">=False</font>, default<font color="#909090">=None</font>, validators<font color="#909090">=None</font>, forwardprocessors<font color="#909090">=None</font>, backwardprocessors<font color="#909090">=None</font>, standardprocessors<font color="#909090">=None</font>)</dt><dd><tt>Initializes&nbsp;the&nbsp;property&nbsp;field<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;required:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;required&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;unique:&nbsp;A&nbsp;boolean&nbsp;that&nbsp;determines&nbsp;if&nbsp;this&nbsp;is&nbsp;unique&nbsp;or&nbsp;not.<br>
+&nbsp;&nbsp;validators:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;of&nbsp;1&nbsp;callable&nbsp;that&nbsp;validates&nbsp;any&nbsp;value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;function&nbsp;should&nbsp;be&nbsp;callback(value),&nbsp;returning&nbsp;a&nbsp;boolean.<br>
+&nbsp;&nbsp;default:&nbsp;A&nbsp;custom&nbsp;default&nbsp;value&nbsp;or&nbsp;a&nbsp;function&nbsp;that&nbsp;generates&nbsp;a&nbsp;value.<br>
+&nbsp;&nbsp;forwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;the&nbsp;data&nbsp;before&nbsp;<a href="#StringProperty-convertToDb">convertToDb</a>().<br>
+&nbsp;&nbsp;backwardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callables&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;after&nbsp;getting&nbsp;it&nbsp;from&nbsp;the&nbsp;database&nbsp;and&nbsp;before<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#StringProperty-convertFromDb">convertFromDb</a>()<br>
+&nbsp;<br>
+&nbsp;&nbsp;standardprocessors:&nbsp;A&nbsp;list&nbsp;of&nbsp;callables&nbsp;or&nbsp;1&nbsp;callable&nbsp;that&nbsp;processes&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;when&nbsp;the&nbsp;data&nbsp;is&nbsp;being&nbsp;fed&nbsp;into&nbsp;the&nbsp;Document<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="StringProperty-convertFromDb"><strong>convertFromDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;database&nbsp;back&nbsp;to&nbsp;an&nbsp;app&nbsp;friendly&nbsp;value&nbsp;(a<br>
+value&nbsp;that&nbsp;<a href="#StringProperty-standardize">standardize</a>()&nbsp;will&nbsp;consider&nbsp;as&nbsp;valid).<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;<a href="#BaseProperty">BaseProperty</a>'s&nbsp;convertFromDb&nbsp;will&nbsp;change&nbsp;the&nbsp;value&nbsp;from&nbsp;None<br>
+(if&nbsp;that's&nbsp;how&nbsp;it&nbsp;was&nbsp;in&nbsp;the&nbsp;database)&nbsp;to&nbsp;the&nbsp;default&nbsp;value,&nbsp;if&nbsp;the&nbsp;default<br>
+value&nbsp;is&nbsp;not&nbsp;None.&nbsp;This&nbsp;is&nbsp;done&nbsp;so&nbsp;that&nbsp;any&nbsp;attributes&nbsp;that's&nbsp;added&nbsp;after<br>
+the&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;saved&nbsp;that&nbsp;has&nbsp;a&nbsp;default&nbsp;value&nbsp;wouldn't&nbsp;be&nbsp;None.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
+
+<dl><dt><a name="StringProperty-convertToDb"><strong>convertToDb</strong></a>(self, value)</dt><dd><tt>Converts&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;access&nbsp;form&nbsp;a&nbsp;DB&nbsp;valid&nbsp;form<br>
+&nbsp;<br>
+In&nbsp;theory,&nbsp;the&nbsp;value&nbsp;should&nbsp;always&nbsp;be&nbsp;valid&nbsp;(as&nbsp;it&nbsp;has&nbsp;to&nbsp;undergo<br>
+standardize&nbsp;before&nbsp;this&nbsp;is&nbsp;called).<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;able&nbsp;to&nbsp;handle&nbsp;None.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;converted</tt></dd></dl>
+
+<dl><dt><a name="StringProperty-defaultValue"><strong>defaultValue</strong></a>(self)</dt><dd><tt>The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.<br>
+&nbsp;<br>
+The&nbsp;default&nbsp;value&nbsp;is&nbsp;the&nbsp;value&nbsp;after&nbsp;being&nbsp;<a href="#StringProperty-standardize">standardize</a>()'d.&nbsp;Whenever&nbsp;an<br>
+attribute&nbsp;is&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;data&nbsp;when&nbsp;saved,&nbsp;this&nbsp;value&nbsp;will&nbsp;be<br>
+substituted&nbsp;in.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;default&nbsp;value&nbsp;for&nbsp;this&nbsp;type.</tt></dd></dl>
+
+<dl><dt><a name="StringProperty-validate"><strong>validate</strong></a>(self, value)</dt><dd><tt>The&nbsp;default&nbsp;validation&nbsp;function.<br>
+&nbsp;<br>
+This&nbsp;validation&nbsp;function&nbsp;goes&nbsp;through&nbsp;the&nbsp;validators&nbsp;and&nbsp;checks&nbsp;each&nbsp;one.<br>
+Any&nbsp;subclass&nbsp;should&nbsp;do:<br>
+&nbsp;<br>
+return&nbsp;<a href="#BaseProperty">BaseProperty</a>.<a href="#StringProperty-validate">validate</a>(self,&nbsp;value)&nbsp;and&nbsp;your_result<br>
+&nbsp;<br>
+where&nbsp;your_result&nbsp;is&nbsp;your&nbsp;validation&nbsp;result.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;to&nbsp;be&nbsp;validated<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;True&nbsp;if&nbsp;validation&nbsp;pass,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.commons.properties.html#BaseProperty">BaseProperty</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-sha256"><strong>sha256</strong></a> = openssl_sha256(...)</dt><dd><tt>Returns&nbsp;a&nbsp;sha256&nbsp;hash&nbsp;<a href="__builtin__.html#object">object</a>;&nbsp;optionally&nbsp;initialized&nbsp;with&nbsp;a&nbsp;string</tt></dd></dl>
+</td></tr></table>
+</body></html>

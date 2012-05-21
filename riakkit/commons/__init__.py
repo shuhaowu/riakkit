@@ -15,7 +15,11 @@
 
 from uuid import uuid1
 
+
 uuid1Key = lambda kwargs: uuid1().hex
+uuid1Key.__doc__ = """
+Generates an UUID1 key. Used for Document and SimpleDocument. The arg kwargs
+has no effect, only to be compatible with SimpleDocument and Document."""
 
 def getUniqueListGivenBucketName(bucketName, propertyName):
   """Gets the bucket name that enforces the uniqueness of a certain property.

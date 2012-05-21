@@ -68,6 +68,7 @@ class BaseDocument(object):
     Args:
       kwargs: The keyword arguments to merge into the object.
     """
+    self.clear()
     self.mergeData(kwargs)
 
   def _attrError(self, name):
@@ -142,12 +143,36 @@ class BaseDocument(object):
     return True
 
   @classmethod
-  def constructObject(cls, data, dictionary=True):
-    """Construct an object given some data."""
-    return cls().deserialize(data, dictionary)
+  def constructObject(cls, data):
+    """Construct an object given some data.
 
-  def deserialize(self, data, dictionary=True):
-    def action(name, value): # This is different from __setattr__ as __setattr__ uses standardizer
+    This is basically deserialize but as a classmethod.
+    Args:
+      data: Same thing as deserialize
+      dictionary: Same thing as deserialize
+    Returns:
+      The object constructed with this class
+    """
+    return cls().deserialize(data)
+
+  def deserialize(self, data):
+    """Deserializes some data into the document.
+
+    With this function, we assume the data is from the database, therefore we
+    call convertFromDb. This method will also clear the document.
+
+    Args:
+      data: The data, either a dictionary or a json string.
+
+    Returns:
+      self for OOP purposes.
+    """
+    if isinstance(data, basestring):
+      data = json.loads(data)
+
+    self.clear()
+    keys = set(self._meta.keys())
+    for name, value in data.iteritems():
       prop = self._meta.get(name, None)
       if prop is not None:
         converter = prop.convertFromDb
@@ -156,24 +181,6 @@ class BaseDocument(object):
 
       value = converter(value)
       self._data[name] = value
-
-    self.clear()
-    return self._doMerge(action, data, dictionary)
-
-  def mergeData(self, data, dictionary=True):
-    def action(name, value):
-      self.__setattr__(name, value)
-
-    return self._doMerge(action, data, dictionary)
-
-  def _doMerge(self, action, data, dictionary=True):
-    if not dictionary:
-      data = json.loads(data)
-
-    self.clear()
-    keys = set(self._meta.keys())
-    for name, value in data.iteritems():
-      action(name, value)
       keys.discard(name)
 
     for name in keys:
@@ -181,7 +188,32 @@ class BaseDocument(object):
 
     return self
 
+  def mergeData(self, data):
+    """Merges some data into the document.
+
+    With this function, we assume the data is from just the input source,
+    therefore we call standardize. This method will NOT clear the document.
+
+    Args:
+      data: The data, either a dictionary of a json string.
+
+    Returns:
+      self for OOP"""
+
+    if isinstance(data, basestring):
+      data = json.loads(data)
+
+    for name, value in data.iteritems():
+      self.__setattr__(name, value)
+
+    return self
+
+
   def clear(self):
+    """Clears the document, clears all the data stored.
+
+    Returns:
+      self for OOP"""
     self._data = {}
     for name, prop in self._meta.iteritems():
       self._data[name] = prop.defaultValue()
