@@ -188,10 +188,6 @@ class DictProperty(BaseProperty):
     value = BaseProperty.standardize(self, value)
     return DictProperty.DotDict(value)
 
-  def convertToDb(self, value):
-    value = BaseProperty.convertToDb(self, value)
-    return dict(value)
-
   def convertFromDb(self, value):
     value = DictProperty.DotDict(value)
     return BaseProperty.convertFromDb(self, value)
