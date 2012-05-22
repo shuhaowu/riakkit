@@ -1,1 +1,4 @@
 *.pyc
+build/
+dist/
+riakkit.egg-info/

@@ -20,10 +20,10 @@ It imports everything from under commons.properties as well as commons.exception
 It also import SimpleDocument, BaseDocument, and Document. This also sets up
 EmDocument"""
 
-from simple import SimpleDocument, BaseDocument
+from riakkit.simple import SimpleDocument, BaseDocument
 EmDocument = SimpleDocument
-from document import Document
-from commons.properties import *
-from commons.exceptions import *
+from riakkit.document import Document
+from riakkit.commons.properties import *
+from riakkit.commons.exceptions import *
 
 VERSION = "0.6.0a"
