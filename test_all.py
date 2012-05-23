@@ -15,6 +15,7 @@
 
 import unittest
 import random
+import time
 
 from riakkit import *
 from riakkit.helpers import emailValidator, checkPassword
@@ -542,7 +543,99 @@ class RiakkitDocumentTests(unittest.TestCase):
 ###############################################################################
 
 class RiakkitPropertyTests(unittest.TestCase):
-  pass
+  def test_dictProperty(self):
+    prop = DictProperty()
+    self.assertEquals(DictProperty.DotDict(), prop.defaultValue())
+    self.assertTrue(isinstance(prop.standardize({}), DictProperty.DotDict))
+    v = prop.standardize({"hello" : "world"})
+    self.assertEquals("world", v.hello)
+
+    self.assertTrue(prop.validate({}))
+    self.assertFalse(prop.validate("adf"))
+
+  def test_listProperty(self):
+    prop = ListProperty()
+    self.assertEquals([], prop.defaultValue())
+
+  def test_stringProperty(self):
+    prop = StringProperty()
+    self.assertTrue(isinstance(prop.standardize("lol"), unicode))
+
+  def test_integerProperty(self):
+    prop = IntegerProperty()
+    self.assertEquals(12, prop.standardize("12"))
+
+    self.assertTrue(prop.validate(12))
+    self.assertTrue(prop.validate("12"))
+    self.assertFalse(prop.validate("123a"))
+
+  def test_floatProperty(self):
+    prop = FloatProperty()
+    self.assertEquals(12.5, prop.standardize("12.5"))
+
+    self.assertTrue(prop.validate(12))
+    self.assertTrue(prop.validate(12.5))
+    self.assertTrue(prop.validate("12"))
+    self.assertFalse(prop.validate("12.4a"))
+
+  def test_booleanProperty(self):
+    prop = BooleanProperty()
+    self.assertEquals(True, prop.standardize(1))
+
+  def test_enumProperty(self):
+    prop = EnumProperty(["thing1", "thing2", "thing3", "thing4"])
+    self.assertTrue(prop.validate("thing1"))
+    self.assertFalse(prop.validate("thing5"))
+
+    self.assertEquals("thing1", prop.convertFromDb(prop.convertToDb("thing1")))
+    self.assertEquals("thing1", prop.standardize("thing1"))
+
+  def test_dateTimeProperty(self):
+    prop = DateTimeProperty()
+    now = time.mktime(prop.defaultValue().timetuple())
+    now2 = time.time()
+    self.assertTrue(now < now2 and now + 100 > now2) # 100 ms should be enough in anycase.
+
+    self.assertEquals(now, time.mktime(prop.convertFromDb(now).timetuple()))
+    now = prop.defaultValue()
+    self.assertEquals(time.mktime(now.timetuple()), prop.convertToDb(now))
+
+  def test_emdocumentProperty(self):
+    prop = EmDocumentProperty(emdocument_class=TestEmDocument)
+    data = {"email" : "test@test.com", "listprop" : [], "intprop" : 1}
+    ed = prop.standardize({"email" : "test@test.com", "listprop" : [], "intprop" : 1})
+
+    self.assertEquals(data["email"], ed.email)
+    self.assertEquals(data["listprop"], ed.listprop)
+    self.assertEquals(data["intprop"], ed.intprop)
+
+    convertedToDb = prop.convertToDb(ed)
+    self.assertEquals(data, convertedToDb)
+
+    convertFromDb = prop.convertFromDb(convertedToDb)
+    self.assertEquals(data["email"], convertFromDb.email)
+    self.assertEquals(data["listprop"], convertFromDb.listprop)
+    self.assertEquals(data["intprop"], convertFromDb.intprop)
+
+  def test_emdocumentListProperty(self):
+    prop = EmDocumentsListProperty(emdocument_class=TestEmDocument)
+    data = {"email" : "test@test.com", "listprop" : [], "intprop" : 1}
+    v = prop.standardize([data])
+
+    self.assertEquals(data["email"], v[0].email)
+    self.assertEquals(data["listprop"], v[0].listprop)
+    self.assertEquals(data["intprop"], v[0].intprop)
+
+    convertedToDb = prop.convertToDb(v)
+    self.assertEquals(data, convertedToDb[0])
+
+    convertFromDb = prop.convertFromDb(convertedToDb)
+    self.assertEquals(data["email"], convertFromDb[0].email)
+    self.assertEquals(data["listprop"], convertFromDb[0].listprop)
+    self.assertEquals(data["intprop"], convertFromDb[0].intprop)
+
+  def test_emdocumentDictProperty(self):
+    prop = EmDocumentsDictProperty(emdocument_class=TestEmDocument)
 
 def deleteAllKeys(client, bucketname):
   bucket = client.bucket(bucketname)

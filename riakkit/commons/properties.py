@@ -228,7 +228,17 @@ class IntegerProperty(BaseProperty):
     return int(value)
 
   def validate(self, value):
-    return BaseProperty.validate(self, value) and isinstance(value, (int, long, NONE_TYPE))
+    if value is None:
+      checked = True
+    else:
+      try:
+        int(value)
+      except ValueError:
+        checked = False
+      else:
+        checked = True
+
+    return BaseProperty.validate(self, value) and checked
 
 class FloatProperty(BaseProperty):
   """Floating point property"""
@@ -238,7 +248,17 @@ class FloatProperty(BaseProperty):
     return float(value)
 
   def validate(self, value):
-    return BaseProperty.validate(self, value) and isinstance(value, (float, int, long, NONE_TYPE))
+    if value is None:
+      checked = True
+    else:
+      try:
+        float(value)
+      except ValueError:
+        checked = False
+      else:
+        checked = True
+
+    return BaseProperty.validate(self, value) and checked
 
 class BooleanProperty(BaseProperty):
   """Boolean property. Pretty self explanatory."""
