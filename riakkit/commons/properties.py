@@ -420,11 +420,19 @@ class ReferenceBaseProperty(BaseProperty):
     else:
       return isinstance(l, (rc, NONE_TYPE))
 
-  def attemptLoad(self, key): # TODO: Is this a hack?...
-    if self.clstype == 1: # SimpleDocument
-      return key
+  def attemptLoad(self, value): # TODO: Is this a hack?...
+    if self.clstype == 1 or isinstance(value, (self.reference_class, NONE_TYPE)): # SimpleDocument
+      return value
     else: # Document
-      return self.reference_class.load(key, True)
+      return self.reference_class.load(value, True)
+
+  def attemptToDb(self, obj):
+    if isinstance(obj, self.reference_class):
+      return obj.key
+    elif isinstance(obj, (basestring, NONE_TYPE)):
+      return obj
+    else:
+      raise TypeError("WTF happened. %s.%s cannot have the type of %s" % (self.reference_class.__name__, self.name, str(type(obj))))
 
   def validate(self, value):
     check = self._checkForReferenceClass(value)
@@ -436,19 +444,7 @@ class ReferenceBaseProperty(BaseProperty):
 class ReferenceProperty(ReferenceBaseProperty):
   def convertToDb(self, value):
     value = BaseProperty.convertToDb(self, value)
-    return None if value is None else value.key
-
-  def convertFromDb(self, value):
-    if value is not None:
-      value = self.attemptLoad(value)
-    return BaseProperty.convertFromDb(self, value)
-
-  def standardize(self, value):
-    value = BaseProperty.standardize(self, value)
-    if isinstance(value, (str, unicode)):
-      return self.attempLoad(value)
-    else:
-      return value
+    return self.attemptToDb(value)
 
   def deleteReference(self, doc, ref):
     if doc._data[self.name] is None:
@@ -460,16 +456,10 @@ class ReferenceProperty(ReferenceBaseProperty):
 class MultiReferenceProperty(ReferenceBaseProperty):
   def convertToDb(self, value):
     value = BaseProperty.convertToDb(self, value)
-    return [] if value is None else [v.key for v in value]
+    return [] if value is None else [self.attemptToDb(v) for v in value]
 
-  def convertFromDb(self, value):
-    if value is not None:
-      value = [self.attemptLoad(v) for v in value]
-    return BaseProperty.convertFromDb(self, value)
-
-  def standardize(self, value):
-    value = BaseProperty.standardize(self, value)
-    return [self.attempLoad(v) if isinstance(v, (str, unicode)) else v for v in value]
+  def attemptLoad(self, value): # This is called when we do things like len(obj.multiprop). Should somehow erradicate the need for that.
+    return [] if value is None else [ReferenceBaseProperty.attemptLoad(self, v) for v in value]
 
   def defaultValue(self):
     return []
@@ -477,7 +467,12 @@ class MultiReferenceProperty(ReferenceBaseProperty):
   def deleteReference(self, doc, ref):
     currentList = doc._data.get(self.name)
     for i, r in enumerate(currentList): # TODO: Need a better search & destroy algorithm
-      if r.key == ref.key:
+      if isinstance(r, self.reference_class):
+        key = r.key
+      else:
+        key = r
+
+      if key == ref.key:
         currentList.pop(i) # This is a reference, which should modify the original list.
         return True
 
@@ -494,6 +489,14 @@ class DictReferenceProperty(ReferenceBaseProperty):
     if self.collection_name:
       raise RiakkitError("collection_name not allowed with DictReferenceProperty!")
 
+
+  def attemptLoad(self, value):
+    new_values = {}
+    for key in value:
+      new_values[key] = ReferenceBaseProperty.attemptToLoad(self, value[key]) # key != value[key].key
+
+    return new_values
+
   def convertToDb(self, value):
     value = BaseProperty.convertToDb(self, value)
     if value is None:
@@ -501,24 +504,14 @@ class DictReferenceProperty(ReferenceBaseProperty):
 
     new_values = {}
     for key in value:
-      new_values[key] = value[key].key # key != value[key].key
+      new_values[key] = self.attemptToDb(value[key]) # key != value[key].key
 
     return new_values
 
   def convertFromDb(self, value):
-    if value is not None:
-      for key in value:
-        value[key] = self.attempLoad(value[key])
-    else:
+    if value is None:
       value = {}
     return BaseProperty.convertFromDb(self, value)
-
-  def standardize(self, value):
-    value = BaseProperty.standardize(self, value)
-    new_values = {}
-    for key in value:
-      new_values[key] = self.attemptLoad(value[key]) if isinstance(value[key], (str, unicode)) else value[key]
-    return new_values
 
   def defaultValue(self):
     return {}

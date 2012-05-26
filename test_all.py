@@ -505,6 +505,14 @@ class RiakkitDocumentTests(unittest.TestCase):
     c = riak.RiakClient()
     self.assertFalse(User._meta["username"].unique_bucket.get("foo").exists())
 
+    user2 = User(username="foo", password="123")
+    user2.save()
+    self.assertEquals("foo", user2.username)
+    user2.someprop = 1
+    user2.save()
+    self.assertEquals(1, user2.someprop)
+    user2.delete()
+
   def test_passwordProperty(self):
     user = User()
     def t():

@@ -17,7 +17,7 @@ from copy import copy, deepcopy
 from weakref import WeakValueDictionary
 
 from riakkit.simple.basedocument import BaseDocumentMetaclass, BaseDocument, SimpleDocument
-from riakkit.commons.properties import BaseProperty, MultiReferenceProperty, ReferenceProperty
+from riakkit.commons.properties import BaseProperty, MultiReferenceProperty, ReferenceProperty, ReferenceBaseProperty
 from riakkit.commons import uuid1Key, getUniqueListGivenBucketName, getProperty, walkParents
 from riakkit.queries import *
 from riakkit.commons.exceptions import *
@@ -201,9 +201,9 @@ class Document(SimpleDocument):
         originalValues = []
 
       if isinstance(self._meta[name], ReferenceProperty):
-        docs = [self._data[name]]
+        docs = [getattr(self, name)]
       else:
-        docs = self._data[name]
+        docs = getattr(self, name)
 
       dockeys = set()
       colname = self._meta[name].collection_name
@@ -214,7 +214,7 @@ class Document(SimpleDocument):
 
         dockeys.add(doc.key)
 
-        currentList = doc._data.get(colname, [])
+        currentList = getattr(doc, colname, [])
         found = False # Linear search algorithm. Maybe binary search??
         for d in currentList:
           if d.key == self.key:
@@ -316,7 +316,7 @@ class Document(SimpleDocument):
         col_name = getattr(self._meta[k], "is_reference_back", False) or getattr(self._meta[k], "collection_name", False)
 
         if col_name:
-          docs = self._data.get(k, [])
+          docs = getattr(self, k, [])
           if docs is not None:
             if isinstance(docs, Document):
               docs = [docs]
@@ -349,6 +349,16 @@ class Document(SimpleDocument):
       return [RiakLink(self.bucket_name, d.key, t) for d, t in self._links]
     return copy(self._links)
 
+  def __getattr__(self, name):
+    if name in self._data:
+      prop = self._meta.get(name, BaseProperty)
+      if isinstance(prop, ReferenceBaseProperty):
+        self._data[name] = prop.attemptLoad(self._data[name])
+      return self._data[name]
+
+    self._attrError(name)
+
+
   @staticmethod
   def _getLinksFromRiakObj(robj):
     objLinks = robj.get_links()
@@ -358,6 +368,7 @@ class Document(SimpleDocument):
       c = getClassGivenBucketName(link.get_bucket())
       links.add((c.load(link.get(), True), tag))
     return links
+
 
   @classmethod
   def load(cls, robj, cached=False, r=None):
