@@ -258,8 +258,9 @@ class Document(SimpleDocument):
 
     self._obj.store(w=w, dw=dw)
     for name in self._uniques:
-      obj = self._meta[name].unique_bucket.new(self._data[name], {"key" : self.key})
-      obj.store(w=w, dw=dw)
+      if self._data[name]:
+        obj = self._meta[name].unique_bucket.new(self._data[name], {"key" : self.key})
+        obj.store(w=w, dw=dw)
 
     for bucket, key in uniquesToBeDeleted:
       bucket.get(key).delete()

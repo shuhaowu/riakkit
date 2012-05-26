@@ -656,8 +656,10 @@ if __name__ == "__main__":
   arg = sys.argv[1] if len(sys.argv) > 1 else "alltests"
   if arg == "doctest":
     import doctest
+    import os.path
     print "Running doctests from README.md ..."
-    failures, attempts = doctest.testfile("README.markdown")
+
+    failures, attempts = doctest.testfile(os.path.dirname(os.path.abspath(__file__)) + "/README.markdown", False)
     print "Ran through %d tests with %d failures." % (attempts, failures)
     print
     buckets_to_be_cleaned = ("test_blog", "doctest_users", "doctest_comments", "demos",
