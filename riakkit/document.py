@@ -359,6 +359,41 @@ class Document(SimpleDocument):
 
     self._attrError(name)
 
+  def getRawData(self, name, default=DocumentMetaclass):
+    """Gets the raw data that's contained in the RiakObject.
+
+    If default is not specified, AttributeError will be raised if the attribute
+    doesn't exist
+
+    If the object is not saved. NotFoundError will be raised
+
+    Args:
+      name: The name of the attribute.
+      default: The default to return if not available. Defaults to some garbage, which is DocumentMetaclass
+
+    Returns:
+      The value or default. If
+
+    Raises:
+      AttributeError if default is not specified and attribute not found
+      NotFoundError if default not specified and object not found.
+    """
+
+    if self._obj:
+      data = self._obj.get_data()
+      if default == DocumentMetaclass:
+        if name not in data:
+          self._attrError(name)
+        else:
+          return data[name]
+      else:
+        return data.get(name, default)
+    else:
+      if default == DocumentMetaclass:
+        raise NotFoundError("%s is not loaded!" % self.key)
+      else:
+        return default
+
 
   @staticmethod
   def _getLinksFromRiakObj(robj):

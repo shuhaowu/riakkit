@@ -315,7 +315,7 @@ class RiakkitSimpleTest(unittest.TestCase):
 ###############################################################################
 
 class BaseDocumentModel(Document):
-  client = riak.RiakClient()
+  client = riak.RiakClient(port=8087, transport_class=riak.RiakPbcTransport)
 
 class User(BaseDocumentModel):
   bucket_name = "test_users"
@@ -524,6 +524,19 @@ class RiakkitDocumentTests(unittest.TestCase):
     hsh = user.password.hash
     user.password = "123456"
     self.assertNotEquals(hsh, user.password.hash)
+
+  def test_getRawData(self):
+    user = User()
+    self.assertRaises(NotFoundError, lambda: user.getRawData("password"))
+    self.assertEquals(None, user.getRawData("password", None))
+    user.username = "foo"
+    user.password = "123"
+    user.save()
+    self.assertRaises(AttributeError, lambda: user.getRawData("lol"))
+    self.assertEquals(None, user.getRawData("lol", None))
+    self.assertEquals("foo", user.getRawData("username"))
+    self.assertTrue(isinstance(user.getRawData("password"), dict))
+    user.delete()
 
   def test_search(self):
     m1 = SearchableModel(intprop=2).save()
