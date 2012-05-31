@@ -315,7 +315,7 @@ class RiakkitSimpleTest(unittest.TestCase):
 ###############################################################################
 
 class BaseDocumentModel(Document):
-  client = riak.RiakClient(port=8087, transport_class=riak.RiakPbcTransport)
+  client = riak.RiakClient()
 
 class User(BaseDocumentModel):
   bucket_name = "test_users"
@@ -334,6 +334,14 @@ class Comment(BaseDocumentModel):
 
   author = ReferenceProperty(User, collection_name="comments")
   content = StringProperty()
+
+class EmDocumentWithRef(EmDocument):
+  ref = ReferenceProperty(SearchableModel)
+
+class TestEmDocumentWithRef(BaseDocumentModel):
+  bucket_name = "test_emwithref"
+
+  em = EmDocumentProperty(EmDocumentWithRef)
 
 class RiakkitDocumentTests(unittest.TestCase):
   def _getRidOfPreviousUniqueUsername(self, username):
@@ -558,6 +566,21 @@ class RiakkitDocumentTests(unittest.TestCase):
     m1.delete()
     m2.delete()
     m3.delete()
+
+  def test_emdocumentWithReference(self):
+    # Since there's no collection_names, no ensuring that saving d will save m.
+    # TODO: Fix this?
+    m = SearchableModel(intprop=1337).save()
+
+    e = EmDocumentWithRef(ref=m)
+    d = TestEmDocumentWithRef(em=e)
+    d.save()
+
+    d.reload()
+    self.assertEquals(m, d.em.ref)
+
+    d.delete()
+    m.delete()
 
 ###############################################################################
 ###############################################################################

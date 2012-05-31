@@ -14,7 +14,7 @@
 # along with RiakKit.  If not, see <http://www.gnu.org/licenses/>.
 
 from riakkit.commons import walkParents, uuid1Key
-from riakkit.commons.properties import BaseProperty
+from riakkit.commons.properties import BaseProperty, ReferenceBaseProperty
 from riakkit.commons.exceptions import ValidationError
 
 from copy import copy, deepcopy
@@ -238,6 +238,9 @@ class BaseDocument(object):
 
   def __getattr__(self, name):
     if name in self._data:
+      prop = self._meta.get(name, BaseProperty)
+      if isinstance(prop, ReferenceBaseProperty):
+        self._data[name] = prop.attemptLoad(self._data[name])
       return self._data[name]
 
     self._attrError(name)

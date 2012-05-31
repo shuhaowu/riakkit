@@ -17,7 +17,7 @@ from copy import copy, deepcopy
 from weakref import WeakValueDictionary
 
 from riakkit.simple.basedocument import BaseDocumentMetaclass, BaseDocument, SimpleDocument
-from riakkit.commons.properties import BaseProperty, MultiReferenceProperty, ReferenceProperty, ReferenceBaseProperty
+from riakkit.commons.properties import BaseProperty, MultiReferenceProperty, ReferenceProperty
 from riakkit.commons import uuid1Key, getUniqueListGivenBucketName, getProperty, walkParents
 from riakkit.queries import *
 from riakkit.commons.exceptions import *
@@ -350,15 +350,6 @@ class Document(SimpleDocument):
       return [RiakLink(self.bucket_name, d.key, t) for d, t in self._links]
     return copy(self._links)
 
-  def __getattr__(self, name):
-    if name in self._data:
-      prop = self._meta.get(name, BaseProperty)
-      if isinstance(prop, ReferenceBaseProperty):
-        self._data[name] = prop.attemptLoad(self._data[name])
-      return self._data[name]
-
-    self._attrError(name)
-
   def getRawData(self, name, default=DocumentMetaclass):
     """Gets the raw data that's contained in the RiakObject.
 
@@ -404,7 +395,6 @@ class Document(SimpleDocument):
       c = getClassGivenBucketName(link.get_bucket())
       links.add((c.load(link.get(), True), tag))
     return links
-
 
   @classmethod
   def load(cls, robj, cached=False, r=None):

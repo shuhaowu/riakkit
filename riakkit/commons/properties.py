@@ -423,7 +423,7 @@ class ReferenceBaseProperty(BaseProperty):
   def attemptLoad(self, value): # TODO: Is this a hack?...
     if self.clstype == 1 or isinstance(value, (self.reference_class, NONE_TYPE)): # SimpleDocument
       return value
-    else: # Document
+    else: # Document, EmDocument
       return self.reference_class.load(value, True)
 
   def attemptToDb(self, obj):
