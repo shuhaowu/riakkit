@@ -412,12 +412,12 @@ class ReferenceBaseProperty(BaseProperty):
 
     if isinstance(l, list):
       for v in l:
-        if not isinstance(v, rc):
+        if not isinstance(v, (basestring, rc)):
           return False
       return True
     elif isinstance(l, dict):
       for k in l:
-        if not isinstance(l[k], rc):
+        if not isinstance(l[k], (basestring, rc)):
           return False
       return True
     else:

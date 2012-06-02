@@ -291,6 +291,7 @@ class RiakkitSimpleTest(unittest.TestCase):
     refdoc = SimpleReferenceModel.load(o)
     self.assertEquals(doc.key, refdoc.ref)
 
+
   def test_emdocument(self):
     e = TestEmDocument()
     d = SimpleEmDocumentModel()
@@ -498,6 +499,46 @@ class RiakkitDocumentTests(unittest.TestCase):
     user1.reload()
     self.assertEquals(0, len(user1.comments))
     user1.delete()
+
+  def test_stringRef(self):
+    user = User(username="refstrref", password="123")
+    comment1 = Comment().save()
+    user.comments.append(comment1.key)
+    user.save()
+
+    user.reload()
+    self.assertTrue(1, len(user.comments))
+    self.assertTrue(comment1.key, user.comments[0].key)
+
+    user.delete()
+    comment1.delete()
+
+  def test_changeRef(self):
+    user1 = User(username="user1", password="123").save()
+    user2 = User(username="user2", password="123").save()
+
+    comment = Comment(author=user1.key).save()
+    comment.reload()
+    user1.reload()
+    self.assertEquals(comment.author.key, user1.key)
+    self.assertEquals(1, len(user1.comments))
+    self.assertEquals(comment.key, user1.comments[0].key)
+
+    comment.author = user2
+    comment.save()
+
+    user1.reload()
+    user2.reload()
+    comment.reload()
+
+    self.assertEquals(0, len(user1.comments))
+    self.assertEquals(1, len(user2.comments))
+    self.assertEquals(comment.key, user2.comments[0].key)
+    self.assertEquals(user2.key, comment.author.key)
+
+    user1.delete()
+    user2.delete()
+    comment.delete()
 
   def test_uniques(self):
     user1 = User()
