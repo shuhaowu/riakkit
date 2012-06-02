@@ -418,7 +418,7 @@ class ReferenceBaseProperty(BaseProperty):
           return False
       return True
     else:
-      return isinstance(l, (rc, NONE_TYPE))
+      return isinstance(l, (rc, basestring, NONE_TYPE))
 
   def attemptLoad(self, value): # TODO: Is this a hack?...
     if self.clstype == 1 or isinstance(value, (self.reference_class, NONE_TYPE)): # SimpleDocument
