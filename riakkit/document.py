@@ -440,7 +440,13 @@ class Document(SimpleDocument):
 
     return doc
 
-  get = load
+  @classmethod
+  def get(cls, key, cached=True, r=None):
+    """Same as load, but the default of the cached is True.
+
+    This method is usually used and usually you just need a cached copy if
+    available."""
+    return cls.load(key, cached, r)
 
   @classmethod
   def exists(cls, key, r=None):

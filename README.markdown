@@ -117,7 +117,7 @@ Since the title is required.. we cannot save if it's not filled out.
 
 What about getting it from the database?
 
-    >>> same_post = BlogPost.get(key)
+    >>> same_post = BlogPost.get(key, False) # False means that we don't want the cached copy, but reload the object from the database even if it''s available in cache
     >>> print same_post
     Hello:mrrow
 
@@ -201,7 +201,7 @@ You can link to a "foreign" document very easily. Let me illustrate:
     <__main__.User object at ...>
     >>> print user.post.title
     Hello
-    >>> same_user = User.get(user.key)
+    >>> same_user = User.load(user.key)
     >>> print same_user.post.title
     Hello
 
@@ -470,7 +470,7 @@ Now let's save the object.
 
 We can now retrieve it again and see if this worked.
 
-    >>> same_demo = Demo.get(demo_obj.key)
+    >>> same_demo = Demo.get(demo_obj.key, False) # This False means that we want to reload the object even if it is cached
     >>> print same_demo.test_list
     [0, 1, 2]
     >>> print same_demo.test_dict.hello
@@ -583,7 +583,7 @@ Alright, let's do this the right way this time:
     regular
     >>> print the_admin.level
     regular
-    >>> same_website = Website.get(the_website.key)
+    >>> same_website = Website.get(the_website.key, False) # This False signifies that we don't want the cached copy and wants to reload it
     >>> print same_website.admin.email
     admin@thekks.net
     >>> print isinstance(same_website.admin, Admin)
@@ -679,7 +679,7 @@ You can also extend documents with bucket_name defined.
     >>> ed.test_property = "mrrow"
     >>> ed.save() #doctest: +ELLIPSIS
     <...>
-    >>> ed1 = ExtendedDocument.get(ed.key)
+    >>> ed1 = ExtendedDocument.load(ed.key) # load is the same as get(key, False)
     >>> print ed1.test_property
     mrrow
 

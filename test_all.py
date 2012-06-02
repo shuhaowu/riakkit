@@ -730,8 +730,8 @@ def deleteAllKeys(client, bucketname):
 
 if __name__ == "__main__":
   import sys
-  arg = sys.argv[1] if len(sys.argv) > 1 else "alltests"
-  if arg == "doctest":
+  arg = sys.argv[1] if len(sys.argv) > 1 else "all"
+  if arg in ("doctest", "all"):
     import doctest
     import os.path
     print "Running doctests from README.md ..."
@@ -746,20 +746,26 @@ if __name__ == "__main__":
 
     for bucket in buckets_to_be_cleaned:
       deleteAllKeys(riak.RiakClient(), bucket)
-  else:
-    base = unittest.TestSuite()
-    base.addTest(unittest.makeSuite(RiakkitBaseTest))
 
-    simple = unittest.TestSuite()
-    simple.addTest(unittest.makeSuite(RiakkitSimpleTest))
+    if arg == "doctest":
+      sys.exit(0)
+    else:
+      arg = "alltests"
 
-    document = unittest.TestSuite()
-    document.addTest(unittest.makeSuite(RiakkitDocumentTests))
 
-    properties = unittest.TestSuite()
-    properties.addTest(unittest.makeSuite(RiakkitPropertyTests))
+  base = unittest.TestSuite()
+  base.addTest(unittest.makeSuite(RiakkitBaseTest))
 
-    alltests = unittest.TestSuite([base, simple, document, properties])
+  simple = unittest.TestSuite()
+  simple.addTest(unittest.makeSuite(RiakkitSimpleTest))
 
-    suite = eval(arg)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+  document = unittest.TestSuite()
+  document.addTest(unittest.makeSuite(RiakkitDocumentTests))
+
+  properties = unittest.TestSuite()
+  properties.addTest(unittest.makeSuite(RiakkitPropertyTests))
+
+  alltests = unittest.TestSuite([base, simple, document, properties])
+
+  suite = eval(arg)
+  unittest.TextTestRunner(verbosity=2).run(suite)
