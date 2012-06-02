@@ -365,6 +365,9 @@ class DateTimeProperty(BaseProperty):
 
   def defaultValue(self):
     """Returns the default specified or now."""
+    if callable(self.default):
+      return self.default()
+
     return self.default or datetime.datetime.fromtimestamp(time.time())
 
 
