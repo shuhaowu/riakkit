@@ -13,8 +13,25 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with RiakKit.  If not, see <http://www.gnu.org/licenses/>.
 
-"""This module provides some utility function for both internal and external
-uses."""
+from uuid import uuid1
+
+
+uuid1Key = lambda kwargs: uuid1().hex
+uuid1Key.__doc__ = """
+Generates an UUID1 key. Used for Document and SimpleDocument. The arg kwargs
+has no effect, only to be compatible with SimpleDocument and Document."""
+
+def getUniqueListGivenBucketName(bucketName, propertyName):
+  """Gets the bucket name that enforces the uniqueness of a certain property.
+
+  Args:
+    bucketName: The name of the bucket of the class
+    propertyName: The property name
+
+  Returns:
+    Returns the bucket name.
+  """
+  return "_%s_ul_%s" % (bucketName, propertyName)
 
 def walkParents(parents, bases=("Document", "type", "object")):
   """Walks through the parents and return each parent class object uptil the
@@ -108,12 +125,3 @@ def mediocreCopy(obj):
   if isinstance(obj, dict):
     return dict(mediocreCopy(i) for i in obj.iteritems())
   return obj
-
-if __name__ == "__main__": # This should be in some sort of unittest
-  class A(object): pass
-  class B(A): pass
-  class C(B): pass
-  class D(A): pass
-  class E(D, C): pass
-  print "Parent walk passed?",
-  print str(walkParents(E.__bases__)) == "[<class '__main__.D'>, <class '__main__.C'>, <class '__main__.A'>, <class '__main__.B'>]"

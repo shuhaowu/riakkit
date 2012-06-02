@@ -15,15 +15,17 @@
 #
 # This file contains some common validators that's useful for app development.
 
-"""This file contains some common validators that will be used in app
-development for convinience purposes. Most of these can be plugged right into
-the validators field for a Document.
+"""This file contains some common validators and converters that will be used
+in app development for convinience purposes. Most of these can be plugged right
+into the validators field for a Document.
 
 Most of these functions are inline lambda funcitons.
 
 """
 
 import re
+from uuid import uuid1
+from hashlib import sha256
 
 _emailRegex = re.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", flags=re.I)
 
@@ -38,5 +40,12 @@ _urlRegex = re.compile(
   )
 
 _regexMatch = lambda x, r: True if x is None else bool(r.match(x.strip().lower()))
+
+# Validators
 emailValidator = lambda x: _regexMatch(x, _emailRegex) or x == ""
 urlValidator = lambda x: _regexMatch(x, _urlRegex) or x == ""
+
+# Password stuff
+generateSalt = lambda: uuid1().hex + uuid1().hex
+hashPassword = lambda password, salt: sha256(password + salt).hexdigest()
+checkPassword = lambda password, passwordInDb: hashPassword(password, passwordInDb.salt) == passwordInDb.hash

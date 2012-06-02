@@ -1,3 +1,4 @@
+
 # This file is part of RiakKit.
 #
 # RiakKit is free software: you can redistribute it and/or modify
@@ -77,4 +78,3 @@ class MapReduceQuery(object):
       A list containing all the Documents
     """
     return map(lambda link: self.cls.load(link.get()), self.riak_links)
-

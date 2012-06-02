@@ -14,4 +14,5 @@
 # along with RiakKit.  If not, see <http://www.gnu.org/licenses/>.
 
 class RiakkitError(Exception): pass
-class NotFoundError(Exception): pass
+class ValidationError(RiakkitError): pass
+class NotFoundError(RiakkitError): pass

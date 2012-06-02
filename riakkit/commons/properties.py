@@ -15,10 +15,12 @@
 
 import datetime
 import time
-from riakkit.exceptions import RiakkitError
+from riakkit.commons.exceptions import RiakkitError
+from riakkit.helpers import generateSalt, hashPassword, checkPassword
+from uuid import uuid1
+from hashlib import sha256
 
 NONE_TYPE = type(None)
-
 _valueOrList = lambda value: [] if value is None else value
 
 class BaseProperty(object):
@@ -62,6 +64,7 @@ class BaseProperty(object):
     self.forwardprocessors = _valueOrList(forwardprocessors)
     self.backwardprocessors = _valueOrList(backwardprocessors)
     self.standardprocessors = _valueOrList(standardprocessors)
+    self.name = None
 
   def _processValue(self, value, processors):
     if callable(processors):
@@ -159,6 +162,7 @@ class BaseProperty(object):
     """
     if callable(self.default):
       return self.default()
+
     return self.default
 
 
@@ -172,8 +176,8 @@ class DictProperty(BaseProperty):
   class DotDict(dict):
     """A dictionary but allows dot notation to access the attributes
     (strings at least)
-
     """
+
     __getattr__ = dict.__getitem__
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
@@ -183,10 +187,6 @@ class DictProperty(BaseProperty):
   def standardize(self, value):
     value = BaseProperty.standardize(self, value)
     return DictProperty.DotDict(value)
-
-  def convertToDb(self, value):
-    value = BaseProperty.convertToDb(self, value)
-    return dict(value)
 
   def convertFromDb(self, value):
     value = DictProperty.DotDict(value)
@@ -228,7 +228,17 @@ class IntegerProperty(BaseProperty):
     return int(value)
 
   def validate(self, value):
-    return BaseProperty.validate(self, value) and isinstance(value, (int, long, NONE_TYPE))
+    if value is None:
+      checked = True
+    else:
+      try:
+        int(value)
+      except ValueError:
+        checked = False
+      else:
+        checked = True
+
+    return BaseProperty.validate(self, value) and checked
 
 class FloatProperty(BaseProperty):
   """Floating point property"""
@@ -238,7 +248,17 @@ class FloatProperty(BaseProperty):
     return float(value)
 
   def validate(self, value):
-    return BaseProperty.validate(self, value) and isinstance(value, (float, int, long, NONE_TYPE))
+    if value is None:
+      checked = True
+    else:
+      try:
+        float(value)
+      except ValueError:
+        checked = False
+      else:
+        checked = True
+
+    return BaseProperty.validate(self, value) and checked
 
 class BooleanProperty(BaseProperty):
   """Boolean property. Pretty self explanatory."""
@@ -358,7 +378,6 @@ class DynamicProperty(BaseProperty):
   Python json module...
   """
 
-
 class ReferenceBaseProperty(BaseProperty):
   def __init__(self, reference_class, collection_name=None, required=False):
     """Initializes a Reference Property
@@ -377,6 +396,10 @@ class ReferenceBaseProperty(BaseProperty):
                        for detailed tutorial.
     """
     BaseProperty.__init__(self, required=required)
+    if not reference_class._clsType:
+      raise TypeError("Reference property cannot be constructed with class '%s'" % reference_class.__name__)
+
+    self.clstype = reference_class._clsType
     self.reference_class = reference_class
     self.collection_name = collection_name
     self.is_reference_back = False
@@ -395,45 +418,65 @@ class ReferenceBaseProperty(BaseProperty):
           return False
       return True
     else:
-      return isinstance(l, (rc, NONE_TYPE))
+      return isinstance(l, (rc, basestring, NONE_TYPE))
+
+  def attemptLoad(self, value): # TODO: Is this a hack?...
+    if self.clstype == 1 or isinstance(value, (self.reference_class, NONE_TYPE)): # SimpleDocument
+      return value
+    else: # Document, EmDocument
+      return self.reference_class.load(value, True)
+
+  def attemptToDb(self, obj):
+    if isinstance(obj, self.reference_class):
+      return obj.key
+    elif isinstance(obj, (basestring, NONE_TYPE)):
+      return obj
+    else:
+      raise TypeError("WTF happened. %s.%s cannot have the type of %s" % (self.reference_class.__name__, self.name, str(type(obj))))
 
   def validate(self, value):
     check = self._checkForReferenceClass(value)
     return BaseProperty.validate(self, value) and check
 
+  def deleteReference(self, doc, ref):
+    return False
+
 class ReferenceProperty(ReferenceBaseProperty):
   def convertToDb(self, value):
     value = BaseProperty.convertToDb(self, value)
-    return None if value is None else value.key
+    return self.attemptToDb(value)
 
-  def convertFromDb(self, value):
-    if value is not None:
-      value = self.reference_class.load(value, True)
-    return BaseProperty.convertFromDb(self, value)
+  def deleteReference(self, doc, ref):
+    if doc._data[self.name] is None:
+      return False
 
-  def standardize(self, value):
-    value = BaseProperty.standardize(self, value)
-    if isinstance(value, (str, unicode)):
-      return self.reference_class.load(value, True)
-    else:
-      return value
+    doc._data[self.name] = None
+    return True
 
 class MultiReferenceProperty(ReferenceBaseProperty):
   def convertToDb(self, value):
     value = BaseProperty.convertToDb(self, value)
-    return [] if value is None else [v.key for v in value]
+    return [] if value is None else [self.attemptToDb(v) for v in value]
 
-  def convertFromDb(self, value):
-    if value is not None:
-      value = [self.reference_class.load(v, True) for v in value]
-    return BaseProperty.convertFromDb(self, value)
-
-  def standardize(self, value):
-    value = BaseProperty.standardize(self, value)
-    return [self.reference_class.load(v, True) if isinstance(v, (str, unicode)) else v for v in value]
+  def attemptLoad(self, value): # This is called when we do things like len(obj.multiprop). Should somehow erradicate the need for that.
+    return [] if value is None else [ReferenceBaseProperty.attemptLoad(self, v) for v in value]
 
   def defaultValue(self):
     return []
+
+  def deleteReference(self, doc, ref):
+    currentList = doc._data.get(self.name)
+    for i, r in enumerate(currentList): # TODO: Need a better search & destroy algorithm
+      if isinstance(r, self.reference_class):
+        key = r.key
+      else:
+        key = r
+
+      if key == ref.key:
+        currentList.pop(i) # This is a reference, which should modify the original list.
+        return True
+
+    return False
 
 class DictReferenceProperty(ReferenceBaseProperty):
   """Dictionary based reference property.
@@ -446,6 +489,14 @@ class DictReferenceProperty(ReferenceBaseProperty):
     if self.collection_name:
       raise RiakkitError("collection_name not allowed with DictReferenceProperty!")
 
+
+  def attemptLoad(self, value):
+    new_values = {}
+    for key in value:
+      new_values[key] = ReferenceBaseProperty.attemptToLoad(self, value[key]) # key != value[key].key
+
+    return new_values
+
   def convertToDb(self, value):
     value = BaseProperty.convertToDb(self, value)
     if value is None:
@@ -453,27 +504,25 @@ class DictReferenceProperty(ReferenceBaseProperty):
 
     new_values = {}
     for key in value:
-      new_values[key] = value[key].key # key != value[key].key
+      new_values[key] = self.attemptToDb(value[key]) # key != value[key].key
 
     return new_values
 
   def convertFromDb(self, value):
-    if value is not None:
-      for key in value:
-        value[key] = self.reference_class.load(value[key], True)
-    else:
+    if value is None:
       value = {}
     return BaseProperty.convertFromDb(self, value)
 
-  def standardize(self, value):
-    value = BaseProperty.standardize(self, value)
-    new_values = {}
-    for key in value:
-      new_values[key] = self.reference_class.load(value[key]) if isinstance(value[key], (str, unicode)) else value[key]
-    return new_values
-
   def defaultValue(self):
     return {}
+
+  def deleteReference(self, doc, ref):
+    current = doc._data.get(self.name)
+    for k, r in current.iteritems():
+      if r.key == ref.key:
+        current.pop(k)
+        return True
+    return False
 
 class EmDocumentProperty(BaseProperty):
   """The EmDocument property"""
@@ -497,7 +546,7 @@ class EmDocumentProperty(BaseProperty):
     if isinstance(value, self.emdocument_class):
       return value
     elif isinstance(value, dict):
-      return self.emdocument_class(value)
+      return self.emdocument_class(**value)
     elif value is None:
       return None
     else:
@@ -505,11 +554,11 @@ class EmDocumentProperty(BaseProperty):
 
   def convertToDb(self, value):
     value = BaseProperty.convertToDb(self, value)
-    return None if value is None else value.dbFriendlyData()
+    return None if value is None else value.serialize()
 
   def convertFromDb(self, value):
     if value is not None:
-      value = self.emdocument_class(self.emdocument_class.cleanupDataFromDatabase(value))
+      value = self.emdocument_class.constructObject(value)
     return BaseProperty.convertFromDb(self, value)
 
 class EmDocumentsDictProperty(BaseProperty):
@@ -538,7 +587,7 @@ class EmDocumentsDictProperty(BaseProperty):
       if isinstance(x, (self.emdocument_class, NONE_TYPE)):
         value = x
       elif isinstance(x, dict):
-        value = self.emdocument_class(x)
+        value = self.emdocument_class(**x)
       else:
         raise TypeError("The type of the EmDocument must be either dict or the class itself.")
       return value
@@ -585,13 +634,13 @@ class EmDocumentsDictProperty(BaseProperty):
 
     value = dict(value)
     for k, v in value.iteritems():
-      value[k] = v.dbFriendlyData()
+      value[k] = v.serialize()
     return value
 
   def convertFromDb(self, value):
     if value is not None:
       for k, v in value.iteritems():
-        value[k] = self.emdocument_class.cleanupDataFromDatabase(v)
+        value[k] = self.emdocument_class.constructObject(v)
       value = EmDocumentsDictProperty.EmDocumentsDict(self.emdocument_class, value)
     return BaseProperty.convertFromDb(self, value)
 
@@ -631,7 +680,7 @@ class EmDocumentsListProperty(BaseProperty):
       if isinstance(x, (self.emdocument_class, NONE_TYPE)):
         value = x
       elif isinstance(x, dict):
-        value = self.emdocument_class(x)
+        value = self.emdocument_class(**x)
       else:
         raise TypeError("The type of the EmDocument must be either dict or the class itself.")
       return value
@@ -672,15 +721,30 @@ class EmDocumentsListProperty(BaseProperty):
 
     value = list(value)
     for i, v in enumerate(value):
-      value[i] = v.dbFriendlyData()
+      value[i] = v.serialize()
     return value
 
   def convertFromDb(self, value):
     if value is not None:
       for i, v in enumerate(value):
-        value[i] = self.emdocument_class.cleanupDataFromDatabase(v)
+        value[i] = self.emdocument_class.constructObject(v)
       value = EmDocumentsListProperty.EmDocumentsList(self.emdocument_class, value)
     return BaseProperty.convertFromDb(self, value)
 
   def defaultValue(self):
     return EmDocumentsListProperty.EmDocumentsList(self.emdocument_class)
+
+## Value Added Pack Starts Here
+
+class PasswordProperty(BaseProperty):
+  def standardize(self, value):
+    if not isinstance(value, basestring): # Feel like i'm doing too much of this. Isn't python all about ducttyping?
+      raise TypeError("Password must be a string!")
+    password = DictProperty.DotDict()
+    salt = generateSalt()
+    password.salt = salt
+    password.hash = hashPassword(value, salt)
+    return password
+
+  def convertFromDb(self, value):
+    return DictProperty.DotDict(value)
