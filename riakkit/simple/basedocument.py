@@ -69,7 +69,15 @@ class BaseDocument(object):
       kwargs: The keyword arguments to merge into the object.
     """
     self.clear()
-    self.mergeData(kwargs)
+
+    # TODO: combine with mergeData
+    keys = set(self._meta.keys())
+    for name, value in kwargs.iteritems():
+      self.__setattr__(name, value)
+      keys.discard(name)
+
+    for name in keys:
+      self._data[name] = self._meta[name].defaultValue()
 
   def _attrError(self, name):
     raise AttributeError("Attribute %s not found with %s." %
