@@ -21,7 +21,7 @@ It also import SimpleDocument, BaseDocument, and Document. This also sets up
 EmDocument"""
 
 from riakkit.simple import SimpleDocument, BaseDocument
-EmDocument = SimpleDocument
+EmDocument = BaseDocument
 from riakkit.document import Document
 from riakkit.commons.properties import *
 from riakkit.commons.exceptions import *
