@@ -506,7 +506,6 @@ class RiakkitDocumentTests(unittest.TestCase):
     user.comments.append(comment1.key)
     user.save()
 
-
     user.reload()
     self.assertTrue(1, len(user.comments))
     self.assertTrue(comment1.key, user.comments[0].key)
@@ -516,6 +515,7 @@ class RiakkitDocumentTests(unittest.TestCase):
 
   def test_changeCollection(self):
     user = User(username="changecol", password="123")
+
     comment1 = Comment(author=user).save()
     comment2 = Comment(author=user).save()
 
@@ -746,7 +746,7 @@ def deleteAllKeys(client, bucketname):
 
 if __name__ == "__main__":
   import sys
-  arg = sys.argv[1] if len(sys.argv) > 1 else "alltests"
+  arg = sys.argv[1] if len(sys.argv) > 1 else "all"
   if arg in ("doctest", "all"):
     import doctest
     import os.path

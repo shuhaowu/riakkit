@@ -105,6 +105,7 @@ class DocumentMetaclass(BaseDocumentMetaclass):
       rcls._meta[colname] = MultiReferenceProperty(reference_class=new_class)
       rcls._meta[colname].name = colname
       rcls._meta[colname].is_reference_back = back_name
+      rcls._references.append(colname)
 
     return new_class
 
@@ -155,7 +156,7 @@ class Document(SimpleDocument):
 
     self.__class__.instances[self.key] = self
 
-  def save(self, w=None, dw=None):
+  def save(self, w=None, dw=None, endpoint=False):
     """Saves the document into the database.
 
     This will save the object to the database. All linked objects will be saved
@@ -191,61 +192,65 @@ class Document(SimpleDocument):
 
     # Process references
     for name in self._references:
-      if self._obj:
-        originalValues = self._obj.get_data().get(name, None)
-        if originalValues is None:
-          originalValues = []
-        elif not isinstance(originalValues, list):
-          originalValues = [originalValues]
-      else:
-        originalValues = []
-
-      if isinstance(self._meta[name], ReferenceProperty):
-        docs = [getattr(self, name)]
-      else:
-        docs = getattr(self, name)
-
-      dockeys = set()
+      currentDocsKeys = None
       colname = self._meta[name].collection_name
 
-      for doc in docs: # These are foreign documents
-        if doc is None:
-          continue
+      if colname:
+        currentDocsKeys = set()
+        if isinstance(self._meta[name], ReferenceProperty):
+          docs = [getattr(self, name)]
+        else:
+          docs = getattr(self, name)
 
-        dockeys.add(doc.key)
-
-        currentList = getattr(doc, colname, [])
-        found = False # Linear search algorithm. Maybe binary search??
-        for d in currentList:
-          if d.key == self.key:
-            found = True
-            break
-        if not found:
-          currentList.append(self)
-          doc._data[colname] = currentList
-          othersToBeSaved.append(doc)
-
-      for dockey in originalValues:
-        if dockey is None:
-          continue
-
-        # This means that this specific document is not in the current version,
-        # but last version. Hence it needs to be cleaned from the last version.
-        if dockey not in dockeys:
-          try:
-            doc = self._meta[name].reference_class.load(dockey, True)
-          except NotFoundError: # TODO: Another hackjob? This is _probably_ due to we're back deleting the reference.
+        for doc in docs: # These are foreign documents
+          if doc is None:
             continue
 
-          currentList = doc._data.get(colname, [])
+          currentDocsKeys.add(doc.key)
 
-          # TODO: REFACTOR WITH ABOVE'S LINEAR SEARCH ALGO
-          for i, d in enumerate(currentList):
+          currentList = getattr(doc, colname, [])
+          found = False # Linear search algorithm. Maybe binary search??
+          for d in currentList:
             if d.key == self.key:
-              currentList.pop(i)
-              doc._data[colname] = currentList
-              othersToBeSaved.append(doc)
+              found = True
               break
+          if not found:
+            currentList.append(self)
+            doc._data[colname] = currentList
+            othersToBeSaved.append((doc, False))
+
+
+      colname = colname or self._meta[name].is_reference_back
+
+      if colname:
+        if self._obj:
+          originalValues = self._obj.get_data().get(name, [])
+          if not isinstance(originalValues, list):
+            originalValues = [originalValues]
+        else:
+          originalValues = []
+
+        if currentDocsKeys is None:
+          currentDocsKeys = set()
+          for d in self._data[name]:
+            if d is None:
+              continue
+            else:
+              currentDocsKeys.add(getattr(d, "key", d))
+
+        for dockey in originalValues:
+          if dockey is None:
+            continue
+
+          # This means that this specific document is not in the current version,
+          # but last version. Hence it needs to be cleaned from the last version.
+          if dockey not in currentDocsKeys:
+            try:
+              doc = self._meta[name].reference_class.load(dockey, True)
+            except NotFoundError: # TODO: Another hackjob? This is _probably_ due to we're back deleting the reference.
+              continue
+            if doc._meta[colname].deleteReference(doc, self):
+              othersToBeSaved.append((doc, True)) # CODE-REVIEW: For some reason i feel this won't work for some cases.
 
 
     if self._obj:
@@ -258,7 +263,7 @@ class Document(SimpleDocument):
 
     self._obj.store(w=w, dw=dw)
     for name in self._uniques:
-      if self._data[name]:
+      if self._data[name] and not self._meta[name].unique_bucket.get(self._data[name]).exists():
         obj = self._meta[name].unique_bucket.new(self._data[name], {"key" : self.key})
         obj.store(w=w, dw=dw)
 
@@ -267,8 +272,9 @@ class Document(SimpleDocument):
 
     self._saved = True
 
-    for doc in othersToBeSaved:
-      doc.save(w, dw)
+    if not endpoint: # CODE-REVIEW: Total hackjob. This gotta be redone
+      for doc, end in othersToBeSaved:
+        doc.save(w, dw, end)
 
     return self
 
