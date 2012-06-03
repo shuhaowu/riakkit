@@ -260,6 +260,7 @@ class Document(SimpleDocument):
 
     self._obj.set_links(self.links(True), True)
     self._obj.set_indexes(self.indexes())
+    self.key = self._obj.get_key()
 
     self._obj.store(w=w, dw=dw)
     for name in self._uniques:
@@ -301,19 +302,20 @@ class Document(SimpleDocument):
     else:
       raise NotFoundError("Object not saved!")
 
+  def _deleteBackRef(self, col_name, docs):
+    docs_to_be_saved = []
+    for doc in docs:
+      if doc._meta[col_name].deleteReference(doc, self):
+        docs_to_be_saved.append(doc)
+
+    return docs_to_be_saved
+
   def delete(self, rw=None):
     """Deletes this object from the database. Same interface as riak-python.
 
     However, this object can still be resaved. Not sure what you would do
     with it, though.
     """
-    def deleteBackRef(col_name, docs):
-      docs_to_be_saved = []
-      for doc in docs:
-        if doc._meta[col_name].deleteReference(doc, self):
-          docs_to_be_saved.append(doc)
-
-      return docs_to_be_saved
 
     if self._obj is not None:
       docs_to_be_saved = []
@@ -327,7 +329,7 @@ class Document(SimpleDocument):
           if docs is not None:
             if isinstance(docs, Document):
               docs = [docs]
-            docs_to_be_saved.extend(deleteBackRef(col_name, docs))
+            docs_to_be_saved.extend(self._deleteBackRef(col_name, docs))
 
       self.__class__.instances.pop(self.key, False)
 
