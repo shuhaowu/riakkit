@@ -516,8 +516,13 @@ class RiakkitDocumentTests(unittest.TestCase):
   def test_changeCollection(self):
     user = User(username="changecol", password="123")
 
-    comment1 = Comment(author=user).save()
     comment2 = Comment(author=user).save()
+    comment1 = Comment(author=user).save()
+
+    self.assertEquals(comment1, user.comments[-1])
+    user.comments = [comment1, comment2]
+    user.save()
+    user.reload()
 
     user.comments.pop() # removed comment2
     user.save()
