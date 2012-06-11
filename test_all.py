@@ -439,6 +439,29 @@ class RiakkitDocumentTests(unittest.TestCase):
 
     user1.delete()
 
+  def test_reloadWith2i(self):
+    user1 = User(username="foo_reloadWith2i", password="123")
+    user1.addIndex("field_bin", "lol")
+    user1.save()
+    user1k = user1.key
+    del user1
+    user1 = User.load(user1k)
+    self.assertEquals({"lol"}, user1.index("field_bin"))
+    user1.delete()
+
+  def test_reloadWithLink(self):
+    user1 = User(username="foo_reloadWithLink", password="123")
+    user2 = User(username="bar_reloadWithLink", password="123")
+
+    user1.addLink(user2, "test")
+    user1.save()
+    user1 = user1.key
+    user1 = User.load(user1)
+    self.assertEquals(1, len(user1.links()))
+    self.assertEquals(user2.key, list(user1.links())[0][0].key)
+    user1.delete()
+    user2.delete()
+
   def test_exists(self):
     user1 = User(username="foo_exists", password="123")
     user1.save()

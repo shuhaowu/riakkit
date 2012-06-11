@@ -150,7 +150,8 @@ class Document(SimpleDocument):
     self._obj = self.bucket.get(self.key) if saved else None
     self._links = set()
     self._indexes = {}
-    self._saved = saved
+    self.__dict__["saved"] = saved
+    self.__dict__["deleted"] = False
 
     BaseDocument.__init__(self, **kwargs)
 
@@ -271,7 +272,8 @@ class Document(SimpleDocument):
     for bucket, key in uniquesToBeDeleted:
       bucket.get(key).delete()
 
-    self._saved = True
+    self.saved = True
+    self.deleted = False
 
     if not endpoint: # CODE-REVIEW: Total hackjob. This gotta be redone
       for doc, end in othersToBeSaved:
@@ -296,9 +298,16 @@ class Document(SimpleDocument):
     """
     if self._obj:
       self._obj.reload(r=r, vtag=vtag)
-      self.deserialize(deepcopy(self._obj.get_data()))
-      # Handle 2i, Links
-      self._saved = True
+      self.deserialize(self._obj.get_data())
+      self.setIndexes(self._getIndexesFromRiakObj(self._obj))
+      self.setLinks(self._getLinksFromRiakObj(self._obj))
+      if not self._obj.exists():
+        self.deleted = True
+        self.saved = False
+      else:
+        # TODO: Handle 2i, Links
+        self.saved = True
+        self.deleted = False
     else:
       raise NotFoundError("Object not saved!")
 
@@ -341,7 +350,8 @@ class Document(SimpleDocument):
           obj.delete()
 
       self._obj = None
-      self._saved = False
+      self.saved = False
+      self.deleted = True
 
       for doc in docs_to_be_saved:
         doc.save()
@@ -371,7 +381,7 @@ class Document(SimpleDocument):
       default: The default to return if not available. Defaults to some garbage, which is DocumentMetaclass
 
     Returns:
-      The value or default. If
+      The value or default.
 
     Raises:
       AttributeError if default is not specified and attribute not found
@@ -436,12 +446,11 @@ class Document(SimpleDocument):
       # loading this document.
 
       doc = cls(key, saved=True)
+      doc._obj = robj
       cls.instances[key] = doc
 
-      doc.deserialize(robj.get_data())
-      doc.setIndexes(cls._getIndexesFromRiakObj(robj))
-      doc.setLinks(cls._getLinksFromRiakObj(robj))
-      doc._obj = robj
+      doc.reload()
+
     else:
       if not cached:
         doc.reload()

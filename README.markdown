@@ -283,7 +283,8 @@ searching. The following command will do:
 
 For this tutorial we will do
 
-    search-cmd install users
+    search-cmd install doctest_comments
+    search-cmd install doctest_users
 
 See more at http://wiki.basho.com/Riak-Search.html and
 http://basho.github.com/riak-python-client/tutorial.html#using-search (You
