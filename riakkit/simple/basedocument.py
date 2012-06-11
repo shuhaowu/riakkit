@@ -217,14 +217,16 @@ class BaseDocument(object):
     return self
 
 
-  def clear(self):
+  def clear(self, setdefault=True):
     """Clears the document, clears all the data stored.
 
     Returns:
       self for OOP"""
     self._data = {}
-    for name, prop in self._meta.iteritems():
-      self._data[name] = prop.defaultValue()
+
+    if setdefault:
+      for name, prop in self._meta.iteritems():
+        self._data[name] = prop.defaultValue()
 
     return self
 
@@ -291,10 +293,12 @@ class SimpleDocument(BaseDocument):
 
     self.__dict__["key"] = key
 
+    BaseDocument.__init__(self, **kwargs)
+
+  def clear(self, setdefault=True):
     self._indexes = {}
     self._links = set()
-
-    BaseDocument.__init__(self, **kwargs)
+    return BaseDocument.clear(self, setdefault)
 
   def save(self, **kwargs):
     """Not available in SimpleDocument.

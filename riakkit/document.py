@@ -150,8 +150,6 @@ class Document(SimpleDocument):
     self._obj = self.bucket.get(self.key) if saved else None
     self._links = set()
     self._indexes = {}
-    self.__dict__["saved"] = saved
-    self.__dict__["deleted"] = False
 
     BaseDocument.__init__(self, **kwargs)
 
@@ -298,16 +296,14 @@ class Document(SimpleDocument):
     """
     if self._obj:
       self._obj.reload(r=r, vtag=vtag)
-      self.deserialize(self._obj.get_data())
-      self.setIndexes(self._getIndexesFromRiakObj(self._obj))
-      self.setLinks(self._getLinksFromRiakObj(self._obj))
       if not self._obj.exists():
-        self.deleted = True
-        self.saved = False
+        self._deleted()
       else:
-        # TODO: Handle 2i, Links
         self.saved = True
         self.deleted = False
+        self.deserialize(self._obj.get_data())
+        self.setIndexes(self._getIndexesFromRiakObj(self._obj))
+        self.setLinks(self._getLinksFromRiakObj(self._obj))
     else:
       raise NotFoundError("Object not saved!")
 
@@ -349,12 +345,16 @@ class Document(SimpleDocument):
           obj = self._meta[name].unique_bucket.get(self._data[name])
           obj.delete()
 
-      self._obj = None
-      self.saved = False
-      self.deleted = True
+      self._deleted()
 
       for doc in docs_to_be_saved:
         doc.save()
+
+  def _deleted(self):
+    self._obj = None
+    self.saved = False
+    self.deleted = True
+    self.clear(False)
 
   def links(self, riakLinks=False):
     """Gets all the links.
@@ -448,9 +448,7 @@ class Document(SimpleDocument):
       doc = cls(key, saved=True)
       doc._obj = robj
       cls.instances[key] = doc
-
       doc.reload()
-
     else:
       if not cached:
         doc.reload()
