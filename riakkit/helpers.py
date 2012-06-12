@@ -24,8 +24,6 @@ Most of these functions are inline lambda funcitons.
 """
 
 import re
-from uuid import uuid1
-from hashlib import sha256
 
 _emailRegex = re.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", flags=re.I)
 
@@ -46,6 +44,22 @@ emailValidator = lambda x: _regexMatch(x, _emailRegex) or x == ""
 urlValidator = lambda x: _regexMatch(x, _urlRegex) or x == ""
 
 # Password stuff
-generateSalt = lambda: uuid1().hex + uuid1().hex
-hashPassword = lambda password, salt: sha256(password + salt).hexdigest()
+try:
+  import bcrypt
+except ImportError:
+  import sys
+  import string
+  import random
+  from hashlib import sha256
+
+  print >> sys.stderr, "========================================================================"
+  print >> sys.stderr, "WARNING: BCRYPT NOT AVAILABLE. INSTALL PY-BCRYPT FOR ADDITIONAL SECURITY"
+  print >> sys.stderr, "========================================================================"
+
+  generateSalt = lambda: "".join([random.choice(string.printable) for i in xrange(25)])
+  hashPassword = lambda password, salt: sha256(password + salt).hexdigest()
+else:
+  generateSalt = lambda: bcrypt.gensalt(10)
+  hashPassword = lambda password, salt: bcrypt.hashpw(password, salt)
+
 checkPassword = lambda password, passwordInDb: hashPassword(password, passwordInDb.salt) == passwordInDb.hash

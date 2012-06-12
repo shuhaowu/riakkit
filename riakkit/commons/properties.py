@@ -18,7 +18,6 @@ import time
 from riakkit.commons.exceptions import RiakkitError
 from riakkit.helpers import generateSalt, hashPassword, checkPassword
 from uuid import uuid1
-from hashlib import sha256
 
 NONE_TYPE = type(None)
 _valueOrList = lambda value: [] if value is None else value
