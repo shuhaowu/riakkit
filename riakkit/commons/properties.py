@@ -73,6 +73,19 @@ class BaseProperty(object):
         value = processor(value)
     return value
 
+  def hasValue(self, value):
+    """Checks if a value exists in the db if the unique flag is turned on.
+
+    Args:
+      value: The value to check. No processing will be done here.
+
+    Returns:
+      True/False if it exist or not. None if the unique flag is not on.
+    """
+    if self.unique:
+      return self.unique_bucket.get(value).exists()
+    return None
+
   def convertToDb(self, value):
     """Converts the value from the access form a DB valid form
 

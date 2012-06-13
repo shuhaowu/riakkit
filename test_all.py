@@ -593,6 +593,8 @@ class RiakkitDocumentTests(unittest.TestCase):
     user2 = User(username="foo", password="123")
     self.assertRaises(ValueError, user2.save)
 
+    self.assertTrue(User.username.hasValue("foo"))
+
     self.assertTrue(User._meta["username"].unique_bucket.get("foo").exists())
     user1.delete()
     c = riak.RiakClient()

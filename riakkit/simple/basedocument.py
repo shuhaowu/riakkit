@@ -39,6 +39,11 @@ class BaseDocumentMetaclass(type):
 
     return type.__new__(cls, clsname, parents, attrs)
 
+  def __getattr__(self, name):
+    if name in self._meta:
+      return self._meta[name]
+    raise AttributeError
+
 DEFAULT_VALIDATOR = lambda x: True
 DEFAULT_CONVERTER = lambda x: x
 
