@@ -765,6 +765,21 @@ class RiakkitPropertyTests(unittest.TestCase):
     self.assertEquals(data["listprop"], convertFromDb[0].listprop)
     self.assertEquals(data["intprop"], convertFromDb[0].intprop)
 
+  def test_setProperty(self):
+    prop = SetProperty()
+    data = [1, 2, 3]
+    v = prop.standardize(data)
+
+    self.assertEquals({1, 2, 3}, v)
+    to = prop.convertToDb(v)
+    self.assertEquals(3, len(to))
+    self.assertTrue(1 in to)
+    self.assertTrue(2 in to)
+    self.assertTrue(3 in to)
+
+    fr = prop.convertFromDb(to)
+    self.assertEquals({1, 2, 3}, fr)
+
   def test_emdocumentDictProperty(self):
     prop = EmDocumentsDictProperty(emdocument_class=TestEmDocument)
 

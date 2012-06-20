@@ -225,6 +225,38 @@ class ListProperty(BaseProperty):
     """
     return self.default or []
 
+class SetProperty(BaseProperty):
+  """A set, using python's built-in set."""
+  def standardize(self, value):
+    value = BaseProperty.standardize(self, value)
+    if value is None: return None
+    return set(value)
+
+  def convertToDb(self, value):
+    value = BaseProperty.convertToDb(self, value)
+    if value is None: return None
+    return list(value)
+
+  def convertFromDb(self, value):
+    if value is not None:
+      value = set(value)
+    return BaseProperty.convertFromDb(self, value)
+
+  def validate(self, value): # TODO: Combine this so it's not duplicate work?
+    if value is None:
+      checked = True
+    try:
+      set(value)
+    except TypeError:
+      checked = False
+    else:
+      checked = True
+
+    return checked and BaseProperty.validate(self, value)
+
+  def defaultValue(self):
+    return BaseProperty.defaultValue(self) or set()
+
 class StringProperty(BaseProperty):
   """String property. By default this converts strings to unicode."""
   def standardize(self, value):
@@ -250,7 +282,7 @@ class IntegerProperty(BaseProperty):
       else:
         checked = True
 
-    return BaseProperty.validate(self, value) and checked
+    return checked and BaseProperty.validate(self, value)
 
 class FloatProperty(BaseProperty):
   """Floating point property"""
