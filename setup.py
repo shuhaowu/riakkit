@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with RiakKit.  If not, see <http://www.gnu.org/licenses/>.
 
-from setuptools import setup
+from setuptools import setup, find_packages
 import riakkit
 
 setup(
@@ -26,7 +26,7 @@ setup(
   license = "LGPL",
   keywords = "riak object mapper riakkit database orm",
   url = "https://github.com/ultimatebuster/riakkit",
-  packages = ["riakkit"],
+  packages = find_packages(),
   classifiers = [
     "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
