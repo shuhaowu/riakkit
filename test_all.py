@@ -421,6 +421,19 @@ class RiakkitDocumentTests(unittest.TestCase):
     self.assertEquals(None, user1.email)
     user1.delete()
 
+  def test_getOrNew(self):
+    self.assertFalse(User.exists("abc"))
+    someuser = User.getOrNew("abc", username="foo_getOrNew", password="123")
+    someuser.save()
+    self.assertTrue(User.exists("abc"))
+    someuser.reload()
+    self.assertEquals("foo_getOrNew", someuser.username)
+    someuser = User.getOrNew("abc", username="foo_getOrNew2", password="123")
+    someuser.save()
+    someuser.reload()
+    self.assertEquals("foo_getOrNew2", someuser.username)
+    someuser.delete()
+
   def test_2i(self):
     user1 = User(username="foo_2i", password="123")
     user1.addIndex("field_bin", "lol")

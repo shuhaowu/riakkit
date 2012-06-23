@@ -464,6 +464,22 @@ class Document(SimpleDocument):
     return cls.load(key, cached, r)
 
   @classmethod
+  def getOrNew(cls, key, cached=True, r=None, **kwargs):
+    """Similar to get, but does not raise error if not found. A new (unsaved)
+    document will be created.
+
+    Args:
+      Everything: The same as get
+      **kwargs: Additional kwargs to merge data into the document.
+    """
+    try:
+      d = cls.load(key, cached, r)
+      d.mergeData(kwargs)
+      return d
+    except NotFoundError:
+      return cls(key=key, **kwargs)
+
+  @classmethod
   def exists(cls, key, r=None):
     """Check if a key exists.
 
