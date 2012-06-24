@@ -213,7 +213,7 @@ class DictProperty(BaseProperty):
     Returns:
       {}
     """
-    return self.default or DictProperty.DotDict()
+    return BaseProperty.defaultValue(self) or DictProperty.DotDict()
 
 class ListProperty(BaseProperty):
   """List property, []"""
@@ -223,7 +223,7 @@ class ListProperty(BaseProperty):
     Returns:
       []
     """
-    return self.default or []
+    return BaseProperty.defaultValue(self) or []
 
 class SetProperty(BaseProperty):
   """A set, using python's built-in set."""
@@ -409,10 +409,7 @@ class DateTimeProperty(BaseProperty):
 
   def defaultValue(self):
     """Returns the default specified or now."""
-    if callable(self.default):
-      return self.default()
-
-    return self.default or datetime.datetime.fromtimestamp(time.time())
+    return BaseProperty.defaultValue(self) or datetime.datetime.fromtimestamp(time.time())
 
 
 class DynamicProperty(BaseProperty):
@@ -561,7 +558,7 @@ class DictReferenceProperty(ReferenceBaseProperty):
     return BaseProperty.convertFromDb(self, value)
 
   def defaultValue(self):
-    return {}
+    return BaseProperty.defaultValue(self) or {}
 
   def deleteReference(self, doc, ref):
     current = doc._data.get(self.name)
@@ -692,7 +689,7 @@ class EmDocumentsDictProperty(BaseProperty):
     return BaseProperty.convertFromDb(self, value)
 
   def defaultValue(self):
-    return EmDocumentsDictProperty.EmDocumentsDict(self.emdocument_class)
+    return BaseProperty.defaultValue(self) or EmDocumentsDictProperty.EmDocumentsDict(self.emdocument_class)
 
 class EmDocumentsListProperty(BaseProperty):
   """Property for a list of EmDocuments"""
@@ -779,7 +776,7 @@ class EmDocumentsListProperty(BaseProperty):
     return BaseProperty.convertFromDb(self, value)
 
   def defaultValue(self):
-    return EmDocumentsListProperty.EmDocumentsList(self.emdocument_class)
+    return BaseProperty.defaultValue(self) or EmDocumentsListProperty.EmDocumentsList(self.emdocument_class)
 
 ## Value Added Pack Starts Here
 
