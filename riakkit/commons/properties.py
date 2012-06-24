@@ -409,7 +409,10 @@ class DateTimeProperty(BaseProperty):
 
   def defaultValue(self):
     """Returns the default specified or now."""
-    return BaseProperty.defaultValue(self) or datetime.datetime.fromtimestamp(time.time())
+    if callable(self.default):
+      return self.default()
+
+    return self.default or datetime.datetime.fromtimestamp(time.time())
 
 
 class DynamicProperty(BaseProperty):
