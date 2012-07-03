@@ -1,6 +1,8 @@
 Riakkit
 =======
 
+Google Groups/Mailing list: https://groups.google.com/forum/#!forum/riakkit or riakkit@googlegroups.com
+
 What is this?..
 ===============
 
