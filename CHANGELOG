@@ -1,0 +1,31 @@
+0.6a
+====
+
+A backward incompatible release of riakkit.
+
+This version is a rewrite of the previous versions to make the code more
+manageable. On top, it should be faster, though it's still quite slow.
+
+Main focus of this release is:
+
+ - Rewriting the base for consistencies.
+ - Introduced SimpleDocuments, BaseDocuments. These serves as lower level
+   abstractions.
+ - Introduced load on demand for reference properties as well as `getRawData`.
+   This means that riakkit won't start a dominoe effect of loading objects from
+   the db
+ - Loads of unittests are written to prevent regressions. More are welcomed!
+ - Introduced SetProperty, PasswordProperty. A note: PasswordProperty uses
+   bcrypt if there is one, otherwise it falls back to sha256, giving you a
+   warning. bcrypt decreases speed significantly, but security increases with it
+   as well.
+
+I don't really remember all the stuff, but you can take a look through the
+commit logs. I try to explain everything.
+
+This version is actively used in another project of mine. It's a fairly large
+scale project. So I can see problems with the current riakkit model (esp. with
+all the automations in the `Document` section). If you have any ideas on how to
+improve performance. Let me know and fork this project!
+
+Cheers.

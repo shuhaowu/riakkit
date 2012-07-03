@@ -24,6 +24,7 @@ Most of these functions are inline lambda funcitons.
 """
 
 import re
+from riakkit.commons import rndstr
 
 _emailRegex = re.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", flags=re.I)
 
@@ -56,7 +57,7 @@ except ImportError:
   print >> sys.stderr, "WARNING: BCRYPT NOT AVAILABLE. INSTALL PY-BCRYPT FOR ADDITIONAL SECURITY"
   print >> sys.stderr, "========================================================================"
 
-  generateSalt = lambda: "".join([random.choice(string.printable) for i in xrange(25)])
+  generateSalt = lambda: rndstr(25)
   hashPassword = lambda password, salt: sha256(password + salt).hexdigest()
 else:
   generateSalt = lambda: bcrypt.gensalt(10)

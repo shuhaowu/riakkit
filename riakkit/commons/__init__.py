@@ -14,12 +14,37 @@
 # along with RiakKit.  If not, see <http://www.gnu.org/licenses/>.
 
 from uuid import uuid1
+import os
 
 
 uuid1Key = lambda kwargs: uuid1().hex
 uuid1Key.__doc__ = """
 Generates an UUID1 key. Used for Document and SimpleDocument. The arg kwargs
-has no effect, only to be compatible with SimpleDocument and Document."""
+has no effect, only to be compatible with SimpleDocument and Document. This
+is the default option."""
+
+# TODO: switch default methods to generate keys.
+_p = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+def rndstr(n):
+  """Generates a random string from a-zA-Z0-9 using os.urandom.
+
+  Could be a way to generate the keys. May collide more, not certain though.
+
+  Args:
+    n: The length of the string.
+  Returns:
+    a n-length string of random characters
+"""
+  t = ""
+  while n > 0:
+    i = ord(os.urandom(1))
+    while i >= 248:
+      i = ord(os.urandom(1))
+    i %= 62
+    t += _p[i]
+    n -= 1
+  return t
+
 
 def getUniqueListGivenBucketName(bucketName, propertyName):
   """Gets the bucket name that enforces the uniqueness of a certain property.
