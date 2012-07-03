@@ -27,6 +27,7 @@ setup(
   keywords = "riak object mapper riakkit database orm",
   url = "https://github.com/ultimatebuster/riakkit",
   packages = find_packages(),
+  install_requires=['riak'],
   classifiers = [
     "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
