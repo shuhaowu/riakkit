@@ -1,0 +1,400 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module riakkit.simple.basedocument</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="riakkit.html"><font color="#ffffff">riakkit</font></a>.<a href="riakkit.simple.html"><font color="#ffffff">simple</font></a>.basedocument</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/shuhao/Dropbox/RandomProjects/riakkit/riakkit/simple/basedocument.py">/home/shuhao/Dropbox/RandomProjects/riakkit/riakkit/simple/basedocument.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;This&nbsp;file&nbsp;is&nbsp;part&nbsp;of&nbsp;RiakKit.<br>
+#<br>
+#&nbsp;RiakKit&nbsp;is&nbsp;free&nbsp;software:&nbsp;you&nbsp;can&nbsp;redistribute&nbsp;it&nbsp;and/or&nbsp;modify<br>
+#&nbsp;it&nbsp;under&nbsp;the&nbsp;terms&nbsp;of&nbsp;the&nbsp;GNU&nbsp;Lesser&nbsp;General&nbsp;Public&nbsp;License&nbsp;as&nbsp;published&nbsp;by<br>
+#&nbsp;the&nbsp;Free&nbsp;Software&nbsp;Foundation,&nbsp;either&nbsp;version&nbsp;3&nbsp;of&nbsp;the&nbsp;License,&nbsp;or<br>
+#&nbsp;(at&nbsp;your&nbsp;option)&nbsp;any&nbsp;later&nbsp;version.<br>
+#<br>
+#&nbsp;RiakKit&nbsp;is&nbsp;distributed&nbsp;in&nbsp;the&nbsp;hope&nbsp;that&nbsp;it&nbsp;will&nbsp;be&nbsp;useful,<br>
+#&nbsp;but&nbsp;WITHOUT&nbsp;ANY&nbsp;WARRANTY;&nbsp;without&nbsp;even&nbsp;the&nbsp;implied&nbsp;warranty&nbsp;of<br>
+#&nbsp;MERCHANTABILITY&nbsp;or&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE.&nbsp;&nbsp;See&nbsp;the<br>
+#&nbsp;GNU&nbsp;Lesser&nbsp;General&nbsp;Public&nbsp;License&nbsp;for&nbsp;more&nbsp;details.<br>
+#<br>
+#&nbsp;You&nbsp;should&nbsp;have&nbsp;received&nbsp;a&nbsp;copy&nbsp;of&nbsp;the&nbsp;GNU&nbsp;Lesser&nbsp;General&nbsp;Public&nbsp;License<br>
+#&nbsp;along&nbsp;with&nbsp;RiakKit.&nbsp;&nbsp;If&nbsp;not,&nbsp;see&nbsp;&lt;<a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="json.html">json</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="__builtin__.html#object">__builtin__.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="riakkit.simple.basedocument.html#BaseDocument">BaseDocument</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="riakkit.simple.basedocument.html#SimpleDocument">SimpleDocument</a>
+</font></dt></dl>
+</dd>
+</dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="__builtin__.html#type">__builtin__.type</a>(<a href="__builtin__.html#object">__builtin__.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="riakkit.simple.basedocument.html#BaseDocumentMetaclass">BaseDocumentMetaclass</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="BaseDocument">class <strong>BaseDocument</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;<a href="#BaseDocument">BaseDocument</a>&nbsp;class&nbsp;is&nbsp;the&nbsp;lowest&nbsp;level&nbsp;of&nbsp;abstraction&nbsp;ther&nbsp;is.&nbsp;This<br>
+is&nbsp;essentially&nbsp;what&nbsp;dictshield&nbsp;has,&nbsp;probably&nbsp;even&nbsp;simpler&nbsp;(having&nbsp;never&nbsp;used<br>
+dictshield&nbsp;in&nbsp;the&nbsp;first&nbsp;place).<br>
+&nbsp;<br>
+It's&nbsp;recommended&nbsp;that&nbsp;this&nbsp;is&nbsp;not&nbsp;used&nbsp;as&nbsp;<a href="#SimpleDocument">SimpleDocument</a>&nbsp;and&nbsp;Document&nbsp;is<br>
+prefered.<br>
+&nbsp;<br>
+EmDocument&nbsp;is&nbsp;currently&nbsp;defined&nbsp;as&nbsp;EmDocument&nbsp;=&nbsp;<a href="#BaseDocument">BaseDocument</a>.&nbsp;However,&nbsp;this<br>
+behaviour&nbsp;may&nbsp;change&nbsp;in&nbsp;the&nbsp;future.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="BaseDocument-__delattr__"><strong>__delattr__</strong></a>(self, name)</dt></dl>
+
+<dl><dt><a name="BaseDocument-__delitem__"><strong>__delitem__</strong></a> = <a href="#BaseDocument-__delattr__">__delattr__</a>(self, name)</dt></dl>
+
+<dl><dt><a name="BaseDocument-__getattr__"><strong>__getattr__</strong></a>(self, name)</dt></dl>
+
+<dl><dt><a name="BaseDocument-__getitem__"><strong>__getitem__</strong></a> = <a href="#BaseDocument-__getattr__">__getattr__</a>(self, name)</dt></dl>
+
+<dl><dt><a name="BaseDocument-__init__"><strong>__init__</strong></a>(self, **kwargs)</dt><dd><tt>Initialize&nbsp;a&nbsp;new&nbsp;<a href="#BaseDocument">BaseDocument</a>.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;kwargs:&nbsp;The&nbsp;keyword&nbsp;arguments&nbsp;to&nbsp;merge&nbsp;into&nbsp;the&nbsp;<a href="__builtin__.html#object">object</a>.</tt></dd></dl>
+
+<dl><dt><a name="BaseDocument-__setattr__"><strong>__setattr__</strong></a>(self, name, value)</dt></dl>
+
+<dl><dt><a name="BaseDocument-__setitem__"><strong>__setitem__</strong></a> = <a href="#BaseDocument-__setattr__">__setattr__</a>(self, name, value)</dt></dl>
+
+<dl><dt><a name="BaseDocument-clear"><strong>clear</strong></a>(self, setdefault<font color="#909090">=True</font>)</dt><dd><tt>Clears&nbsp;the&nbsp;document,&nbsp;clears&nbsp;all&nbsp;the&nbsp;data&nbsp;stored.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;self&nbsp;for&nbsp;OOP</tt></dd></dl>
+
+<dl><dt><a name="BaseDocument-deserialize"><strong>deserialize</strong></a>(self, data)</dt><dd><tt>Deserializes&nbsp;some&nbsp;data&nbsp;into&nbsp;the&nbsp;document.<br>
+&nbsp;<br>
+With&nbsp;this&nbsp;function,&nbsp;we&nbsp;assume&nbsp;the&nbsp;data&nbsp;is&nbsp;from&nbsp;the&nbsp;database,&nbsp;therefore&nbsp;we<br>
+call&nbsp;convertFromDb.&nbsp;This&nbsp;method&nbsp;will&nbsp;also&nbsp;clear&nbsp;the&nbsp;document.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;data:&nbsp;The&nbsp;data,&nbsp;either&nbsp;a&nbsp;dictionary&nbsp;or&nbsp;a&nbsp;json&nbsp;string.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;self&nbsp;for&nbsp;OOP&nbsp;purposes.</tt></dd></dl>
+
+<dl><dt><a name="BaseDocument-mergeData"><strong>mergeData</strong></a>(self, data)</dt><dd><tt>Merges&nbsp;some&nbsp;data&nbsp;into&nbsp;the&nbsp;document.<br>
+&nbsp;<br>
+With&nbsp;this&nbsp;function,&nbsp;we&nbsp;assume&nbsp;the&nbsp;data&nbsp;is&nbsp;from&nbsp;just&nbsp;the&nbsp;input&nbsp;source,<br>
+therefore&nbsp;we&nbsp;call&nbsp;standardize.&nbsp;This&nbsp;method&nbsp;will&nbsp;NOT&nbsp;clear&nbsp;the&nbsp;document.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;data:&nbsp;The&nbsp;data,&nbsp;either&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;a&nbsp;json&nbsp;string.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;self&nbsp;for&nbsp;OOP</tt></dd></dl>
+
+<dl><dt><a name="BaseDocument-serialize"><strong>serialize</strong></a>(self, dictionary<font color="#909090">=True</font>)</dt><dd><tt>Serializes&nbsp;the&nbsp;data&nbsp;to&nbsp;database&nbsp;friendly&nbsp;version.<br>
+&nbsp;<br>
+This&nbsp;*only*&nbsp;returns&nbsp;the&nbsp;dictionary&nbsp;of&nbsp;values.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;dictionary:&nbsp;If&nbsp;True,&nbsp;this&nbsp;function&nbsp;will&nbsp;return&nbsp;a&nbsp;dictionary&nbsp;passed&nbsp;back<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;riak-python-client.&nbsp;Otherwise&nbsp;it&nbsp;will&nbsp;return&nbsp;a&nbsp;JSON.<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;dictionary&nbsp;or&nbsp;a&nbsp;string.&nbsp;Depending&nbsp;on&nbsp;the&nbsp;value&nbsp;of&nbsp;dictionary.</tt></dd></dl>
+
+<dl><dt><a name="BaseDocument-valid"><strong>valid</strong></a>(self)</dt><dd><tt>Validate&nbsp;all&nbsp;the&nbsp;values.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;True&nbsp;if&nbsp;validation&nbsp;passes,&nbsp;False&nbsp;otherwise</tt></dd></dl>
+
+<dl><dt><a name="BaseDocument-validate"><strong>validate</strong></a>(self, name)</dt><dd><tt>Validate&nbsp;a&nbsp;specific&nbsp;property.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;name:&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;property.&nbsp;If&nbsp;it's&nbsp;not&nbsp;defined&nbsp;in&nbsp;the&nbsp;schema,&nbsp;this<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;method&nbsp;will&nbsp;always&nbsp;return&nbsp;True<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;True&nbsp;if&nbsp;valid,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
+
+<hr>
+Class methods defined here:<br>
+<dl><dt><a name="BaseDocument-constructObject"><strong>constructObject</strong></a>(cls, data)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.simple.basedocument.html#BaseDocumentMetaclass">BaseDocumentMetaclass</a></font></font></dt><dd><tt>Construct&nbsp;an&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;given&nbsp;some&nbsp;data.<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;basically&nbsp;deserialize&nbsp;but&nbsp;as&nbsp;a&nbsp;classmethod.<br>
+Args:<br>
+&nbsp;&nbsp;data:&nbsp;Same&nbsp;thing&nbsp;as&nbsp;deserialize<br>
+&nbsp;&nbsp;dictionary:&nbsp;Same&nbsp;thing&nbsp;as&nbsp;deserialize<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;constructed&nbsp;with&nbsp;this&nbsp;class</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__metaclass__</strong> = &lt;class 'riakkit.simple.basedocument.BaseDocumentMetaclass'&gt;</dl>
+
+</td></tr></table> <strong>BaseDocumentMetaclass</strong> = &lt;class 'riakkit.simple.basedocument.BaseDocumentMetaclass'&gt; <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SimpleDocument">class <strong>SimpleDocument</strong></a>(<a href="riakkit.simple.basedocument.html#BaseDocument">BaseDocument</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>This&nbsp;is&nbsp;a&nbsp;low&nbsp;level&nbsp;abstract&nbsp;of&nbsp;how&nbsp;objects&nbsp;that&nbsp;would&nbsp;be&nbsp;directly&nbsp;saved<br>
+into&nbsp;Riak&nbsp;(ones&nbsp;associated&nbsp;with&nbsp;a&nbsp;key,&nbsp;not&nbsp;an&nbsp;embedded&nbsp;document).<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;provides&nbsp;nearly&nbsp;all&nbsp;operations&nbsp;that&nbsp;Document&nbsp;provides,&nbsp;except<br>
+the&nbsp;ones&nbsp;that's&nbsp;interacts&nbsp;directly&nbsp;with&nbsp;Riak.<br>
+&nbsp;<br>
+unique&nbsp;no&nbsp;longer&nbsp;has&nbsp;any&nbsp;meanings&nbsp;here&nbsp;as&nbsp;it's&nbsp;<a href="#SimpleDocument">SimpleDocument</a>'s&nbsp;job&nbsp;to&nbsp;enforce<br>
+this&nbsp;rule.&nbsp;That's&nbsp;your&nbsp;problem.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="riakkit.simple.basedocument.html#SimpleDocument">SimpleDocument</a></dd>
+<dd><a href="riakkit.simple.basedocument.html#BaseDocument">BaseDocument</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="SimpleDocument-__init__"><strong>__init__</strong></a>(self, key<font color="#909090">=&lt;function &lt;lambda&gt;&gt;</font>, **kwargs)</dt><dd><tt>Creates&nbsp;a&nbsp;<a href="#SimpleDocument">SimpleDocument</a>&nbsp;<a href="__builtin__.html#object">object</a>.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;key:&nbsp;A&nbsp;key&nbsp;string&nbsp;or&nbsp;a&nbsp;callable.&nbsp;Defaults&nbsp;to&nbsp;generating&nbsp;uuid1<br>
+&nbsp;&nbsp;**kwargs:&nbsp;Any&nbsp;data&nbsp;that&nbsp;you&nbsp;want&nbsp;to&nbsp;be&nbsp;merged&nbsp;into&nbsp;the&nbsp;document</tt></dd></dl>
+
+<dl><dt><a name="SimpleDocument-addIndex"><strong>addIndex</strong></a>(self, field, value)</dt><dd><tt>Adds&nbsp;an&nbsp;index&nbsp;field&nbsp;:&nbsp;value<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;field:&nbsp;The&nbsp;field&nbsp;name.&nbsp;Remember&nbsp;that&nbsp;fieldnames&nbsp;have&nbsp;to&nbsp;end&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;correct&nbsp;types,&nbsp;and&nbsp;currently&nbsp;it's&nbsp;_bin&nbsp;and&nbsp;_int.<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value&nbsp;for&nbsp;this&nbsp;field.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;self&nbsp;for&nbsp;OOP&nbsp;purposes.</tt></dd></dl>
+
+<dl><dt><a name="SimpleDocument-addLink"><strong>addLink</strong></a>(self, document, tag<font color="#909090">=None</font>)</dt><dd><tt>Adds&nbsp;a&nbsp;link&nbsp;for&nbsp;the&nbsp;document.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;document:&nbsp;A&nbsp;<a href="#SimpleDocument">SimpleDocument</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;or&nbsp;its&nbsp;child.&nbsp;Checking&nbsp;will&nbsp;not&nbsp;be&nbsp;done.<br>
+&nbsp;&nbsp;tag:&nbsp;A&nbsp;tag.&nbsp;Defaults&nbsp;to&nbsp;None<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;self&nbsp;for&nbsp;OOP&nbsp;purposes</tt></dd></dl>
+
+<dl><dt><a name="SimpleDocument-clear"><strong>clear</strong></a>(self, setdefault<font color="#909090">=True</font>)</dt></dl>
+
+<dl><dt><a name="SimpleDocument-delete"><strong>delete</strong></a> = <a href="#SimpleDocument-save">save</a>(self, **kwargs)</dt></dl>
+
+<dl><dt><a name="SimpleDocument-index"><strong>index</strong></a> = <a href="#SimpleDocument-indexes">indexes</a>(self, field<font color="#909090">=None</font>)</dt></dl>
+
+<dl><dt><a name="SimpleDocument-indexes"><strong>indexes</strong></a>(self, field<font color="#909090">=None</font>)</dt><dd><tt>Retrives&nbsp;the&nbsp;whole&nbsp;index&nbsp;or&nbsp;a&nbsp;specific&nbsp;list&nbsp;of&nbsp;indexes&nbsp;for&nbsp;a&nbsp;field.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;field:&nbsp;the&nbsp;field&nbsp;name.&nbsp;Defaults&nbsp;to&nbsp;None.&nbsp;If&nbsp;it&nbsp;is&nbsp;None,&nbsp;the&nbsp;all&nbsp;the&nbsp;indexes&nbsp;will&nbsp;be&nbsp;returned.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;set&nbsp;of&nbsp;field&nbsp;values&nbsp;or&nbsp;a&nbsp;list&nbsp;of&nbsp;(field,&nbsp;value)&nbsp;pairs&nbsp;friendly&nbsp;for&nbsp;set_indexes</tt></dd></dl>
+
+<dl><dt><a name="SimpleDocument-links"><strong>links</strong></a>(self, bucket<font color="#909090">=None</font>)</dt><dd><tt>Gets&nbsp;all&nbsp;the&nbsp;links.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;bucket:&nbsp;Defaults&nbsp;to&nbsp;None.&nbsp;If&nbsp;it&nbsp;is&nbsp;a&nbsp;RiakBucket,&nbsp;this&nbsp;will&nbsp;return&nbsp;a&nbsp;list&nbsp;of&nbsp;RiakLinks&nbsp;instead&nbsp;of&nbsp;(document,&nbsp;tag)&nbsp;in&nbsp;a&nbsp;set<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;set&nbsp;of&nbsp;(document,&nbsp;tag)&nbsp;or&nbsp;[RiakLink,&nbsp;RiakLink]</tt></dd></dl>
+
+<dl><dt><a name="SimpleDocument-reload"><strong>reload</strong></a> = <a href="#SimpleDocument-save">save</a>(self, **kwargs)</dt></dl>
+
+<dl><dt><a name="SimpleDocument-removeIndex"><strong>removeIndex</strong></a>(self, field, value<font color="#909090">=None</font>)</dt><dd><tt>Removes&nbsp;an&nbsp;index&nbsp;field&nbsp;:&nbsp;value<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;field:&nbsp;The&nbsp;field&nbsp;name.<br>
+&nbsp;&nbsp;value:&nbsp;The&nbsp;value,&nbsp;defaults&nbsp;to&nbsp;None.&nbsp;If&nbsp;value&nbsp;is&nbsp;none,&nbsp;the&nbsp;whole&nbsp;field&nbsp;gets<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;removed,&nbsp;otherwise&nbsp;only&nbsp;that&nbsp;specific&nbsp;pair&nbsp;will&nbsp;get&nbsp;removed.<br>
+Returns:<br>
+&nbsp;&nbsp;self&nbsp;for&nbsp;OOP&nbsp;purposes</tt></dd></dl>
+
+<dl><dt><a name="SimpleDocument-removeLink"><strong>removeLink</strong></a>(self, document, tag<font color="#909090">=None</font>)</dt><dd><tt>Removes&nbsp;a&nbsp;link&nbsp;from&nbsp;the&nbsp;document<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;document:&nbsp;A&nbsp;<a href="#SimpleDocument">SimpleDocument</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;or&nbsp;its&nbsp;child.<br>
+&nbsp;&nbsp;tag:&nbsp;A&nbsp;tag&nbsp;value.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;self&nbsp;for&nbsp;OOP&nbsp;purposes</tt></dd></dl>
+
+<dl><dt><a name="SimpleDocument-save"><strong>save</strong></a>(self, **kwargs)</dt><dd><tt>Not&nbsp;available&nbsp;in&nbsp;<a href="#SimpleDocument">SimpleDocument</a>.<br>
+&nbsp;<br>
+raises:<br>
+&nbsp;&nbsp;NotImplementedError</tt></dd></dl>
+
+<dl><dt><a name="SimpleDocument-setIndexes"><strong>setIndexes</strong></a>(self, indexes)</dt><dd><tt>Sets&nbsp;the&nbsp;indexes.&nbsp;Overwrites&nbsp;the&nbsp;previous&nbsp;indexes<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;indexes:&nbsp;Format&nbsp;should&nbsp;be&nbsp;{"fieldname"&nbsp;:&nbsp;{"fieldvalue"},&nbsp;"fieldname2"&nbsp;:&nbsp;{"fieldvalue"}}.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;deep&nbsp;copy&nbsp;is&nbsp;made&nbsp;here.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;self&nbsp;for&nbsp;OOP&nbsp;purposes.</tt></dd></dl>
+
+<dl><dt><a name="SimpleDocument-setLinks"><strong>setLinks</strong></a>(self, links)</dt><dd><tt>Sets&nbsp;the&nbsp;links.&nbsp;Overwrites&nbsp;the&nbsp;current&nbsp;links&nbsp;collection.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;links:&nbsp;Format&nbsp;should&nbsp;be&nbsp;set((document,&nbsp;tag),&nbsp;(document,&nbsp;tag)).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;shallow&nbsp;copy&nbsp;is&nbsp;made&nbsp;here.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;self&nbsp;for&nbsp;OOP&nbsp;purposes</tt></dd></dl>
+
+<dl><dt><a name="SimpleDocument-toRiakObject"><strong>toRiakObject</strong></a>(self, bucket)</dt><dd><tt>Converts&nbsp;the&nbsp;<a href="#SimpleDocument">SimpleDocument</a>&nbsp;into&nbsp;a&nbsp;RiakObject.&nbsp;Does&nbsp;not&nbsp;touch&nbsp;references,<br>
+unlike&nbsp;Document.<a href="#SimpleDocument-save">save</a>().&nbsp;Nor&nbsp;does&nbsp;this&nbsp;actually&nbsp;save&nbsp;anything.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;bucket:&nbsp;A&nbsp;RiakBucket&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;RiakObject&nbsp;with&nbsp;data,&nbsp;indexes,&nbsp;and&nbsp;links&nbsp;set&nbsp;according&nbsp;to&nbsp;this<br>
+&nbsp;&nbsp;<a href="#SimpleDocument">SimpleDocument</a></tt></dd></dl>
+
+<hr>
+Class methods defined here:<br>
+<dl><dt><a name="SimpleDocument-load"><strong>load</strong></a>(cls, robj, cached<font color="#909090">=False</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.simple.basedocument.html#BaseDocumentMetaclass">BaseDocumentMetaclass</a></font></font></dt><dd><tt>Construct&nbsp;a&nbsp;<a href="#SimpleDocument">SimpleDocument</a>&nbsp;from&nbsp;a&nbsp;RiakObject.&nbsp;Similar&nbsp;to&nbsp;Document.load,<br>
+but&nbsp;doesn't&nbsp;support&nbsp;links,&nbsp;nor&nbsp;does&nbsp;it&nbsp;load&nbsp;from&nbsp;the&nbsp;database&nbsp;via&nbsp;a&nbsp;key<br>
+instead&nbsp;of&nbsp;a&nbsp;robj,&nbsp;nor&nbsp;does&nbsp;it&nbsp;do&nbsp;caching.<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;this&nbsp;function&nbsp;does&nbsp;not&nbsp;get&nbsp;the&nbsp;links&nbsp;as&nbsp;<a href="#SimpleDocument">SimpleDocument</a>&nbsp;can't&nbsp;do<br>
+this&nbsp;due&nbsp;to&nbsp;technical&nbsp;reason&nbsp;(one&nbsp;way&nbsp;only).<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;robj:&nbsp;A&nbsp;RiakObject<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;<a href="#SimpleDocument">SimpleDocument</a></tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="riakkit.simple.basedocument.html#BaseDocument">BaseDocument</a>:<br>
+<dl><dt><a name="SimpleDocument-__delattr__"><strong>__delattr__</strong></a>(self, name)</dt></dl>
+
+<dl><dt><a name="SimpleDocument-__delitem__"><strong>__delitem__</strong></a> = __delattr__(self, name)</dt></dl>
+
+<dl><dt><a name="SimpleDocument-__getattr__"><strong>__getattr__</strong></a>(self, name)</dt></dl>
+
+<dl><dt><a name="SimpleDocument-__getitem__"><strong>__getitem__</strong></a> = __getattr__(self, name)</dt></dl>
+
+<dl><dt><a name="SimpleDocument-__setattr__"><strong>__setattr__</strong></a>(self, name, value)</dt></dl>
+
+<dl><dt><a name="SimpleDocument-__setitem__"><strong>__setitem__</strong></a> = __setattr__(self, name, value)</dt></dl>
+
+<dl><dt><a name="SimpleDocument-deserialize"><strong>deserialize</strong></a>(self, data)</dt><dd><tt>Deserializes&nbsp;some&nbsp;data&nbsp;into&nbsp;the&nbsp;document.<br>
+&nbsp;<br>
+With&nbsp;this&nbsp;function,&nbsp;we&nbsp;assume&nbsp;the&nbsp;data&nbsp;is&nbsp;from&nbsp;the&nbsp;database,&nbsp;therefore&nbsp;we<br>
+call&nbsp;convertFromDb.&nbsp;This&nbsp;method&nbsp;will&nbsp;also&nbsp;clear&nbsp;the&nbsp;document.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;data:&nbsp;The&nbsp;data,&nbsp;either&nbsp;a&nbsp;dictionary&nbsp;or&nbsp;a&nbsp;json&nbsp;string.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;self&nbsp;for&nbsp;OOP&nbsp;purposes.</tt></dd></dl>
+
+<dl><dt><a name="SimpleDocument-mergeData"><strong>mergeData</strong></a>(self, data)</dt><dd><tt>Merges&nbsp;some&nbsp;data&nbsp;into&nbsp;the&nbsp;document.<br>
+&nbsp;<br>
+With&nbsp;this&nbsp;function,&nbsp;we&nbsp;assume&nbsp;the&nbsp;data&nbsp;is&nbsp;from&nbsp;just&nbsp;the&nbsp;input&nbsp;source,<br>
+therefore&nbsp;we&nbsp;call&nbsp;standardize.&nbsp;This&nbsp;method&nbsp;will&nbsp;NOT&nbsp;clear&nbsp;the&nbsp;document.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;data:&nbsp;The&nbsp;data,&nbsp;either&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;a&nbsp;json&nbsp;string.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;self&nbsp;for&nbsp;OOP</tt></dd></dl>
+
+<dl><dt><a name="SimpleDocument-serialize"><strong>serialize</strong></a>(self, dictionary<font color="#909090">=True</font>)</dt><dd><tt>Serializes&nbsp;the&nbsp;data&nbsp;to&nbsp;database&nbsp;friendly&nbsp;version.<br>
+&nbsp;<br>
+This&nbsp;*only*&nbsp;returns&nbsp;the&nbsp;dictionary&nbsp;of&nbsp;values.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;dictionary:&nbsp;If&nbsp;True,&nbsp;this&nbsp;function&nbsp;will&nbsp;return&nbsp;a&nbsp;dictionary&nbsp;passed&nbsp;back<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;riak-python-client.&nbsp;Otherwise&nbsp;it&nbsp;will&nbsp;return&nbsp;a&nbsp;JSON.<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;dictionary&nbsp;or&nbsp;a&nbsp;string.&nbsp;Depending&nbsp;on&nbsp;the&nbsp;value&nbsp;of&nbsp;dictionary.</tt></dd></dl>
+
+<dl><dt><a name="SimpleDocument-valid"><strong>valid</strong></a>(self)</dt><dd><tt>Validate&nbsp;all&nbsp;the&nbsp;values.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;True&nbsp;if&nbsp;validation&nbsp;passes,&nbsp;False&nbsp;otherwise</tt></dd></dl>
+
+<dl><dt><a name="SimpleDocument-validate"><strong>validate</strong></a>(self, name)</dt><dd><tt>Validate&nbsp;a&nbsp;specific&nbsp;property.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;name:&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;property.&nbsp;If&nbsp;it's&nbsp;not&nbsp;defined&nbsp;in&nbsp;the&nbsp;schema,&nbsp;this<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;method&nbsp;will&nbsp;always&nbsp;return&nbsp;True<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;True&nbsp;if&nbsp;valid,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
+
+<hr>
+Class methods inherited from <a href="riakkit.simple.basedocument.html#BaseDocument">BaseDocument</a>:<br>
+<dl><dt><a name="SimpleDocument-constructObject"><strong>constructObject</strong></a>(cls, data)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.simple.basedocument.html#BaseDocumentMetaclass">BaseDocumentMetaclass</a></font></font></dt><dd><tt>Construct&nbsp;an&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;given&nbsp;some&nbsp;data.<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;basically&nbsp;deserialize&nbsp;but&nbsp;as&nbsp;a&nbsp;classmethod.<br>
+Args:<br>
+&nbsp;&nbsp;data:&nbsp;Same&nbsp;thing&nbsp;as&nbsp;deserialize<br>
+&nbsp;&nbsp;dictionary:&nbsp;Same&nbsp;thing&nbsp;as&nbsp;deserialize<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;constructed&nbsp;with&nbsp;this&nbsp;class</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="riakkit.simple.basedocument.html#BaseDocument">BaseDocument</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="riakkit.simple.basedocument.html#BaseDocument">BaseDocument</a>:<br>
+<dl><dt><strong>__metaclass__</strong> = &lt;class 'riakkit.simple.basedocument.BaseDocumentMetaclass'&gt;</dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><strong>DEFAULT_CONVERTER</strong> <em>lambda</em> x</dt></dl>
+ <dl><dt><strong>DEFAULT_VALIDATOR</strong> <em>lambda</em> x</dt></dl>
+</td></tr></table>
+</body></html>

@@ -1,0 +1,99 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: package riakkit.commons</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="riakkit.html"><font color="#ffffff">riakkit</font></a>.commons</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/shuhao/Dropbox/RandomProjects/riakkit/riakkit/commons/__init__.py">/home/shuhao/Dropbox/RandomProjects/riakkit/riakkit/commons/__init__.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;This&nbsp;file&nbsp;is&nbsp;part&nbsp;of&nbsp;RiakKit.<br>
+#<br>
+#&nbsp;RiakKit&nbsp;is&nbsp;free&nbsp;software:&nbsp;you&nbsp;can&nbsp;redistribute&nbsp;it&nbsp;and/or&nbsp;modify<br>
+#&nbsp;it&nbsp;under&nbsp;the&nbsp;terms&nbsp;of&nbsp;the&nbsp;GNU&nbsp;Lesser&nbsp;General&nbsp;Public&nbsp;License&nbsp;as&nbsp;published&nbsp;by<br>
+#&nbsp;the&nbsp;Free&nbsp;Software&nbsp;Foundation,&nbsp;either&nbsp;version&nbsp;3&nbsp;of&nbsp;the&nbsp;License,&nbsp;or<br>
+#&nbsp;(at&nbsp;your&nbsp;option)&nbsp;any&nbsp;later&nbsp;version.<br>
+#<br>
+#&nbsp;RiakKit&nbsp;is&nbsp;distributed&nbsp;in&nbsp;the&nbsp;hope&nbsp;that&nbsp;it&nbsp;will&nbsp;be&nbsp;useful,<br>
+#&nbsp;but&nbsp;WITHOUT&nbsp;ANY&nbsp;WARRANTY;&nbsp;without&nbsp;even&nbsp;the&nbsp;implied&nbsp;warranty&nbsp;of<br>
+#&nbsp;MERCHANTABILITY&nbsp;or&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE.&nbsp;&nbsp;See&nbsp;the<br>
+#&nbsp;GNU&nbsp;Lesser&nbsp;General&nbsp;Public&nbsp;License&nbsp;for&nbsp;more&nbsp;details.<br>
+#<br>
+#&nbsp;You&nbsp;should&nbsp;have&nbsp;received&nbsp;a&nbsp;copy&nbsp;of&nbsp;the&nbsp;GNU&nbsp;Lesser&nbsp;General&nbsp;Public&nbsp;License<br>
+#&nbsp;along&nbsp;with&nbsp;RiakKit.&nbsp;&nbsp;If&nbsp;not,&nbsp;see&nbsp;&lt;<a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Package Contents</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="riakkit.commons.exceptions.html">exceptions</a><br>
+</td><td width="25%" valign=top><a href="riakkit.commons.properties.html">properties</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-getKeys"><strong>getKeys</strong></a>(*args, **kwargs)</dt><dd><tt>Gets&nbsp;the&nbsp;keys&nbsp;of&nbsp;all&nbsp;of&nbsp;the&nbsp;dictionaries&nbsp;and&nbsp;returns&nbsp;it&nbsp;in&nbsp;a&nbsp;list.<br>
+&nbsp;<br>
+Removing&nbsp;any&nbsp;references&nbsp;to&nbsp;'key'&nbsp;(if&nbsp;specified)<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;discard_key:&nbsp;Boolean&nbsp;that&nbsp;determine&nbsp;whether&nbsp;or&nbsp;not&nbsp;to&nbsp;discard&nbsp;the&nbsp;'key'&nbsp;attr</tt></dd></dl>
+ <dl><dt><a name="-getProperty"><strong>getProperty</strong></a>(name, attrs, parents)</dt><dd><tt>Used&nbsp;in&nbsp;__new__&nbsp;while&nbsp;getting&nbsp;attributes&nbsp;of&nbsp;class&nbsp;objects&nbsp;that's&nbsp;about&nbsp;to<br>
+be&nbsp;created.<br>
+&nbsp;<br>
+This&nbsp;also&nbsp;looks&nbsp;up&nbsp;the&nbsp;ladder&nbsp;of&nbsp;the&nbsp;parents&nbsp;of&nbsp;this&nbsp;class&nbsp;object.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;name:&nbsp;Name&nbsp;of&nbsp;the&nbsp;attribute<br>
+&nbsp;&nbsp;attrs:&nbsp;The&nbsp;attributes&nbsp;from&nbsp;the&nbsp;__new__&nbsp;methods.<br>
+&nbsp;&nbsp;parents:&nbsp;The&nbsp;class&nbsp;objects&nbsp;that's&nbsp;the&nbsp;parent&nbsp;of&nbsp;this&nbsp;class&nbsp;from&nbsp;the&nbsp;__new__.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;None&nbsp;if&nbsp;the&nbsp;attributes&nbsp;is&nbsp;not&nbsp;found&nbsp;from&nbsp;the&nbsp;attrs&nbsp;nor&nbsp;the&nbsp;parents.<br>
+&nbsp;&nbsp;Otherwise&nbsp;the&nbsp;first&nbsp;one&nbsp;that's&nbsp;found,&nbsp;from&nbsp;attrs&nbsp;to&nbsp;BFS'ed&nbsp;parents.</tt></dd></dl>
+ <dl><dt><a name="-getUniqueListGivenBucketName"><strong>getUniqueListGivenBucketName</strong></a>(bucketName, propertyName)</dt><dd><tt>Gets&nbsp;the&nbsp;bucket&nbsp;name&nbsp;that&nbsp;enforces&nbsp;the&nbsp;uniqueness&nbsp;of&nbsp;a&nbsp;certain&nbsp;property.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;bucketName:&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;bucket&nbsp;of&nbsp;the&nbsp;class<br>
+&nbsp;&nbsp;propertyName:&nbsp;The&nbsp;property&nbsp;name<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;Returns&nbsp;the&nbsp;bucket&nbsp;name.</tt></dd></dl>
+ <dl><dt><a name="-mediocreCopy"><strong>mediocreCopy</strong></a>(obj)</dt><dd><tt>It's&nbsp;kind&nbsp;of&nbsp;like&nbsp;a&nbsp;deep&nbsp;copy,&nbsp;but&nbsp;it&nbsp;only&nbsp;make&nbsp;copies&nbsp;of&nbsp;lists,&nbsp;tuples,<br>
+and&nbsp;dictionaries&nbsp;(and&nbsp;other&nbsp;primitive&nbsp;types).&nbsp;Other&nbsp;complex&nbsp;object&nbsp;such&nbsp;as<br>
+ones&nbsp;you&nbsp;created&nbsp;are&nbsp;kept&nbsp;as&nbsp;references.<br>
+&nbsp;<br>
+Arg:<br>
+&nbsp;&nbsp;obj:&nbsp;Any&nbsp;object.</tt></dd></dl>
+ <dl><dt><a name="-rndstr"><strong>rndstr</strong></a>(n)</dt><dd><tt>Generates&nbsp;a&nbsp;random&nbsp;string&nbsp;from&nbsp;a-zA-Z0-9&nbsp;using&nbsp;os.urandom.<br>
+&nbsp;<br>
+Could&nbsp;be&nbsp;a&nbsp;way&nbsp;to&nbsp;generate&nbsp;the&nbsp;keys.&nbsp;May&nbsp;collide&nbsp;more,&nbsp;not&nbsp;certain&nbsp;though.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;n:&nbsp;The&nbsp;length&nbsp;of&nbsp;the&nbsp;string.<br>
+Returns:<br>
+&nbsp;&nbsp;a&nbsp;n-length&nbsp;string&nbsp;of&nbsp;random&nbsp;characters</tt></dd></dl>
+ <dl><dt><strong>uuid1Key</strong> <em>lambda</em> kwargs</dt><dd><tt>Generates&nbsp;an&nbsp;UUID1&nbsp;key.&nbsp;Used&nbsp;for&nbsp;Document&nbsp;and&nbsp;SimpleDocument.&nbsp;The&nbsp;arg&nbsp;kwargs<br>
+has&nbsp;no&nbsp;effect,&nbsp;only&nbsp;to&nbsp;be&nbsp;compatible&nbsp;with&nbsp;SimpleDocument&nbsp;and&nbsp;Document.&nbsp;This<br>
+is&nbsp;the&nbsp;default&nbsp;option.</tt></dd></dl>
+ <dl><dt><a name="-walkParents"><strong>walkParents</strong></a>(parents, bases<font color="#909090">=('Document', 'type', 'object')</font>)</dt><dd><tt>Walks&nbsp;through&nbsp;the&nbsp;parents&nbsp;and&nbsp;return&nbsp;each&nbsp;parent&nbsp;class&nbsp;object&nbsp;uptil&nbsp;the<br>
+name&nbsp;of&nbsp;the&nbsp;classes&nbsp;specified&nbsp;in&nbsp;bases.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;p:&nbsp;The&nbsp;list&nbsp;of&nbsp;direct&nbsp;parents&nbsp;of&nbsp;a&nbsp;class&nbsp;object<br>
+&nbsp;&nbsp;bases:&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;classes&nbsp;that's&nbsp;considered&nbsp;to&nbsp;to&nbsp;be&nbsp;the&nbsp;ones&nbsp;that<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;should&nbsp;not&nbsp;be&nbsp;included&nbsp;and&nbsp;the&nbsp;end&nbsp;nodes.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default:&nbsp;("Document",&nbsp;"type",&nbsp;"object")<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;list&nbsp;of&nbsp;all&nbsp;the&nbsp;parents,&nbsp;every&nbsp;level.&nbsp;Ordered&nbsp;via&nbsp;breath&nbsp;first&nbsp;search,<br>
+&nbsp;&nbsp;although&nbsp;each&nbsp;levels&nbsp;are&nbsp;not&nbsp;separated</tt></dd></dl>
+</td></tr></table>
+</body></html>
