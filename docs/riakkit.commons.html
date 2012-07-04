@@ -8,7 +8,7 @@
 <td valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="riakkit.html"><font color="#ffffff">riakkit</font></a>.commons</strong></big></big></font></td
 ><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/shuhao/Dropbox/RandomProjects/riakkitrewrite/riakkit/commons/__init__.py">/home/shuhao/Dropbox/RandomProjects/riakkitrewrite/riakkit/commons/__init__.py</a></font></td></tr></table>
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/shuhao/Dropbox/RandomProjects/riakkit/riakkit/commons/__init__.py">/home/shuhao/Dropbox/RandomProjects/riakkit/riakkit/commons/__init__.py</a></font></td></tr></table>
     <p><tt>#&nbsp;This&nbsp;file&nbsp;is&nbsp;part&nbsp;of&nbsp;RiakKit.<br>
 #<br>
 #&nbsp;RiakKit&nbsp;is&nbsp;free&nbsp;software:&nbsp;you&nbsp;can&nbsp;redistribute&nbsp;it&nbsp;and/or&nbsp;modify<br>
@@ -72,8 +72,17 @@ ones&nbsp;you&nbsp;created&nbsp;are&nbsp;kept&nbsp;as&nbsp;references.<br>
 &nbsp;<br>
 Arg:<br>
 &nbsp;&nbsp;obj:&nbsp;Any&nbsp;object.</tt></dd></dl>
+ <dl><dt><a name="-rndstr"><strong>rndstr</strong></a>(n)</dt><dd><tt>Generates&nbsp;a&nbsp;random&nbsp;string&nbsp;from&nbsp;a-zA-Z0-9&nbsp;using&nbsp;os.urandom.<br>
+&nbsp;<br>
+Could&nbsp;be&nbsp;a&nbsp;way&nbsp;to&nbsp;generate&nbsp;the&nbsp;keys.&nbsp;May&nbsp;collide&nbsp;more,&nbsp;not&nbsp;certain&nbsp;though.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;n:&nbsp;The&nbsp;length&nbsp;of&nbsp;the&nbsp;string.<br>
+Returns:<br>
+&nbsp;&nbsp;a&nbsp;n-length&nbsp;string&nbsp;of&nbsp;random&nbsp;characters</tt></dd></dl>
  <dl><dt><strong>uuid1Key</strong> <em>lambda</em> kwargs</dt><dd><tt>Generates&nbsp;an&nbsp;UUID1&nbsp;key.&nbsp;Used&nbsp;for&nbsp;Document&nbsp;and&nbsp;SimpleDocument.&nbsp;The&nbsp;arg&nbsp;kwargs<br>
-has&nbsp;no&nbsp;effect,&nbsp;only&nbsp;to&nbsp;be&nbsp;compatible&nbsp;with&nbsp;SimpleDocument&nbsp;and&nbsp;Document.</tt></dd></dl>
+has&nbsp;no&nbsp;effect,&nbsp;only&nbsp;to&nbsp;be&nbsp;compatible&nbsp;with&nbsp;SimpleDocument&nbsp;and&nbsp;Document.&nbsp;This<br>
+is&nbsp;the&nbsp;default&nbsp;option.</tt></dd></dl>
  <dl><dt><a name="-walkParents"><strong>walkParents</strong></a>(parents, bases<font color="#909090">=('Document', 'type', 'object')</font>)</dt><dd><tt>Walks&nbsp;through&nbsp;the&nbsp;parents&nbsp;and&nbsp;return&nbsp;each&nbsp;parent&nbsp;class&nbsp;object&nbsp;uptil&nbsp;the<br>
 name&nbsp;of&nbsp;the&nbsp;classes&nbsp;specified&nbsp;in&nbsp;bases.<br>
 &nbsp;<br>

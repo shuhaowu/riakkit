@@ -22,7 +22,7 @@ import os
 if __name__ == "__main__":
   modules = ["riakkit"]
   for root, dirs, files in os.walk(os.getcwd() + "/riakkit/"):
-    module = root.split("/riakkit/", 1)[1]
+    module = root.split("/riakkit/riakkit/", 1)[1]
     if module:
       modules.append("riakkit." + module)
       module += "."

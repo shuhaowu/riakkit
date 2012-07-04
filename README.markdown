@@ -809,7 +809,7 @@ cd into this directory and do `./makedocs`
 Until someone makes a prettier doc, that is (You should be glad I wrote docs,
 'cause I usually don't do it).
 
-Doctests
---------
+Unittests
+---------
 
-Run `python runtests.py`.
+Run `python test_all.py`.

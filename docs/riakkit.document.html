@@ -8,7 +8,7 @@
 <td valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="riakkit.html"><font color="#ffffff">riakkit</font></a>.document</strong></big></big></font></td
 ><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/shuhao/Dropbox/RandomProjects/riakkitrewrite/riakkit/document.py">/home/shuhao/Dropbox/RandomProjects/riakkitrewrite/riakkit/document.py</a></font></td></tr></table>
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/shuhao/Dropbox/RandomProjects/riakkit/riakkit/document.py">/home/shuhao/Dropbox/RandomProjects/riakkit/riakkit/document.py</a></font></td></tr></table>
     <p><tt>#&nbsp;This&nbsp;file&nbsp;is&nbsp;part&nbsp;of&nbsp;RiakKit.<br>
 #<br>
 #&nbsp;RiakKit&nbsp;is&nbsp;free&nbsp;software:&nbsp;you&nbsp;can&nbsp;redistribute&nbsp;it&nbsp;and/or&nbsp;modify<br>
@@ -85,6 +85,24 @@ Args:<br>
 However,&nbsp;this&nbsp;object&nbsp;can&nbsp;still&nbsp;be&nbsp;resaved.&nbsp;Not&nbsp;sure&nbsp;what&nbsp;you&nbsp;would&nbsp;do<br>
 with&nbsp;it,&nbsp;though.</tt></dd></dl>
 
+<dl><dt><a name="Document-getRawData"><strong>getRawData</strong></a>(self, name, default<font color="#909090">=&lt;class 'riakkit.document.DocumentMetaclass'&gt;</font>)</dt><dd><tt>Gets&nbsp;the&nbsp;raw&nbsp;data&nbsp;that's&nbsp;contained&nbsp;in&nbsp;the&nbsp;RiakObject.<br>
+&nbsp;<br>
+If&nbsp;default&nbsp;is&nbsp;not&nbsp;specified,&nbsp;AttributeError&nbsp;will&nbsp;be&nbsp;raised&nbsp;if&nbsp;the&nbsp;attribute<br>
+doesn't&nbsp;exist<br>
+&nbsp;<br>
+If&nbsp;the&nbsp;object&nbsp;is&nbsp;not&nbsp;saved.&nbsp;NotFoundError&nbsp;will&nbsp;be&nbsp;raised<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;name:&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;attribute.<br>
+&nbsp;&nbsp;default:&nbsp;The&nbsp;default&nbsp;to&nbsp;return&nbsp;if&nbsp;not&nbsp;available.&nbsp;Defaults&nbsp;to&nbsp;some&nbsp;garbage,&nbsp;which&nbsp;is&nbsp;<a href="#DocumentMetaclass">DocumentMetaclass</a><br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;value&nbsp;or&nbsp;default.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;AttributeError&nbsp;if&nbsp;default&nbsp;is&nbsp;not&nbsp;specified&nbsp;and&nbsp;attribute&nbsp;not&nbsp;found<br>
+&nbsp;&nbsp;NotFoundError&nbsp;if&nbsp;default&nbsp;not&nbsp;specified&nbsp;and&nbsp;object&nbsp;not&nbsp;found.</tt></dd></dl>
+
 <dl><dt><a name="Document-links"><strong>links</strong></a>(self, riakLinks<font color="#909090">=False</font>)</dt><dd><tt>Gets&nbsp;all&nbsp;the&nbsp;links.<br>
 &nbsp;<br>
 Args:<br>
@@ -107,7 +125,7 @@ Returns:<br>
 Raises:<br>
 &nbsp;&nbsp;NotFoundError:&nbsp;if&nbsp;the&nbsp;object&nbsp;hasn't&nbsp;been&nbsp;saved&nbsp;before.</tt></dd></dl>
 
-<dl><dt><a name="Document-save"><strong>save</strong></a>(self, w<font color="#909090">=None</font>, dw<font color="#909090">=None</font>)</dt><dd><tt>Saves&nbsp;the&nbsp;document&nbsp;into&nbsp;the&nbsp;database.<br>
+<dl><dt><a name="Document-save"><strong>save</strong></a>(self, w<font color="#909090">=None</font>, dw<font color="#909090">=None</font>, endpoint<font color="#909090">=False</font>)</dt><dd><tt>Saves&nbsp;the&nbsp;document&nbsp;into&nbsp;the&nbsp;database.<br>
 &nbsp;<br>
 This&nbsp;will&nbsp;save&nbsp;the&nbsp;object&nbsp;to&nbsp;the&nbsp;database.&nbsp;All&nbsp;linked&nbsp;objects&nbsp;will&nbsp;be&nbsp;saved<br>
 as&nbsp;well.<br>
@@ -127,14 +145,17 @@ Args:<br>
 Returns:<br>
 &nbsp;&nbsp;True&nbsp;if&nbsp;the&nbsp;key&nbsp;exists,&nbsp;false&nbsp;otherwise.</tt></dd></dl>
 
-<dl><dt><a name="Document-get"><strong>get</strong></a> = load(cls, robj, cached<font color="#909090">=False</font>, r<font color="#909090">=None</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Construct&nbsp;a&nbsp;<a href="#Document">Document</a>&nbsp;based&nbsp;object&nbsp;given&nbsp;a&nbsp;RiakObject.<br>
+<dl><dt><a name="Document-get"><strong>get</strong></a>(cls, key, cached<font color="#909090">=True</font>, r<font color="#909090">=None</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Same&nbsp;as&nbsp;load,&nbsp;but&nbsp;the&nbsp;default&nbsp;of&nbsp;the&nbsp;cached&nbsp;is&nbsp;True.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;is&nbsp;usually&nbsp;used&nbsp;and&nbsp;usually&nbsp;you&nbsp;just&nbsp;need&nbsp;a&nbsp;cached&nbsp;copy&nbsp;if<br>
+available.</tt></dd></dl>
+
+<dl><dt><a name="Document-getOrNew"><strong>getOrNew</strong></a>(cls, key, cached<font color="#909090">=True</font>, r<font color="#909090">=None</font>, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Similar&nbsp;to&nbsp;get,&nbsp;but&nbsp;does&nbsp;not&nbsp;raise&nbsp;error&nbsp;if&nbsp;not&nbsp;found.&nbsp;A&nbsp;new&nbsp;(unsaved)<br>
+document&nbsp;will&nbsp;be&nbsp;created.<br>
 &nbsp;<br>
 Args:<br>
-&nbsp;&nbsp;riak_obj:&nbsp;The&nbsp;RiakObject&nbsp;that&nbsp;the&nbsp;document&nbsp;is&nbsp;suppose&nbsp;to&nbsp;build&nbsp;from.<br>
-&nbsp;&nbsp;cached:&nbsp;Reload&nbsp;the&nbsp;object&nbsp;or&nbsp;not&nbsp;if&nbsp;it's&nbsp;found&nbsp;in&nbsp;the&nbsp;pool&nbsp;of&nbsp;objects.<br>
-&nbsp;<br>
-Returns:<br>
-&nbsp;&nbsp;A&nbsp;<a href="#Document">Document</a>&nbsp;object&nbsp;(whichever&nbsp;subclass&nbsp;this&nbsp;was&nbsp;called&nbsp;from).</tt></dd></dl>
+&nbsp;&nbsp;Everything:&nbsp;The&nbsp;same&nbsp;as&nbsp;get<br>
+&nbsp;&nbsp;**kwargs:&nbsp;Additional&nbsp;kwargs&nbsp;to&nbsp;merge&nbsp;data&nbsp;into&nbsp;the&nbsp;document.</tt></dd></dl>
 
 <dl><dt><a name="Document-indexLookup"><strong>indexLookup</strong></a>(cls, index, startkey, endkey<font color="#909090">=None</font>)<font color="#909090"><font face="helvetica, arial"> from <a href="riakkit.document.html#DocumentMetaclass">DocumentMetaclass</a></font></font></dt><dd><tt>Short&nbsp;hand&nbsp;for&nbsp;creating&nbsp;a&nbsp;new&nbsp;mapreduce&nbsp;index<br>
 &nbsp;<br>
@@ -206,6 +227,8 @@ Args:<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;self&nbsp;for&nbsp;OOP&nbsp;purposes</tt></dd></dl>
+
+<dl><dt><a name="Document-clear"><strong>clear</strong></a>(self, setdefault<font color="#909090">=True</font>)</dt></dl>
 
 <dl><dt><a name="Document-index"><strong>index</strong></a> = indexes(self, field<font color="#909090">=None</font>)</dt><dd><tt>Retrives&nbsp;the&nbsp;whole&nbsp;index&nbsp;or&nbsp;a&nbsp;specific&nbsp;list&nbsp;of&nbsp;indexes&nbsp;for&nbsp;a&nbsp;field.<br>
 &nbsp;<br>
@@ -282,11 +305,6 @@ Methods inherited from <a href="riakkit.simple.basedocument.html#BaseDocument">r
 <dl><dt><a name="Document-__setattr__"><strong>__setattr__</strong></a>(self, name, value)</dt></dl>
 
 <dl><dt><a name="Document-__setitem__"><strong>__setitem__</strong></a> = __setattr__(self, name, value)</dt></dl>
-
-<dl><dt><a name="Document-clear"><strong>clear</strong></a>(self)</dt><dd><tt>Clears&nbsp;the&nbsp;document,&nbsp;clears&nbsp;all&nbsp;the&nbsp;data&nbsp;stored.<br>
-&nbsp;<br>
-Returns:<br>
-&nbsp;&nbsp;self&nbsp;for&nbsp;OOP</tt></dd></dl>
 
 <dl><dt><a name="Document-deserialize"><strong>deserialize</strong></a>(self, data)</dt><dd><tt>Deserializes&nbsp;some&nbsp;data&nbsp;into&nbsp;the&nbsp;document.<br>
 &nbsp;<br>
