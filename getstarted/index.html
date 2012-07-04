@@ -48,20 +48,18 @@
 			<div class="eight columns">
         
         <h1>Riakkit</h1>
+<p>Google Groups/Mailing list: https://groups.google.com/forum/#!forum/riakkit or riakkit@googlegroups.com</p>
 <h1>What is this?..</h1>
-<p>Riakkit is essentially an(<a href="https://github.com/Linux2Go/riakalchemy">other</a>)
-object mapper for Riak. Meaning it's kind of like mongokit or couchdbkit,
-where it makes it easier to map an object to Riak.</p>
-<p>Initially a project designed to immitate mongokit, then I got tired of copying
-and went with my own style. This is designed to fit a project of mine and my
-style of coding and use cases.</p>
+<p>Riakkit is an object mapper and a RAD tool for Riak.</p>
+<p>Riakkit underwent a quite significant change from 0.5 to 0.6 (notice we went
+back to Alpha). There's a lot of backend changes, although <em>most</em> front end
+methods are unchanged. Additional API is also introduced.</p>
 <p>Just FYI: The project tries to follow the <a href="http://google-styleguide.googlecode.com/svn/trunk/pyguide.html">Google Python style guide</a>.</p>
 <p>Licensed under LGPLv3</p>
 <p><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=FGWYWWS4CJJFW&amp;lc=CA&amp;item_name=Riakkit&amp;item_number=riakkit&amp;currency_code=CAD&amp;bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted"><img alt="Donate to me to keep this going!" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" /></a></p>
 <h1>Installation</h1>
-<p>Requires the <strong>LATEST</strong> version of python-riak from
-https://github.com/basho/riak-python-client .. It seems that Basho is not very
-quick on releasing the newest and greatest feature in their tags...</p>
+<p>Requires version 1.4.0 or above of <a href="https://github.com/basho/riak-python-client">riak-python-client</a>.
+Probably best if you just grab the repository version.</p>
 <p>Also, you need to change the setting of search to enable in your app.config</p>
 <pre><code>{riak_search, [
   {enabled, false}
@@ -69,12 +67,36 @@ quick on releasing the newest and greatest feature in their tags...</p>
 </code></pre>
 <p>This is if you want to use search.</p>
 <p>Then, proceed to do <code>pip install riakkit</code> or <code>easy_install riakkit</code>.</p>
-<p>This will not ensure that python-riak is installed. Please make sure you
-install using the latest version from the repository (not a tag, latest).
-The python-riak client is otherwise out of date.</p>
+<h1>Concept</h1>
+<p>There's 2 parts to Riakkit. <code>riakkit.SimpleDocument</code> and <code>riakkit.Document</code>.
+<code>Document</code> is a subclass of <code>SimpleDocument</code> and it provides the RAD capabilities.
+This means <code>Document</code> helps you track dependencies, make sure everything is
+and allow you to write a prototype in days without much effort, dealing with
+all the issues with tracking different models and how they relate to each other.</p>
+<p>This, however, comes with a cost. <code>Document</code> has a lot of overhead. There's a
+lot of code present that slows the program down (I'm working on improving it,
+but it's not the topmost priority right now). This is why when you need to start
+scaling, it's recommended that you stop using <code>Document</code> for your models.</p>
+<p>This is where <code>SimpleDocument</code> comes into play. <code>SimpleDocument</code> does not
+communicate with Riak. That means all the convinience methods such as <code>save</code> and
+<code>delete</code> is not available any more. However, many methods are still available,
+like <code>addLinks</code>, <code>indexes</code> and all that. Along with many methods you may not
+even know exists, such as <code>toRiakObject</code>. If you use this, it's your
+responsibility to track relationships (this may change, depending on if
+an efficient way to track relationships comes along or not) and save all the
+objects to database.</p>
+<p>Since all it really does is validate and convert values if necessary,
+<code>SimpleDocument</code> is very very fast. If you ever run the unittest yourself, you
+will actually see a difference. This also comes at a cost. You will have to
+track the relationships.</p>
+<p>You could also subclass SimpleDocument and make it like <code>Document</code>, but with
+less overhead. If you come up with something that's almost exactly like
+<code>Document</code> but faster, please make a pull request! (LGPL don't require you to
+do so, but hey, it's nice to do it)</p>
 <h1>"Fast Track"</h1>
-<p>Using riakkit should be simple. Here's how to get started.</p>
-<pre><code>&gt;&gt;&gt; from riakkit import Document, types
+<p>Using riakkit with the higher level API should be simple.
+Here's how to get started:</p>
+<pre><code>&gt;&gt;&gt; from riakkit import *
 &gt;&gt;&gt; import riak
 &gt;&gt;&gt; some_client = riak.RiakClient()
 &gt;&gt;&gt; class BlogPost(Document):
@@ -86,9 +108,9 @@ The python-riak client is otherwise out of date.</p>
 ...     # Client is required for each subclass of Document
 ...     client = some_client
 ...
-...     title = types.StringProperty(required=True) # StringProperty auto converts all strings to unicode
-...     content = types.StringProperty() # let's say content is not required.
-...     some_cool_attribute = types.FloatProperty() # Just a random attribute for demo purpose
+...     title = StringProperty(required=True) # StringProperty auto converts all strings to unicode
+...     content = StringProperty() # let's say content is not required.
+...     some_cool_attribute = FloatProperty() # Just a random attribute for demo purpose
 ...     def __str__(self): # Totally optional..
 ...         return "%s:%s" % (self.title, self.content)
 </code></pre>
@@ -96,18 +118,14 @@ The python-riak client is otherwise out of date.</p>
 <pre><code>&gt;&gt;&gt; post = BlogPost(title="hi")
 &gt;&gt;&gt; print post
 hi:None
-&gt;&gt;&gt; post.saved() # see if the post is saved or not.
-False
-&gt;&gt;&gt; post.save() # saves the post into the database
-&gt;&gt;&gt; post.saved()
-True
+&gt;&gt;&gt; post.save() #doctest: +ELLIPSIS
+&lt;__main__.BlogPost object at ...&gt;
 </code></pre>
 <p>Saving is easy, but how do we modify?</p>
 <pre><code>&gt;&gt;&gt; post.title = "Hello"
 &gt;&gt;&gt; post.content = "mrrow"
-&gt;&gt;&gt; post.saved()
-False
-&gt;&gt;&gt; post.save()
+&gt;&gt;&gt; post.save() #doctest: +ELLIPSIS
+&lt;__main__.BlogPost object at ...&gt;
 &gt;&gt;&gt; print post
 Hello:mrrow
 &gt;&gt;&gt; key = post.key # Stores a key...
@@ -117,16 +135,17 @@ Hello:mrrow
 &gt;&gt;&gt; another_post.save()
 Traceback (most recent call last):
     ...
-AttributeError: 'title' is required for 'BlogPost'.
+ValidationError: None doesn't pass validation for property 'title'
 </code></pre>
 <p>What about getting it from the database?</p>
-<pre><code>&gt;&gt;&gt; same_post = BlogPost.get_with_key(key)
+<pre><code>&gt;&gt;&gt; same_post = BlogPost.get(key, False) # False means that we don't want the cached copy, but reload the object from the database even if it''s available in cache
 &gt;&gt;&gt; print same_post
 Hello:mrrow
 </code></pre>
-<p>After Riakkit v0.3.2a, the behaviour of getting object has changed. All object
-gotten are the <strong>same</strong> instance. There's one object per key. Any changes to
-the object will be reflected in all the references to it.</p>
+<p>All object that's constructed using <code>Document</code> that's been <code>get</code> are the
+<strong>same</strong> instance. There's one object per key. Any changes to
+the object will be reflected in all the references to it. A
+<code>WeakValueDictionary</code> is used to cache all the objects.</p>
 <pre><code>&gt;&gt;&gt; same_post is post
 True
 </code></pre>
@@ -145,7 +164,8 @@ Hello
 </code></pre>
 <p>Need another attribute not in your schema? No problem.</p>
 <pre><code>&gt;&gt;&gt; same_post.random_attr = 42
-&gt;&gt;&gt; same_post.save()
+&gt;&gt;&gt; same_post.save() # doctest: +ELLIPSIS
+&lt;__main__.BlogPost object at ...&gt;
 &gt;&gt;&gt; print same_post.random_attr
 42
 </code></pre>
@@ -162,59 +182,54 @@ Traceback (most recent call last):
 AttributeError: Attribute none_existent not found with BlogPost.
 </code></pre>
 <p>Accessing an attribute that's <strong>IN</strong> your schema but <strong>NOT</strong> set will return
-<code>None</code></p>
+<code>None</code>, or whatever default value you got. (Some properties already have a
+default value. Example: if you don't set a <code>ListProperty</code>, it will return [] if
+you get it)</p>
 <pre><code>&gt;&gt; print same_post.some_cool_attribute  # Remember? We never set this
 None
 </code></pre>
 <p>Deleting objects is equally as easy.</p>
 <pre><code>&gt;&gt;&gt; same_post.delete()
-&gt;&gt;&gt; BlogPost.get_with_key(key) #doctest: +IGNORE_EXCEPTION_DETAIL
+&gt;&gt;&gt; BlogPost.get(key) #doctest: +IGNORE_EXCEPTION_DETAIL
 Traceback (most recent call last):
     ...
 NotFoundError: Key '&lt;yourkey&gt;' not found!
 </code></pre>
 <h2>Referencing Documents</h2>
-<p><em>Notes for pre 0.5 users: LinkedDocuments no longer exists! It's all about
-ReferenceProperty now. The problem with LinkedDocuments is like using 2i to
-do referencing.. You could, but it's not really the preferred way to do it.
-If you really want to store meta data linked objects, you could do so, and
-the API is similar to 2i's API now!</em></p>
 <p>You can link to a "foreign" document very easily. Let me illustrate:</p>
 <pre><code>&gt;&gt;&gt; class User(Document):
-...     bucket_name = "test_users"
+...     bucket_name = "doctest_users"
 ...     client = some_client
 ...
-...     SEARCHABLE = True  # Marking this to be searchable.
-...
-...     name = types.StringProperty(required=True)
-...     post = types.ReferenceProperty(reference_class=BlogPost)
+...     name = StringProperty(required=True)
+...     post = ReferenceProperty(reference_class=BlogPost)
 &gt;&gt;&gt; user = User(name="mrrow")
 &gt;&gt;&gt; some_post = BlogPost(title="Hello", content="World")
 &gt;&gt;&gt; user.post = some_post
-&gt;&gt;&gt; user.save()
+&gt;&gt;&gt; user.save() # doctest: +ELLIPSIS
+&lt;__main__.User object at ...&gt;
 &gt;&gt;&gt; print user.post.title
 Hello
-&gt;&gt;&gt; same_user = User.get_with_key(user.key)
+&gt;&gt;&gt; same_user = User.load(user.key)
 &gt;&gt;&gt; print same_user.post.title
 Hello
 </code></pre>
 <p>You can also "back reference" these documents. The API is similar to
 Google App Engine's <code>ReferenceProperty</code>.</p>
 <pre><code>&gt;&gt;&gt; class Comment(Document):
-...     bucket_name = "test_comments"
+...     bucket_name = "doctest_comments"
 ...     client = some_client
 ...
-...     SEARCHABLE = True
-...
-...     title = types.StringProperty()
-...     owner = types.ReferenceProperty(reference_class=User,
-...                                   collection_name="comments")
+...     title = StringProperty()
+...     owner = ReferenceProperty(reference_class=User,
+...                               collection_name="comments")
 </code></pre>
 <p>Note how we specified the <code>reference_class</code>. This will activate additional
 validation. Also, <code>collection_name</code> knows where to go.</p>
 <pre><code>&gt;&gt;&gt; a_comment = Comment(title="Riakkit ftw!")
 &gt;&gt;&gt; a_comment.owner = user
-&gt;&gt;&gt; a_comment.save()
+&gt;&gt;&gt; a_comment.save() # doctest: +ELLIPSIS
+&lt;__main__.Comment object at ...&gt;
 </code></pre>
 <p>This should save both the <code>a_comment</code>, and the <code>user</code> object. So no need to
 <code>user.reload()</code>. Since the <code>same_user</code> variable is just a reference to <code>user</code>,
@@ -235,18 +250,20 @@ Riakkit ftw!
 ...     bucket_name = "test_cake"
 ...     client = some_client
 ...
-...     type = types.EnumProperty(["chocolate", "icecream"])
-...     owner = types.MultiReferenceProperty(reference_class=User, collection_name="cakes")
+...     type = EnumProperty(["chocolate", "icecream"])
+...     owner = MultiReferenceProperty(reference_class=User, collection_name="cakes")
 &gt;&gt;&gt; person = User(name="John")
 &gt;&gt;&gt; cake = Cake(type="chocolate", owner=[])
 &gt;&gt;&gt; cake.owner.append(person)
-&gt;&gt;&gt; cake.save()
+&gt;&gt;&gt; cake.save() #doctest: +ELLIPSIS
+&lt;__main__.Cake object at ...&gt;
 &gt;&gt;&gt; print cake.owner[0].name
 John
 &gt;&gt;&gt; print person.cakes[0].type
 chocolate
 &gt;&gt;&gt; cake.owner = [user]
-&gt;&gt;&gt; cake.save()
+&gt;&gt;&gt; cake.save() #doctest: +ELLIPSIS
+&lt;__main__.Cake object at ...&gt;
 &gt;&gt;&gt; print person.cakes
 []
 &gt;&gt;&gt; print cake.owner[0].name
@@ -262,7 +279,8 @@ searching. The following command will do:</p>
 <pre><code>search-cmd install BUCKETNAME
 </code></pre>
 <p>For this tutorial we will do</p>
-<pre><code>search-cmd install users
+<pre><code>search-cmd install doctest_comments
+search-cmd install doctest_users
 </code></pre>
 <p>See more at http://wiki.basho.com/Riak-Search.html and
 http://basho.github.com/riak-python-client/tutorial.html#using-search (You
@@ -273,12 +291,6 @@ http://basho.github.com/riak-python-client/tutorial.html#using-search (You
 &gt;&gt;&gt; for user in user_query.run():
 ...     print user.name # user is am User object.
 mrrow
-</code></pre>
-<p>If you didn't mark the class as <code>SEARCHABLE</code>, you'll get a NotImplementedError.</p>
-<pre><code>&gt;&gt;&gt; BlogPost.search("title:'Hello'")
-Traceback (most recent call last):
-  ...
-NotImplementedError: Searchable is disabled, this is therefore not implemented.
 </code></pre>
 <h3>Solr Search</h3>
 <p>Solr search allows you to do limit and sorting.</p>
@@ -293,37 +305,42 @@ NotImplementedError: Searchable is disabled, this is therefore not implemented.
 relatively the same, with the renaming of <code>add_index</code> to <code>addIndex</code> due to the
 Google Python styling guide.</p>
 <p>To add an index, simply do</p>
-<pre><code>&gt;&gt;&gt; cake.addIndex("field1_bin", "val1")
-&gt;&gt;&gt; cake.save()
+<pre><code>&gt;&gt;&gt; cake.addIndex("field1_bin", "val1")#doctest: +ELLIPSIS
+&lt;...&gt;
+&gt;&gt;&gt; cake.save() #doctest: +ELLIPSIS
+&lt;...&gt;
 </code></pre>
 <p>To get the indexes:</p>
-<pre><code>&gt;&gt;&gt; print cake.getIndexes("field1_bin")
-['val1']
-&gt;&gt;&gt; print cake.getIndexes()
-{'field1_bin': ['val1']}
+<pre><code>&gt;&gt;&gt; print cake.indexes("field1_bin")
+set(['val1'])
+&gt;&gt;&gt; print cake.indexes()
+[('field1_bin', 'val1')]
 </code></pre>
 <p>To do an index based query:</p>
-<pre><code>&gt;&gt;&gt; query = Cake.index("field1_bin", "val1")
+<pre><code>&gt;&gt;&gt; query = Cake.indexLookup("field1_bin", "val1")
 &gt;&gt;&gt; for cake in query.run():
 ...     print cake.type
 chocolate
 </code></pre>
+<p>For additional information, please checkout the API docs.</p>
 <h3>Riak Links</h3>
-<p>After v0.5.0b, Riakkit dropped <code>LinkedDocuments</code> and moved on to
-<code>ReferenceProperty</code> only, and Riak Links are now treated like Riak 2i.</p>
 <p>To add a link:</p>
 <pre><code>&gt;&gt;&gt; user = User(name="John")
-&gt;&gt;&gt; user.addLink(cake) # cake is the previous chocolate cake we had.
-&gt;&gt;&gt; user.save()
+&gt;&gt;&gt; # cake is the previous chocolate cake we had.
+&gt;&gt;&gt; user.addLink(cake)#doctest: +ELLIPSIS
+&lt;...&gt;
+&gt;&gt;&gt; user.save()# doctest: +ELLIPSIS
+&lt;...&gt;
 </code></pre>
 <p>Fetching them is also as easy:</p>
-<pre><code>&gt;&gt;&gt; for cake, tag in user.getLinks():
+<pre><code>&gt;&gt;&gt; for cake, tag in user.links():
 ...     print cake.type
 chocolate
 </code></pre>
 <p>The API is identical to riak-python's API, only slightly altered to fit Google
 Python Style Guide (<code>addLink</code> also takes a tag) and it takes/returns <code>Document</code>
-instead of <code>RiakObject</code>.</p>
+instead of <code>RiakObject</code>. For additional information, please checkout the API
+docs.</p>
 <p><code>removeLink</code> is used to remove links, and it takes either a <code>Document</code> instance
 or a key string.</p>
 <p>Like that, you could also add multiple links to an object with different
@@ -361,15 +378,15 @@ a <code>.reload()</code> call will overwrite your data with the values in the db
 ...
 ...     # Let's throw in a validator. It makes sure all elements in the list
 ...     # is an integer.
-...     test_list = types.ListProperty(validators=lambda x: len(x) == len([i for i in x if isinstance(i, int)]))
-...     test_dict = types.DictProperty()
-...     some_date = types.DateTimeProperty()
-...     levels = types.EnumProperty(possible_values=["user", "admin"])
+...     test_list = ListProperty(validators=lambda x: len(x) == len([i for i in x if isinstance(i, int)]))
+...     test_dict = DictProperty()
+...     some_date = DateTimeProperty()
+...     levels = EnumProperty(possible_values=["user", "admin"])
 &gt;&gt;&gt;
 &gt;&gt;&gt; demo_obj = Demo(test_list=[1, 2, "this causes failure"]) #doctest: +IGNORE_EXCEPTION_DETAIL
 Traceback (most recent call last):
   ...
-ValueError: Validation did not pass for ...
+ValidationError: Validation did not pass for ...
 </code></pre>
 <p>Let's do it right this time.</p>
 <pre><code>&gt;&gt;&gt; demo_obj = Demo()
@@ -394,8 +411,7 @@ world
 <p>Here's the <code>DateTimeProperty</code></p>
 <pre><code>&gt;&gt;&gt; demo_obj.some_date = datetime(2011, 12, 16) # Just use a date time object
 </code></pre>
-<p>You can use the datetime object or an unix timestamp. Note that all datetime
-handling is in utc. So riakkit you entered the utc time.</p>
+<p>You can use the datetime object or an unix timestamp.</p>
 <p>The <code>EnumProperty</code> basically is a list of possible values. If you feed it a
 not allowed value, it will fail validation. The implementation of the
 EnumProperty stores an integer corresponding to the location on the list you
@@ -406,14 +422,15 @@ something like an object, you'll get the identical object back.</p>
 <pre><code>&gt;&gt;&gt; demo_obj.levels = "notpossible" #doctest: +IGNORE_EXCEPTION_DETAIL
 Traceback (most recent call last):
   ...
-ValueError: Validation did not pass for ...
+ValidationError: Validation did not pass for ...
 &gt;&gt;&gt; demo_obj.levels = "user"
 </code></pre>
 <p>Now let's save the object.</p>
-<pre><code>&gt;&gt;&gt; demo_obj.save()
+<pre><code>&gt;&gt;&gt; demo_obj.save() #doctest: +ELLIPSIS
+&lt;...&gt;
 </code></pre>
 <p>We can now retrieve it again and see if this worked.</p>
-<pre><code>&gt;&gt;&gt; same_demo = Demo.get_with_key(demo_obj.key)
+<pre><code>&gt;&gt;&gt; same_demo = Demo.get(demo_obj.key, False) # This False means that we want to reload the object even if it is cached
 &gt;&gt;&gt; print same_demo.test_list
 [0, 1, 2]
 &gt;&gt;&gt; print same_demo.test_dict.hello
@@ -426,9 +443,10 @@ world
 user
 </code></pre>
 <p>One more note on the <code>DateTimeProperty</code>: if you don't specify, it will use
-<code>utcnow</code> as the default value:</p>
+<code>now</code> as the default value:</p>
 <pre><code>&gt;&gt;&gt; another_demo = Demo()
-&gt;&gt;&gt; another_demo.save()
+&gt;&gt;&gt; another_demo.save()#doctest: +ELLIPSIS
+&lt;...&gt;
 &gt;&gt;&gt; print another_demo.some_date #doctest: +SKIP
 &lt;This will print the date time this is ran&gt;
 </code></pre>
@@ -443,22 +461,22 @@ bucket's name is generated as <em><class bucket name>_ul</em><property name>.</p
 ...     bucket_name = "coolusers"
 ...     client = some_client
 ...
-...     username = types.StringProperty(unique=True)
+...     username = StringProperty(unique=True)
 </code></pre>
 <p>This unique will create another bucket named "_coolusers_ul_username". Inside
 this bucket, each object's key will be the values of the username. The value for
 the object is {key : <the key of the document>}. Let's see how that works.</p>
 <pre><code>&gt;&gt;&gt; cooluser = CoolUser(username="cool")
-&gt;&gt;&gt; cooluser.save()  # This is done successfully
+&gt;&gt;&gt; cooluser.save() #doctest: +ELLIPSIS
+&lt;...&gt;
 &gt;&gt;&gt; notsocooluser = CoolUser(username="cool")
 &gt;&gt;&gt; notsocooluser.save()
 Traceback (most recent call last):
   ...
 ValueError: 'cool' already exists for 'username'!
-&gt;&gt;&gt; notsocooluser.saved()
-False
 &gt;&gt;&gt; anothercooluser = CoolUser(username="anotheruser")
-&gt;&gt;&gt; anothercooluser.save()  # This is done successfully
+&gt;&gt;&gt; anothercooluser.save() #doctest: +ELLIPSIS
+&lt;...&gt;
 &gt;&gt;&gt; anothercooluser.username = "cool"
 &gt;&gt;&gt; anothercooluser.save()
 Traceback (most recent call last):
@@ -474,20 +492,20 @@ but it is stored as just a plain old dictionary embedded inside a <code>Document
 don't need to specify <code>client</code> and <code>bucket_name</code> class variables.</p>
 <pre><code>&gt;&gt;&gt; from riakkit import EmDocument
 &gt;&gt;&gt; class Admin(EmDocument):
-...     email = types.StringProperty(required=True) # Required works, see demo later
-...     level = types.EnumProperty(["regular", "super"], default="regular") # Default works as well.
+...     email = StringProperty(required=True) # Required works, see demo later
+...     level = EnumProperty(["regular", "super"], default="regular") # Default works as well.
 &gt;&gt;&gt; class Page(EmDocument):
-...     name = types.StringProperty()
-...     content = types.StringProperty()
+...     name = StringProperty()
+...     content = StringProperty()
 </code></pre>
 <p>Then we need to use <code>EmDocumentProperty</code> and specify the <code>emdocument_class</code>.</p>
 <pre><code>&gt;&gt;&gt; class Website(Document):
 ...     client = some_client
 ...     bucket_name = "test_website"
 ...
-...     name = types.StringProperty()
-...     admin = types.EmDocumentProperty(emdocument_class=Admin)
-...     pages = types.EmDocumentsListProperty(emdocument_class=Page) # demo'ed later
+...     name = StringProperty()
+...     admin = EmDocumentProperty(emdocument_class=Admin)
+...     pages = EmDocumentsListProperty(emdocument_class=Page) # demo'ed later
 </code></pre>
 <p>We can then use this, let's demo the <code>required</code> first:</p>
 <pre><code>&gt;&gt;&gt; the_admin = Admin()
@@ -495,18 +513,20 @@ don't need to specify <code>client</code> and <code>bucket_name</code> class var
 &gt;&gt;&gt; the_website.save()
 Traceback (most recent call last):
     ...
-AttributeError: 'email' is required for 'Admin'.
+ValidationError: None doesn't pass validation for property 'email'
 </code></pre>
 <p>Alright, let's do this the right way this time:</p>
 <pre><code>&gt;&gt;&gt; the_admin.email = "admin@thekks.net"
 &gt;&gt;&gt; print the_website.admin.email
 admin@thekks.net
-&gt;&gt;&gt; the_website.save() # Save again as required. This save also kicks in the default values.
+&gt;&gt;&gt; # Save again as required. This save also kicks in the default values.
+&gt;&gt;&gt; the_website.save() #doctest: +ELLIPSIS
+&lt;...&gt;
 &gt;&gt;&gt; print the_website.admin.level
 regular
 &gt;&gt;&gt; print the_admin.level
 regular
-&gt;&gt;&gt; same_website = Website.getWithKey(the_website.key)
+&gt;&gt;&gt; same_website = Website.get(the_website.key, False) # This False signifies that we don't want the cached copy and wants to reload it
 &gt;&gt;&gt; print same_website.admin.email
 admin@thekks.net
 &gt;&gt;&gt; print isinstance(same_website.admin, Admin)
@@ -534,7 +554,8 @@ Required, however, works, as you have seen.</p>
 <p>You can also just append a dictionary. Via some magic it auto turns into a Page
 instance.</p>
 <pre><code>&gt;&gt;&gt; same_website.pages.append({"name" : "About", "content" : "Riakkit!"})
-&gt;&gt;&gt; same_website.save()
+&gt;&gt;&gt; same_website.save() #doctest: +ELLIPSIS
+&lt;...&gt;
 &gt;&gt;&gt; print the_website.pages[0].name, the_website.pages[0].content
 Home Hello World!
 &gt;&gt;&gt; print the_website.pages[1].name, the_website.pages[1].content
@@ -543,14 +564,16 @@ About Riakkit!
 <p>You can add extra attributes to <code>EmDocument</code> just like you would with regular
 <code>Document</code>.</p>
 <pre><code>&gt;&gt;&gt; same_website.pages.append({"name" : "Contact", "content" : "Contact us here!", "random_attr" : 1})
-&gt;&gt;&gt; same_website.save()
+&gt;&gt;&gt; same_website.save() #doctest: +ELLIPSIS
+&lt;...&gt;
 &gt;&gt;&gt; print the_website.pages[2].random_attr
 1
 </code></pre>
 <p>You can also use methods such as <code>extend</code>, <code>insert</code>, and just <code>[index]</code> like
 <code>append</code>.</p>
 <pre><code>&gt;&gt;&gt; same_website.pages[2] = {"name" : "Products", "content" : "All our products."}
-&gt;&gt;&gt; same_website.save()
+&gt;&gt;&gt; same_website.save() #doctest: +ELLIPSIS
+&lt;...&gt;
 &gt;&gt;&gt; print isinstance(same_website.pages[2], Page)
 True
 &gt;&gt;&gt; print the_website.pages[2].name
@@ -568,7 +591,7 @@ You can also add other methods and variables, like any type of subclassing.</p>
 &gt;&gt;&gt;
 &gt;&gt;&gt; class SomeOtherDocument(CustomDocument):
 ...     bucket_name = "some_bucket"
-...     test_property = types.StringProperty()
+...     test_property = StringProperty()
 
 &gt;&gt;&gt; print SomeOtherDocument.client == some_client
 True
@@ -579,13 +602,14 @@ True
 <pre><code>&gt;&gt;&gt; class ExtendedDocument(SomeOtherDocument):
 ...     bucket_name = "some_extended_bucket"
 ...
-...     extended_property = types.IntegerProperty()
+...     extended_property = IntegerProperty()
 &gt;&gt;&gt; ed = ExtendedDocument()
 &gt;&gt;&gt; print ed.test_property
 None
 &gt;&gt;&gt; ed.test_property = "mrrow"
-&gt;&gt;&gt; ed.save()
-&gt;&gt;&gt; ed1 = ExtendedDocument.getWithKey(ed.key)
+&gt;&gt;&gt; ed.save() #doctest: +ELLIPSIS
+&lt;...&gt;
+&gt;&gt;&gt; ed1 = ExtendedDocument.load(ed.key) # load is the same as get(key, False)
 &gt;&gt;&gt; print ed1.test_property
 mrrow
 </code></pre>
@@ -606,21 +630,22 @@ transformed value. The hashing password function takes in a salt along with
 a password, so a lambda function would help you. For more info, go see the
 documentations.</p>
 <p>In the mean while, demo time:</p>
-<pre><code>&gt;&gt;&gt; from riakkit.validators import emailValidator
+<pre><code>&gt;&gt;&gt; from riakkit.helpers import emailValidator
 &gt;&gt;&gt; class TestDocument(Document):
 ...     client = some_client
 ...     bucket_name = "testdoc"
 ...
-...     email = types.StringProperty(validators=emailValidator)
-...     some_property = types.IntegerProperty(standardprocessors=lambda x: x if x is None else x + 1)
+...     email = StringProperty(validators=emailValidator)
+...     some_property = IntegerProperty(standardprocessors=lambda x: x if x is None else x + 1)
 &gt;&gt;&gt; test = TestDocument()
 &gt;&gt;&gt; test.email = "notvalid" #doctest: +IGNORE_EXCEPTION_DETAIL
 Traceback (most recent call last):
   ...
-ValueError: Validation did not pass for ...
+ValidationError: Validation did not pass for ...
 &gt;&gt;&gt; test.email = "hello@world.com" # This works
 &gt;&gt;&gt; test.some_property = 1
-&gt;&gt;&gt; test.save()
+&gt;&gt;&gt; test.save() #doctest: +ELLIPSIS
+&lt;...&gt;
 &gt;&gt;&gt; print test.email
 hello@world.com
 &gt;&gt;&gt; print test.some_property
@@ -685,8 +710,8 @@ http://ultimatebuster.github.com/riakkit</p>
 <p>cd into this directory and do <code>./makedocs</code></p>
 <p>Until someone makes a prettier doc, that is (You should be glad I wrote docs,
 'cause I usually don't do it).</p>
-<h2>Doctests</h2>
-<p>Run <code>python runtests.py</code>.</p>
+<h2>Unittests</h2>
+<p>Run <code>python test_all.py</code>.</p>
         
       </div>
       <div class="four columns">
@@ -710,7 +735,7 @@ http://ultimatebuster.github.com/riakkit</p>
 		</div>
 
     <footer>
-      Website generated by <a href="https://github.com/ultimatebuster/Funnel">Funnel</a> on 2012-03-01 19:20:43.398844
+      Website generated by <a href="https://github.com/ultimatebuster/Funnel">Funnel</a> on 2012-07-04 10:20:37.933363
       <br />
       Copyright &copy; Shuhao Wu 2012
     </footer>
