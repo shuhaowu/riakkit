@@ -16,9 +16,9 @@
 """This is the top level riakkit module. It provides a shortcut to the package
 contents in a convinient fashion.
 
-It imports everything from under commons.properties as well as commons.exceptions
-It also import SimpleDocument, BaseDocument, and Document. This also sets up
-EmDocument"""
+It imports everything from under commons.properties as well as
+commons.exceptions It also import SimpleDocument, BaseDocument, and Document.
+This also sets up EmDocument"""
 
 from riakkit.simple import SimpleDocument, BaseDocument
 EmDocument = BaseDocument
@@ -26,4 +26,9 @@ from riakkit.document import Document
 from riakkit.commons.properties import *
 from riakkit.commons.exceptions import *
 
-VERSION = "0.6.0a"
+
+#PEP 386 versioning
+VERSION = (0, 6, 0, 'a')
+__version__ = ('.'.join(map(str, VERSION[:3])) + '.'.join(VERSION[3:]))
+__author__ = "Shuhao Wu"
+__url__ = "https://github.com/ultimatebuster/riakkit"
