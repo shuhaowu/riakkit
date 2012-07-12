@@ -24,7 +24,9 @@ class RiakkitError(Exception):
 
 
 class ValidationError(RiakkitError):
-  pass
+  def __init__(self, field, message):
+    super(ValidationError, self).__init__(message)
+    self.field = field
 
 
 class NotFoundError(RiakkitError):
