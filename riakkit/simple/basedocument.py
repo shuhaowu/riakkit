@@ -89,7 +89,9 @@ class BaseDocument(object):
         (name, self.__class__.__name__))
 
   def _valiError(self, value, name):
-    raise ValidationError("%s doesn't pass validation for property '%s'" % (value, name))
+    raise ValidationError(name,
+        "%s doesn't pass validation for property '%s'" % (value, name)
+    )
 
   def serialize(self, dictionary=True):
     """Serializes the data to database friendly version.
@@ -247,7 +249,10 @@ class BaseDocument(object):
       standardizer = self._meta[name].standardize
 
     if not validator(value):
-      raise ValidationError("Validation did not pass for %s for the field %s.%s" % (value, self.__class__.__name__, name))
+      raise ValidationError(name,
+          "Validation did not pass for %s for the field %s.%s" 
+          % (value, self.__class__.__name__, name)
+      )
     value = standardizer(value)
     self._data[name] = value
 

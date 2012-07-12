@@ -187,7 +187,10 @@ class Document(SimpleDocument):
           changed = True
 
         if changed and self._meta[name].unique_bucket.get(dataToBeSaved[name]).exists():
-          raise ValueError("'%s' already exists for '%s'!" % (self._data[name], name))
+          raise IntegrityError(
+            field=name,
+            message="'%s' already exists for '%s'!" % (self._data[name], name)
+          )
 
     # Process references
     for name in self._references:

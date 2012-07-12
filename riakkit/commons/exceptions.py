@@ -13,6 +13,27 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with RiakKit.  If not, see <http://www.gnu.org/licenses/>.
 
-class RiakkitError(Exception): pass
-class ValidationError(RiakkitError): pass
-class NotFoundError(RiakkitError): pass
+"""
+Custom exceptions for riakkit
+"""
+
+
+class RiakkitError(Exception):
+  """generic exception base"""
+  pass
+
+
+class ValidationError(RiakkitError):
+  def __init__(self, field, message):
+    super(ValidationError, self).__init__(message)
+    self.field = field
+
+
+class NotFoundError(RiakkitError):
+  pass
+
+
+class IntegrityError(RiakkitError):
+  def __init__(self, field, message):
+    super(IntegrityError, self).__init__(message)
+    self.field = field
