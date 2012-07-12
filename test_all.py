@@ -604,7 +604,7 @@ class RiakkitDocumentTests(unittest.TestCase):
     user1.save()
 
     user2 = User(username="foo", password="123")
-    self.assertRaises(ValueError, user2.save)
+    self.assertRaises(IntegrityError, user2.save)
 
     self.assertTrue(User.username.hasValue("foo"))
 

@@ -249,10 +249,8 @@ class BaseDocument(object):
       standardizer = self._meta[name].standardize
 
     if not validator(value):
-      raise ValidationError(name,
-          "Validation did not pass for %s for the field %s.%s" 
-          % (value, self.__class__.__name__, name)
-      )
+      self._valiError(value, name)
+
     value = standardizer(value)
     self._data[name] = value
 

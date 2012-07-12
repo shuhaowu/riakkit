@@ -525,7 +525,7 @@ the object is {key : <the key of the document>}. Let's see how that works.
     >>> notsocooluser.save()
     Traceback (most recent call last):
       ...
-    ValueError: 'cool' already exists for 'username'!
+    IntegrityError: 'cool' already exists for 'username'!
     >>> anothercooluser = CoolUser(username="anotheruser")
     >>> anothercooluser.save() #doctest: +ELLIPSIS
     <...>
@@ -533,7 +533,7 @@ the object is {key : <the key of the document>}. Let's see how that works.
     >>> anothercooluser.save()
     Traceback (most recent call last):
       ...
-    ValueError: 'cool' already exists for 'username'!
+    IntegrityError: 'cool' already exists for 'username'!
 
 Embedded Document
 -----------------
