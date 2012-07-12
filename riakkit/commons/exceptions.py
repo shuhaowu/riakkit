@@ -19,20 +19,19 @@ Custom exceptions for riakkit
 
 
 class RiakkitError(Exception):
-    """generic exception base"""
-    pass
+  """generic exception base"""
+  pass
 
 
 class ValidationError(RiakkitError):
-    pass
+  pass
 
 
 class NotFoundError(RiakkitError):
-    pass
+  pass
 
 
 class IntegrityError(RiakkitError):
-
-    def __init__(self, field, message):
-        super(IntegrityError, self).__init__(message)
-        self.field = field
+  def __init__(self, field, message):
+    super(IntegrityError, self).__init__(message)
+    self.field = field
