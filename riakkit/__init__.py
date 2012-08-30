@@ -31,4 +31,4 @@ from riakkit.commons.exceptions import *
 VERSION = (0, 6, 0, 'a')
 __version__ = ('.'.join(map(str, VERSION[:3])) + '.'.join(VERSION[3:]))
 __author__ = "Shuhao Wu"
-__url__ = "https://github.com/ultimatebuster/riakkit"
+__url__ = "https://github.com/shuhaowu/riakkit"
