@@ -498,7 +498,7 @@ One more note on the `DateTimeProperty`: if you don't specify, it will use
 Notice how the key of 42 (integer) got converted to u'42' (unicode). This is due
 to JSON only allowing strings as keys.
 
-For all the types, see the (API docs)[http://ultimatebuster.github.com/riakkit].
+For all the types, see the (API docs)[http://shuhaowu.github.com/riakkit].
 
 Uniqueness
 ----------
@@ -800,7 +800,7 @@ API Docs
 --------
 
 cd into this directory and cd into the docs directory should do! Or visit
-http://ultimatebuster.github.com/riakkit
+http://shuhaowu.github.com/riakkit
 
 That may be outta date though.. so I think you should build your own docs.
 
