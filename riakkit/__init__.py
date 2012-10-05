@@ -22,7 +22,7 @@ This also sets up EmDocument"""
 
 from riakkit.simple import SimpleDocument, BaseDocument
 EmDocument = BaseDocument
-from riakkit.document import Document
+from riakkit.document import Document, getClassGivenBucketName
 from riakkit.commons.properties import *
 from riakkit.commons.exceptions import *
 
