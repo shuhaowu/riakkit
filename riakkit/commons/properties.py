@@ -426,7 +426,7 @@ class DynamicProperty(BaseProperty):
   """
 
 class ReferenceBaseProperty(BaseProperty):
-  def __init__(self, reference_class, collection_name=None, required=False):
+  def __init__(self, reference_class, collection_name=None, required=False, strict=True):
     """Initializes a Reference Property
 
     You can set it up so that riakkit automatically link back from
@@ -441,6 +441,7 @@ class ReferenceBaseProperty(BaseProperty):
                        same way as GAE's collection_name for their
                        ReferenceProperty. See the README file at the repository
                        for detailed tutorial.
+      strict: If true, the remote object must exist. Otherwise it doesn't have to.
     """
     BaseProperty.__init__(self, required=required)
     if not reference_class._clsType:
@@ -450,6 +451,7 @@ class ReferenceBaseProperty(BaseProperty):
     self.reference_class = reference_class
     self.collection_name = collection_name
     self.is_reference_back = False
+    self.strict = strict
 
   def _checkForReferenceClass(self, l):
     rc = self.reference_class
@@ -471,7 +473,10 @@ class ReferenceBaseProperty(BaseProperty):
     if self.clstype == 1 or isinstance(value, (self.reference_class, NONE_TYPE)): # SimpleDocument
       return value
     else: # Document, EmDocument
-      return self.reference_class.load(value, True)
+      if self.strict:
+        return self.reference_class.get(value)
+      else:
+        return self.reference_class.getOrNew(value)
 
   def attemptToDb(self, obj):
     if isinstance(obj, self.reference_class):

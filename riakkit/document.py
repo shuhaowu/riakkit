@@ -195,6 +195,7 @@ class Document(SimpleDocument):
     # Process references
     for name in self._references:
       currentDocsKeys = None
+      strict = self._meta[name].strict
       colname = self._meta[name].collection_name
 
       if colname:
@@ -205,7 +206,7 @@ class Document(SimpleDocument):
           docs = getattr(self, name)
 
         for doc in docs: # These are foreign documents
-          if doc is None:
+          if doc is None or (not strict and not doc.__class__.exists(doc.key)):
             continue
 
           currentDocsKeys.add(doc.key)

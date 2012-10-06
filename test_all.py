@@ -344,6 +344,12 @@ class TestEmDocumentWithRef(BaseDocumentModel):
 
   em = EmDocumentProperty(EmDocumentWithRef)
 
+class TestNonStrictReferenceDocument(BaseDocumentModel):
+  bucket_name = "test_nonstrict_ref"
+
+  r = ReferenceProperty(Comment, collection_name="nonstrict", strict=False)
+  rl = MultiReferenceProperty(Comment, strict=False)
+
 class RiakkitDocumentTests(unittest.TestCase):
   def _getRidOfPreviousUniqueUsername(self, username):
     c = riak.RiakClient()
@@ -570,6 +576,20 @@ class RiakkitDocumentTests(unittest.TestCase):
     comment2.delete()
     user.delete()
 
+  def test_nonstrictRef(self):
+    a = TestNonStrictReferenceDocument(r="non-existing")
+    a.rl.append("nope")
+    a.save()
+
+    a.reload()
+    self.assertTrue(isinstance(a.r, Comment))
+    self.assertTrue(isinstance(a.rl[0], Comment))
+
+    a.save()
+
+    self.assertFalse(Comment.exists(a.r.key))
+    self.assertFalse(Comment.exists(a.rl[0].key))
+
   def test_changeRef(self):
     user1 = User(username="user1", password="123").save()
     user2 = User(username="user2", password="123").save()
@@ -610,7 +630,6 @@ class RiakkitDocumentTests(unittest.TestCase):
 
     self.assertTrue(User._meta["username"].unique_bucket.get("foo").exists())
     user1.delete()
-    c = riak.RiakClient()
     self.assertFalse(User._meta["username"].unique_bucket.get("foo").exists())
 
     user2 = User(username="foo", password="123")
@@ -816,7 +835,7 @@ if __name__ == "__main__":
     buckets_to_be_cleaned = ("test_blog", "doctest_users", "doctest_comments", "demos",
         "test_website", "coolusers", "_coolusers_ul_username", "testdoc",
         "test_person", "test_cake", "some_extended_bucket", "test_A", "test_B",
-        "test_unique", "_test_unique_ul_attr", "test_class", "test_someuser")
+        "test_unique", "_test_unique_ul_attr", "test_class", "test_someuser", "test_comments", "test_nonstrict_ref")
 
     for bucket in buckets_to_be_cleaned:
       deleteAllKeys(riak.RiakClient(), bucket)
