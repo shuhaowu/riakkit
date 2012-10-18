@@ -28,12 +28,11 @@ class SolrQuery(object):
 
   def length(self):
     """Gets the length of the documents that's searched through."""
-    #return self.result[u"response"][u"numFound"]
-    return len(self.result[u"response"][u"docs"])
+    return self.result[u"num_found"]
 
   def run(self):
     """Returns a generator that goes through each document that's searched."""
-    for doc in self.result[u"response"][u"docs"]:
+    for doc in self.result[u"docs"]:
       yield self.loadDoc(doc)
 
   def all(self):
@@ -42,7 +41,7 @@ class SolrQuery(object):
     Return:
       A list of all the Documents.
     """
-    return map(self.loadDoc, self.result[u"response"][u"docs"])
+    return map(self.loadDoc, self.result[u"docs"])
 
 
 class MapReduceQuery(object):
