@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with RiakKit.  If not, see <http://www.gnu.org/licenses/>.
 
-from copy import copy, deepcopy
+from copy import copy
 from weakref import WeakValueDictionary
 
 from riakkit.simple.basedocument import BaseDocumentMetaclass, BaseDocument, SimpleDocument
@@ -92,14 +92,26 @@ class DocumentMetaclass(BaseDocumentMetaclass):
     new_class = type.__new__(cls, clsname, parents, attrs)
 
     bucket_name = attrs.get("bucket_name", None)
-    if bucket_name is not None:
-      if bucket_name in _document_classes:
-        raise RiakkitError("Bucket name of %s already exists in the registry!"
-                              % new_class.bucket_name)
-      else:
-        _document_classes[bucket_name] = new_class
 
-      new_class.bucket = client.bucket(bucket_name)
+    new_class.buckets = {}
+
+    if bucket_name is not None:
+      if isinstance(bucket_name, basestring):
+        new_class.bucket_name = bucket_name = [bucket_name]
+
+      for bn in bucket_name:
+        if bn in _document_classes:
+          raise RiakkitError("Bucket name of %s already exists in the registry!"
+                                % bn)
+        else:
+          _document_classes[bn] = new_class
+
+        new_class.buckets[bn] = client.bucket(bn)
+
+      if len(new_class.buckets) == 1:
+        new_class.bucket = new_class.buckets.values()[0]
+      else:
+        new_class.bucket = new_class.buckets[bucket_name[0]]
 
     for colname, rcls, back_name in references_col_classes:
       rcls._meta[colname] = MultiReferenceProperty(reference_class=new_class)
@@ -115,7 +127,12 @@ class Document(SimpleDocument):
   There are a couple of class variables that needs to be filled out. First is
   client. client is an instance of a RiakClient. The other is bucket_name. This
   is the name of the bucket to be stored in Riak. It must not be shared with
-  another Document subclass. Lastly, you may set the  to True or False
+  another Document subclass. Lastly, you may set the  to True or False.
+
+  bucket_name maybe a list of bucket names (strings). This allows for multiple
+  buckets for each document. When not specified with each save and get
+  operation, the default bucket is used, which is the first item in the list
+  of bucket names.
 
   Class variables that's an instance of the BaseType will be the schema of the
   document.
@@ -155,7 +172,7 @@ class Document(SimpleDocument):
 
     self.__class__.instances[self.key] = self
 
-  def save(self, w=None, dw=None, endpoint=False):
+  def save(self, w=None, dw=None, endpoint=False, bucket=None):
     """Saves the document into the database.
 
     This will save the object to the database. All linked objects will be saved
@@ -164,6 +181,10 @@ class Document(SimpleDocument):
     Args:
       w: W value
       dw: DW value
+      endpoint: See if this is an endpoint. i.e. It will save the documents
+                that's modified while modifying this one. Default: False
+      bucket: Save to a specific bucket. Default is the default bucket. Only
+              has an effect if the document is new.
     """
     dataToBeSaved = self.serialize()
     uniquesToBeDeleted = []
@@ -259,7 +280,8 @@ class Document(SimpleDocument):
     if self._obj:
       self._obj.set_data(dataToBeSaved)
     else:
-      self._obj = self.bucket.new(self.key, dataToBeSaved)
+      bucket = self.buckets.get(bucket, self.bucket)
+      self._obj = bucket.new(self.key, dataToBeSaved)
 
     self._obj.set_links(self.links(True), True)
     self._obj.set_indexes(self.indexes())
@@ -369,7 +391,7 @@ class Document(SimpleDocument):
     Returns:
       A set of (document, tag) or [RiakLink, RiakLink]"""
     if riakLinks:
-      return [RiakLink(self.bucket_name, d.key, t) for d, t in self._links]
+      return [RiakLink(self.bucket_name[0], d.key, t) for d, t in self._links]
     return copy(self._links)
 
   def getRawData(self, name, default=DocumentMetaclass):
@@ -419,12 +441,14 @@ class Document(SimpleDocument):
     return links
 
   @classmethod
-  def load(cls, robj, cached=False, r=None):
+  def load(cls, robj, cached=False, r=None, bucket=None):
     """Construct a Document based object given a RiakObject.
 
     Args:
       riak_obj: The RiakObject that the document is suppose to build from.
       cached: Reload the object or not if it's found in the pool of objects.
+      r: R value
+      bucket: The bucket to grab from. Defaults to the default bucket.
 
     Returns:
       A Document object (whichever subclass this was called from).
@@ -438,7 +462,8 @@ class Document(SimpleDocument):
     try:
       doc = cls.instances[key]
     except KeyError:
-      robj = cls.bucket.get(key, r)
+      bucket = cls.buckets.get(bucket, cls.bucket)
+      robj = bucket.get(key, r)
       if not robj.exists():
         raise NotFoundError("%s not found!" % key)
 
@@ -460,31 +485,32 @@ class Document(SimpleDocument):
     return doc
 
   @classmethod
-  def get(cls, key, cached=True, r=None):
+  def get(cls, key, cached=True, r=None, bucket=None):
     """Same as load, but the default of the cached is True.
 
     This method is usually used and usually you just need a cached copy if
     available."""
-    return cls.load(key, cached, r)
+    return cls.load(key, cached, r, bucket)
 
   @classmethod
-  def getOrNew(cls, key, cached=True, r=None, **kwargs):
+  def getOrNew(cls, key, cached=True, r=None, bucket=None, **kwargs):
     """Similar to get, but does not raise error if not found. A new (unsaved)
     document will be created.
 
     Args:
-      Everything: The same as get
+      Everything: The same as get.
+      For this method. The bucket argument only has effect on the get operation.
       **kwargs: Additional kwargs to merge data into the document.
     """
     try:
-      d = cls.load(key, cached, r)
+      d = cls.load(key, cached, r, bucket)
       d.mergeData(kwargs)
       return d
     except NotFoundError:
       return cls(key=key, **kwargs)
 
   @classmethod
-  def exists(cls, key, r=None):
+  def exists(cls, key, r=None, bucket=None):
     """Check if a key exists.
 
     Args:
@@ -494,7 +520,7 @@ class Document(SimpleDocument):
     Returns:
       True if the key exists, false otherwise.
     """
-    return cls.bucket.get(key, r).exists()
+    return cls.buckets.get(bucket, cls.bucket).get(key, r).exists()
 
   @classmethod
   def search(cls, querytext):
@@ -508,7 +534,7 @@ class Document(SimpleDocument):
 
     Returns:
       A MapReduceQuery object. Similar to the RiakMapReduce object."""
-    query_obj = cls.client.search(cls.bucket_name, querytext)
+    query_obj = cls.client.search(cls.bucket_name[0], querytext)
     return MapReduceQuery(cls, query_obj)
 
   @classmethod
@@ -521,7 +547,7 @@ class Document(SimpleDocument):
 
     Returns:
       A SolrQuery object. Similart to a MapReduceQuery"""
-    return SolrQuery(cls, cls.client.solr().search(cls.bucket_name, querytext, **kwargs))
+    return SolrQuery(cls, cls.client.solr().search(cls.bucket_name[0], querytext, **kwargs))
 
   @classmethod
   def indexLookup(cls, index, startkey, endkey=None):
@@ -535,7 +561,7 @@ class Document(SimpleDocument):
     Returns:
       A RiakMapReduce object
     """
-    return MapReduceQuery(cls, cls.client.index(cls.bucket_name, index, startkey, endkey))
+    return MapReduceQuery(cls, cls.client.index(cls.bucket_name[0], index, startkey, endkey))
 
   @classmethod
   def mapreduce(cls): # TODO: Make a better interface
@@ -544,4 +570,4 @@ class Document(SimpleDocument):
     Returns:
       A RiakMapReduce object.
     """
-    return cls.client.add(cls.bucket_name)
+    return cls.client.add(cls.bucket_name[0])

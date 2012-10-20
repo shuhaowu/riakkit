@@ -350,6 +350,12 @@ class TestNonStrictReferenceDocument(BaseDocumentModel):
   r = ReferenceProperty(Comment, collection_name="nonstrict", strict=False)
   rl = MultiReferenceProperty(Comment, strict=False)
 
+
+class TestMultipleBuckets(BaseDocumentModel):
+  bucket_name = ["test_multibucket1", "test_multibucket2"]
+
+  s = StringProperty()
+
 class RiakkitDocumentTests(unittest.TestCase):
   def _getRidOfPreviousUniqueUsername(self, username):
     c = riak.RiakClient()
@@ -357,8 +363,38 @@ class RiakkitDocumentTests(unittest.TestCase):
     uo = ub.get(username)
     uo.delete()
 
-  def test_save(self):
+  def test_multiple_bucket_save(self):
+    c = riak.RiakClient()
 
+    m1 = TestMultipleBuckets(s="m1")
+    m1.save()
+    b1 = c.bucket("test_multibucket1")
+    self.assertTrue(b1.get(m1.key).exists())
+
+    m2 = TestMultipleBuckets(s="m2")
+    m2.save(bucket="test_multibucket2")
+
+    b2 = c.bucket("test_multibucket2")
+    self.assertTrue(b2.get(m2.key).exists())
+
+    m1key = m1.key
+    del m1
+    self.assertTrue(m1key not in TestMultipleBuckets.instances)
+
+    m2key = m2.key
+    del m2
+    self.assertTrue(m2key not in TestMultipleBuckets.instances)
+
+    m1 = TestMultipleBuckets.load(m1key, bucket="test_multibucket1")
+    self.assertEquals("m1", m1.s)
+
+    m2 = TestMultipleBuckets.load(m2key, bucket="test_multibucket2")
+    self.assertEquals("m2", m2.s)
+
+    m1.delete()
+    m2.delete()
+
+  def test_save(self):
     user1 = User(username="foo_save", password="123")
     user1.someprop = 1
     user1.save()
