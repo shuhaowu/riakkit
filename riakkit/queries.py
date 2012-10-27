@@ -30,6 +30,8 @@ class SolrQuery(object):
     """Gets the length of the documents that's searched through."""
     return self.result[u"num_found"]
 
+  __len__ = length
+
   def run(self):
     """Returns a generator that goes through each document that's searched."""
     for doc in self.result[u"docs"]:
@@ -69,6 +71,8 @@ class MapReduceQuery(object):
       an integer that is the length of riak_obj
     """
     return len(self.riak_links)
+
+  __len__ = length
 
   def all(self):
     """Returns all the Documents in a single list.

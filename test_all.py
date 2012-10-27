@@ -451,6 +451,7 @@ class RiakkitDocumentTests(unittest.TestCase):
 
     q = User.indexLookup("field_bin", "lol")
     self.assertEquals(1, q.length())
+    self.assertEquals(1, len(q))
     for u in q.run():
       self.assertEquals(key, u.key)
       self.assertEquals("foo_2i", u.username)
