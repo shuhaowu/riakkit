@@ -27,7 +27,9 @@ class SolrQuery(object):
     self.loadDoc = lambda doc : self.cls.load(self.cls.bucket.get(doc[u"id"]))
 
   def length(self):
-    """Gets the length of the documents that's searched through."""
+    """Gets the length of the documents that's searched through.
+
+    Deprecated. Use len() instead."""
     return self.result[u"num_found"]
 
   __len__ = length
@@ -66,6 +68,8 @@ class MapReduceQuery(object):
 
   def length(self):
     """The number of objects in this query.
+
+    Deprecated. Use len() instead.
 
     Return:
       an integer that is the length of riak_obj

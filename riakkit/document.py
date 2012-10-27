@@ -533,7 +533,7 @@ class Document(SimpleDocument):
       endkey: The ending key. If not none, search a range. Default: None
 
     Returns:
-      A RiakMapReduce object
+      A MapReduceQuery object
     """
     return MapReduceQuery(cls, cls.client.index(cls.bucket_name, index, startkey, endkey))
 
