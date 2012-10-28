@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with RiakKit.  If not, see <http://www.gnu.org/licenses/>.
 
-from copy import copy, deepcopy
+from copy import copy
 from weakref import WeakValueDictionary
 
 from riakkit.simple.basedocument import BaseDocumentMetaclass, BaseDocument, SimpleDocument
@@ -48,6 +48,15 @@ class DocumentMetaclass(BaseDocumentMetaclass):
   Checks for bucket_name in each class, as those are necessary.
   """
 
+  @staticmethod
+  def setupRefs(prop, references, references_col_classes):
+    colname = getattr(prop, "collection_name", False)
+    if colname:
+      if colname in prop.reference_class._meta:
+        raise RiakkitError("%s already in %s!" % (colname, prop.reference_class))
+      references_col_classes.append((colname, prop.reference_class, prop.name))
+      references.append(prop.name)
+
   def __new__(cls, clsname, parents, attrs):
     if clsname == "Document":
       return type.__new__(cls, clsname, parents, attrs)
@@ -61,21 +70,21 @@ class DocumentMetaclass(BaseDocumentMetaclass):
     references_col_classes = []
     references = []
 
+    selfref = []
     for name in attrs.keys():
       if isinstance(attrs[name], BaseProperty):
         meta[name] = prop = attrs.pop(name)
         refcls = getattr(prop, "reference_class", False)
         prop.name = name
-        if refcls and not issubclass(refcls, Document):
-          raise TypeError("ReferenceProperties for Document must be another Document!")
+        if refcls == "self":
+          selfref.append(prop)
+        else:
+          if refcls and not issubclass(refcls, Document):
+            raise TypeError("ReferenceProperties for Document must be another Document!")
 
-        colname = getattr(prop, "collection_name", False)
-        if colname:
-          if colname in prop.reference_class._meta:
-            raise RiakkitError("%s already in %s!" % (colname, prop.reference_class))
-          references_col_classes.append((colname, prop.reference_class, name))
-          references.append(name)
-        elif prop.unique: # Unique is not allowed with anything that has backref
+          DocumentMetaclass.setupRefs(prop, references, references_col_classes)
+
+        if prop.unique: # Unique is not allowed with anything that has backref
           prop.unique_bucket = client.bucket(getUniqueListGivenBucketName(attrs["bucket_name"], name))
           uniques.append(name)
 
@@ -87,9 +96,14 @@ class DocumentMetaclass(BaseDocumentMetaclass):
     attrs["_meta"] = meta
     attrs["_uniques"] = uniques
     attrs["instances"] = WeakValueDictionary()
-    attrs["_references"] = references
 
     new_class = type.__new__(cls, clsname, parents, attrs)
+    for prop in selfref:
+      prop.reference_class = new_class
+      prop.clstype = new_class._clsType
+      DocumentMetaclass.setupRefs(prop, references, references_col_classes)
+
+    new_class._references = references
 
     bucket_name = attrs.get("bucket_name", None)
     if bucket_name is not None:

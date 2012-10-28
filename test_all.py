@@ -350,6 +350,12 @@ class TestNonStrictReferenceDocument(BaseDocumentModel):
   r = ReferenceProperty(Comment, collection_name="nonstrict", strict=False)
   rl = MultiReferenceProperty(Comment, strict=False)
 
+
+class TestSelfReferenceDocument(BaseDocumentModel):
+  bucket_name = "test_self_ref"
+
+  r = ReferenceProperty("self", collection_name="rback")
+
 class RiakkitDocumentTests(unittest.TestCase):
   def _getRidOfPreviousUniqueUsername(self, username):
     c = riak.RiakClient()
@@ -542,6 +548,23 @@ class RiakkitDocumentTests(unittest.TestCase):
     user1.reload()
     self.assertEquals(0, len(user1.comments))
     user1.delete()
+
+  def test_selfRef(self):
+    m = TestSelfReferenceDocument()
+    m2 = TestSelfReferenceDocument()
+
+    m2.r = m
+    m2.save()
+    m.save()
+
+    m.reload()
+    m2.reload()
+
+    self.assertEquals(m2, m.rback[0])
+    self.assertEquals(m, m2.r)
+
+    m.delete()
+    m2.delete()
 
   def test_stringRef(self):
     user = User(username="refstrref", password="123")
@@ -836,7 +859,7 @@ if __name__ == "__main__":
     buckets_to_be_cleaned = ("test_blog", "doctest_users", "doctest_comments", "demos",
         "test_website", "coolusers", "_coolusers_ul_username", "testdoc",
         "test_person", "test_cake", "some_extended_bucket", "test_A", "test_B",
-        "test_unique", "_test_unique_ul_attr", "test_class", "test_someuser", "test_comments", "test_nonstrict_ref")
+        "test_unique", "_test_unique_ul_attr", "test_class", "test_someuser", "test_comments", "test_nonstrict_ref", "test_self_ref")
 
     for bucket in buckets_to_be_cleaned:
       deleteAllKeys(riak.RiakClient(), bucket)
