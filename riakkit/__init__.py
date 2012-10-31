@@ -25,11 +25,10 @@ EmDocument = BaseDocument
 from riakkit.document import Document, getClassGivenBucketName
 from riakkit.commons.properties import *
 from riakkit.commons.exceptions import *
-from riakkit.queries import solrSearch, indexLookup, search
 
 
 #PEP 386 versioning
-VERSION = (0, 7, 0, 'a')
+VERSION = (0, 6, 0, 'a')
 __version__ = ('.'.join(map(str, VERSION[:3])) + '.'.join(VERSION[3:]))
 __author__ = "Shuhao Wu"
 __url__ = "https://github.com/shuhaowu/riakkit"

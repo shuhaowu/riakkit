@@ -543,25 +543,18 @@ class Document(SimpleDocument):
     The bucket must have search installed via search-cmd install BUCKETNAME. The
     class must have been marked to be  with cls. = True.
 
-    Warning: Not sure if you really want to use this. As all the documents
-    created from this query will be using this class. Checkout
-    riakkit.queries.search (aliased at riakkit.search)
-
     Args:
       querytext: The query text as outlined in the python-riak documentations.
       bucket: The bucket to search. Leave default for the default bucket.
 
     Returns:
       A MapReduceQuery object. Similar to the RiakMapReduce object."""
-    return search(cls, cls.bucket_name[0] if bucket is None else bucket, querytext)
+    query_obj = cls.client.search(cls.bucket_name[0] if bucket is None else bucket, querytext)
+    return MapReduceQuery(cls, query_obj)
 
   @classmethod
   def solrSearch(cls, querytext, bucket=None, **kwargs):
     """Searches through using the SOLR.
-
-    Warning: Not sure if you really want to use this. As all the documents
-    created from this query will be using this class. Checkout
-    riakkit.queries.solrSearch (aliased at riakkit.solrSearch)
 
     Args:
       querytext: The query text
@@ -570,15 +563,11 @@ class Document(SimpleDocument):
 
     Returns:
       A SolrQuery object. Similart to a MapReduceQuery"""
-    return solrSearch(cls, cls.bucket_name[0] if bucket is None else bucket, querytext, **kwargs)
+    return SolrQuery(cls, cls.client.solr().search(cls.bucket_name[0] if bucket is None else bucket, querytext, **kwargs))
 
   @classmethod
   def indexLookup(cls, index, startkey, endkey=None, bucket=None):
     """Short hand for creating a new mapreduce index
-
-    Warning: Not sure if you really want to use this. As all the documents
-    created from this query will be using this class. Checkout
-    riakkit.queries.indexLookup (aliased at riakkit.indexLookup)
 
     Args:
       index: The index field
@@ -589,7 +578,7 @@ class Document(SimpleDocument):
     Returns:
       A MapReduceQuery object
     """
-    return indexLookup(cls, cls.bucket_name[0] if bucket is None else bucket, index, startkey, endkey)
+    return MapReduceQuery(cls, cls.client.index(cls.bucket_name[0] if bucket is None else bucket, index, startkey, endkey))
 
   @classmethod
   def mapreduce(cls, bucket=None): # TODO: Make a better interface
@@ -599,5 +588,3 @@ class Document(SimpleDocument):
       A RiakMapReduce object.
     """
     return cls.client.add(cls.bucket_name[0] if bucket is None else bucket)
-
-
