@@ -335,18 +335,23 @@ class SimpleDocument(BaseDocument):
     self._indexes[field] = l
     return self
 
-  def removeIndex(self, field, value=None):
+  def removeIndex(self, field, value=None, silent=False):
     """Removes an index field : value
 
     Args:
       field: The field name.
       value: The value, defaults to None. If value is none, the whole field gets
              removed, otherwise only that specific pair will get removed.
+      slient: If set to True and field doesn't exist, it will not raise a KeyError,
+              otherwise it will.
     Returns:
       self for OOP purposes
     """
     if value is None:
-      self._indexes.pop(field)
+      if silent:
+        self._indexes.pop(field, None)
+      else:
+        self._indexes.pop(field)
     else:
       if field in self._indexes:
         self._indexes[field].discard(value)
@@ -368,17 +373,25 @@ class SimpleDocument(BaseDocument):
     self._indexes = deepcopy(indexes)
     return self
 
-  def indexes(self, field=None):
+  def indexes(self, field=None, default=BaseDocumentMetaclass):
     """Retrives the whole index or a specific list of indexes for a field.
 
     Args:
       field: the field name. Defaults to None. If it is None, the all the indexes will be returned.
+      default: The default value to return. If left as BaseDocumentMetaclass, KeyError will be raised.
+               Otherwise it will return default instead of raising a KeyError.
 
     Returns:
       The set of field values or a list of (field, value) pairs friendly for set_indexes
     """
     if field is not None:
-      return copy(self._indexes[field])
+      try:
+        return copy(self._indexes[field])
+      except KeyError, e:
+        if default is BaseDocumentMetaclass:
+          raise e
+        else:
+          return default
 
     i = []
     for field, l in self._indexes.iteritems():
