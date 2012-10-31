@@ -85,3 +85,53 @@ class MapReduceQuery(object):
       A list containing all the Documents
     """
     return map(lambda link: self.cls.load(link.get()), self.riak_links)
+
+
+def search(cls, bucket, querytext, client=None):
+  """Searches through the bucket with some query text.
+
+  The bucket must have search installed via search-cmd install BUCKETNAME.
+
+  Args:
+    cls: The class used to construct the final object.
+    bucket: The bucket to search at. Can be different from the cls bucket.
+    querytext: The query text as outlined in the python-riak documentations.
+    client: Custom client if we don't want to use cls's client.
+
+  Returns:
+    A MapReduceQuery object. Similar to the RiakMapReduce object."""
+  client = client or cls.client
+  query_obj = client.search(bucket, querytext)
+  return MapReduceQuery(cls, query_obj)
+
+def solrSearch(cls, bucket, querytext, client=None, **kwargs):
+  """Searches through using the SOLR.
+
+  Args:
+    cls: The class used to construct the final object.
+    bucket: The bucket to SOLR. Can be different from cls's bucket
+    querytext: The query text
+    kwargs: Any other keyword arguments for SOLR.
+    client: Custom client if we don't want to use cls's client.
+
+  Returns:
+    A SolrQuery object. Similart to a MapReduceQuery"""
+  client = client or cls.client
+  return SolrQuery(cls, client.solr().search(bucket, querytext, **kwargs))
+
+def indexLookup(cls, bucket, index, startkey, endkey=None, client=None):
+  """Short hand for creating a new mapreduce index
+
+  Args:
+    cls: The class used to construct the final object.
+    bucket: The bucket to index. Can be different from cls's bucket
+    index: The index field
+    startkey: The starting key
+    endkey: The ending key. If not none, search a range. Default: None
+    client: Custom client if we don't want to use cls's client.
+
+  Returns:
+    A MapReduceQuery object
+  """
+  client = client or cls.client
+  return MapReduceQuery(cls, client.index(bucket, index, startkey, endkey))
