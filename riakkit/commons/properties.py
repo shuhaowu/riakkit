@@ -437,6 +437,8 @@ class ReferenceBaseProperty(BaseProperty):
       reference_class: The classes that should be added to this LinkedDocuments.
                        i.e. Documents have to be objects of that class to pass
                        validation. None if you wish to allow any Document class.
+                       If reference_class is "self", this will be a self reference
+                       property
       collection_name: The collection name for the reference_class. Works the
                        same way as GAE's collection_name for their
                        ReferenceProperty. See the README file at the repository
@@ -444,10 +446,11 @@ class ReferenceBaseProperty(BaseProperty):
       strict: If true, the remote object must exist. Otherwise it doesn't have to.
     """
     BaseProperty.__init__(self, required=required)
-    if not reference_class._clsType:
+
+    if reference_class != "self" and not reference_class._clsType:
       raise TypeError("Reference property cannot be constructed with class '%s'" % reference_class.__name__)
 
-    self.clstype = reference_class._clsType
+    self.clstype = reference_class._clsType if reference_class != "self" else None
     self.reference_class = reference_class
     self.collection_name = collection_name
     self.is_reference_back = False

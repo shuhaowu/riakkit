@@ -27,9 +27,13 @@ class BaseDocumentMetaclass(type):
       return type.__new__(cls, clsname, parents, attrs)
 
     meta = {}
+    selfref = []
     for name in attrs.keys():
       if isinstance(attrs[name], BaseProperty):
         meta[name] = attrs.pop(name)
+        refcls = getattr(meta[name], "reference_class", False) # TODO: Refactor with document
+        if refcls == "self":
+          selfref.append(meta[name])
 
     all_parents = reversed(walkParents(parents, ("BaseDocument", "SimpleDocument", "object", "type")))
 
@@ -37,7 +41,12 @@ class BaseDocumentMetaclass(type):
       meta.update(copy(p_cls._meta))
     attrs["_meta"] = meta
 
-    return type.__new__(cls, clsname, parents, attrs)
+    new_class = type.__new__(cls, clsname, parents, attrs)
+    for prop in selfref:
+      prop.reference_class = new_class
+      prop.clstype = new_class._clsType
+
+    return new_class
 
   def __getattr__(self, name):
     if hasattr(self, "_meta") and name in self._meta:
