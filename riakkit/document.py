@@ -95,6 +95,19 @@ class DocumentMetaclass(BaseDocumentMetaclass):
 
     attrs["_meta"] = meta
     attrs["_uniques"] = uniques
+
+    # I know why you're here. It took you 1938402 years to finally get here and
+    # you want to know what .instances does. Before you vencture onto the next
+    # line of code, I would like to take this opportunity to say few words:
+    # Am I proud of what I wrote? No. In fact, I'm ashamed of it. I admit, this
+    # is a piece of shit. HOWEVER, in my defense, this got it to work, even
+    # though it caused a shittonne of other problems. I remember very clearly
+    # the time I came up with this "clever" solution. It fixed all my issues.
+
+    # The following line made me so annoyed with this library that a new one is
+    # written. You may not trust me anymore after the next line... in fact, I
+    # don't even trust myself... but riakkit-ng is probably going to be better.
+
     attrs["instances"] = WeakValueDictionary()
 
     new_class = type.__new__(cls, clsname, parents, attrs)
@@ -186,6 +199,11 @@ class Document(SimpleDocument):
 
     self.__class__.instances[self.key] = self
 
+  # Oh no... you're here. I would advice you not to read the following and just
+  # do something useful.
+  # Are you still prepared to understand what's happening?
+  # Yes?... Alright then...
+  # I apologize for the following:
   def save(self, w=None, dw=None, endpoint=False, bucket=None):
     """Saves the document into the database.
 
@@ -317,6 +335,7 @@ class Document(SimpleDocument):
       for doc, end in othersToBeSaved:
         doc.save(w, dw, end)
 
+    # What the fuck just happened...
     return self
 
   def reload(self, r=None, vtag=None):
