@@ -1,3 +1,17 @@
+1.0a
+======
+
+Complete rewrite, again. This time everything is restructured, and pretty much
+the entire design has been changed. The original riakkit is only preseved in the
+object mapping section.
+
+Should be much faster now as we drop features like unique, the layers of
+inheritance, property conversions... and so on. Check out full design doc in
+README.md
+
+This version should also be as close as py3k compatible as possible. As soon
+as riak-python-client becomes py3k compatible, this project will as well.
+
 0.6a
 ====
 

@@ -14,11 +14,5 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Riakkit. If not, see <http://www.gnu.org/licenses/>.
 
-"""Top level riakkit module"""
-from __future__ import absolute_import
-
-# PEP 386 versioning
-VERSION = (1, 0, 0, "a")
-__version__ = ('.'.join(map(str, VERSION[:3])) + '.'.join(VERSION[3:]))
-__author__ = "Shuhao Wu"
-__url__ = "https://github.com/shuhaowu/riakkit"
+class RiakkitError(Exception): pass
+class DocumentNotFoundError(RiakkitError): pass
