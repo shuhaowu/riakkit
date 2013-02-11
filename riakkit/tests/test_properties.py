@@ -14,7 +14,12 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Riakkit. If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+
 import unittest
+from datetime import datetime
+import time
+
 from ..properties.standard import (
   BaseProperty,
   StringProperty,
@@ -22,6 +27,12 @@ from ..properties.standard import (
   BooleanProperty,
   DictProperty,
   ListProperty
+)
+
+from ..properties.fancy import (
+  EnumProperty,
+  DateTimeProperty,
+  PasswordProperty
 )
 
 class StandardPropertiesTest(unittest.TestCase):
@@ -74,6 +85,8 @@ class StandardPropertiesTest(unittest.TestCase):
   def test_numprop(self):
     """Test case for number property"""
     prop = NumberProperty()
+
+    self.assertTrue(prop.validate(None))
 
     self.assertTrue(prop.validate(1))
     self.assertEquals(1.0, prop.to_db(1))
@@ -159,3 +172,53 @@ class StandardPropertiesTest(unittest.TestCase):
 
   def test_referenceprop(self):
     pass
+
+
+class FancyPropertiesTest(unittest.TestCase):
+  def test_enumprop(self):
+    prop = EnumProperty(("ottawa", "toronto", "vancouver"))
+
+    self.assertTrue(prop.validate("ottawa"))
+    self.assertEquals(0, prop.to_db("ottawa"))
+    self.assertEquals("ottawa", prop.from_db(0))
+
+    self.assertTrue(prop.validate("toronto"))
+    self.assertEquals(1, prop.to_db("toronto"))
+    self.assertEquals("toronto", prop.from_db(1))
+
+    self.assertTrue(prop.validate("vancouver"))
+    self.assertEquals(2, prop.to_db("vancouver"))
+    self.assertEquals("vancouver", prop.from_db(2))
+
+    self.assertTrue(prop.validate(None))
+    self.assertEquals(None, prop.to_db(None))
+    self.assertEquals(None, prop.from_db(None))
+
+    self.assertFalse(prop.validate("noexist"))
+
+  def test_datetimeprop(self):
+    prop = DateTimeProperty()
+
+    now = datetime.now()
+    now_stamp = time.mktime(now.timetuple())
+
+    self.assertTrue(isinstance(prop.default(), datetime))
+
+    self.assertTrue(prop.validate(now))
+    self.assertEquals(now_stamp, prop.to_db(now))
+
+    self.assertTrue(prop.validate(now_stamp))
+    self.assertEquals(now_stamp, prop.to_db(now_stamp))
+    self.assertEquals(now.timetuple(), prop.from_db(now_stamp).timetuple())
+
+    self.assertTrue(prop.validate(None))
+    self.assertEquals(None, prop.to_db(None))
+
+    prop = DateTimeProperty(default=None)
+    self.assertEquals(None, prop.default())
+
+  def test_passwordprop(self):
+    pass
+
+if __name__ == "__main__":
+  unittest.main()

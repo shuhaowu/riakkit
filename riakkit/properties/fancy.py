@@ -18,7 +18,7 @@ from __future__ import absolute_import
 from datetime import datetime
 import time
 
-from .standard import BaseProperty
+from .standard import BaseProperty, _NOUNCE
 
 # Now, owl.
 # ,___,  ,___,
@@ -39,7 +39,7 @@ class EnumProperty(BaseProperty):
     self._map_backwards = possible_values
 
   def validate(self, value):
-    return BaseProperty.validate(self, value) and (value in self._map_forwards)
+    return BaseProperty.validate(self, value) and (value is None or value in self._map_forwards)
 
   def to_db(self, value):
     return None if value is None else self._map_forwards[value]
@@ -51,15 +51,15 @@ class EnumProperty(BaseProperty):
 class DateTimeProperty(BaseProperty):
 
   def __init__(self, **args):
-    BaseProperty.__init__(**args)
-    if self._default is None:
-      self._default = lambda: datetime.fromtimestamp(time.time())
+    BaseProperty.__init__(self, **args)
+    if self._default is _NOUNCE:
+      self._default = lambda: datetime.now()
 
   def validate(self, value):
     if not BaseProperty.validate(self, value):
       return False
 
-    if isinstance(value, datetime):
+    if value is None or isinstance(value, datetime):
       return True
 
     if isinstance(value, (long, int, float)): # timestamp

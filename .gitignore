@@ -3,3 +3,4 @@ build/
 dist/
 riakkit.egg-info/
 *.nja
+*.komodoproject

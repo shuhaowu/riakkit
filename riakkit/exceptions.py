@@ -15,4 +15,5 @@
 # along with Riakkit. If not, see <http://www.gnu.org/licenses/>.
 
 class RiakkitError(Exception): pass
+class ValidationError(ValueError, RiakkitError): pass
 class DocumentNotFoundError(RiakkitError): pass

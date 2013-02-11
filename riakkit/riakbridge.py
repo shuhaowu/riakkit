@@ -66,7 +66,6 @@ class FakeRiakObject(object):
   def __init__(self):
     # Here we handle the silly stuffs.
     self.content_type = "application/json"
-    self.get_encoded_data = self.serialize
     self.metadata = {"links": [], "index": [], "usermeta": {}, "content-type": "application/json"}
     self.usermeta = self.metadata["usermeta"]
     self.bucket = FakeRiakBucket(self.bucket_name)

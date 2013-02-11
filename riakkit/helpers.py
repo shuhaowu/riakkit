@@ -76,6 +76,8 @@ def mediocre_copy(obj):
 #     - tag = bucket if tag is None else tag
 # Also provides the same convenience method of get, which gets the link as a
 # riakkit document.
+# TODO: this interface may change to a 3 element tuple in upstream soon enough.
+#       please amend this if necessary.
 class Link(object):
   def __init__(self, bucket, key, tag=None):
     self.bucket = bucket

@@ -16,12 +16,14 @@
 
 from ..exceptions import DocumentNotFoundError
 
+_NOUNCE = object()
+
 class BaseProperty(object):
   """Base property type
     All property types are required to be extended from this class.
   """
 
-  def __init__(self, required=False, default=None, validators=[], load_on_demand=False):
+  def __init__(self, required=False, default=_NOUNCE, validators=[], load_on_demand=False):
     """Initializes a new instance of a property.
 
     Args:
@@ -92,15 +94,7 @@ class BaseProperty(object):
     if callable(self._default):
       return self._default()
 
-    return self._default
-
-class Property(object):
-  """This is a dynamic property. This means that the user is now expected to
-  figure out how this is validated, converted, and everything else that
-  `BaseProperty` provides"""
-
-  def __init__(self, *args, **kwargs):
-    pass
+    return None if self._default is _NOUNCE else self._default
 
 # standard properties... boring stuff
 # This are strict, if you want to relax, use Property instead.
@@ -118,9 +112,12 @@ class NumberProperty(BaseProperty):
     if not BaseProperty.validate(self, value):
       return False
 
+    if value is None:
+      return True
+
     try:
       float(value)
-    except ValueError:
+    except (TypeError, ValueError):
       return False
     else:
       return True
@@ -137,7 +134,7 @@ class DictProperty(BaseProperty):
   """Dictionary property. Value must be an instance of a dictionary (or subclass)."""
   def __init__(self, **args):
     BaseProperty.__init__(self, **args)
-    if self._default is None:
+    if self._default is _NOUNCE:
       self._default = lambda: {}
 
   def validate(self, value):
@@ -147,7 +144,7 @@ class ListProperty(BaseProperty):
   """List property. Value must be an instance of a list/tuple (or subclass)."""
   def __init__(self, **args):
     BaseProperty.__init__(self, **args)
-    if self._default is None:
+    if self._default is _NOUNCE:
       self._default = lambda: []
 
   def validate(self, value):
@@ -187,7 +184,7 @@ class EmDocumentsListProperty(BaseProperty):
     """
     BaseProperty.__init__(self, **args)
     self.emdocument_class = emdocument_class
-    if self._default is None:
+    if self._default is _NOUNCE:
       self._default = lambda: []
 
   def validate(self, value):
@@ -227,7 +224,7 @@ class ReferenceProperty(BaseProperty):
     return value.key
 
   def from_db(self, value):
-    doc = self.reference_class.load(value)
+    doc = self.reference_class.deserialize(value)
     if doc is None and self.strict:
       raise DocumentNotFoundError("Document '{0}' for '{1}' not found and "
                                   "strict mode is active!".format(
